@@ -1,5 +1,4 @@
 import images from './assets/images';
-import './assets/js/bootstrap.bundle';
 import './assets/css/recap.css';
 import PACER from './pacer';
 import { ContentDelegate } from './content_delegate';

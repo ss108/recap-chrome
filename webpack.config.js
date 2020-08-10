@@ -48,7 +48,12 @@ var options = {
       {
         test: /\.css$/,
         loader: 'style-loader!css-loader',
-        exclude: /node_modules/,
+        exclude: function (modulePath) {
+          return (
+            /node_modules/.test(modulePath) &&
+            !/node_modules\/bootstrap/.test(modulePath)
+          );
+        },
       },
       {
         test: new RegExp('.(' + fileExtensions.join('|') + ')$'),

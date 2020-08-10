@@ -1,6 +1,7 @@
 import './assets/css/style.css';
 import './assets/css/font-awesome.min.css';
-import './assets/css/bootstrap.min.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap';
 
 let inputs = document.getElementsByTagName('input');
 
