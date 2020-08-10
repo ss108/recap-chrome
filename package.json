@@ -5,7 +5,7 @@
   "main": " ",
   "scripts": {
     "build": "node dev/build.js",
-    "dev": "node dev/webserver.js",
+    "dev": "NODE_ENV=development node dev/webserver.js",
     "test": "karma start --single-run --browsers Chrome_CI"
   },
   "repository": {
