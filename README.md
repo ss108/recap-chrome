@@ -10,6 +10,7 @@ This build includes:
 - Webpack bundling and preprocessing for karma jasmine tests!
 - No more vendor copy or importing the entire jquery library!
 - Use of the more modern and leaner Date-FNS over Moment
+- Ability to inline env secrets during build!
 - Reduced Dependencies!
 
 **Development Status**
