@@ -6,3 +6,5 @@ coverage
 /recap-chrome.iml
 /.idea/
 .vscode/
+/build/
+/dev/localhost*
