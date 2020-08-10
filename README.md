@@ -1,9 +1,51 @@
-[![Build Status](https://travis-ci.org/freelawproject/recap-chrome.svg?branch=master)][12]
+# A More Modernized RECAP
 
-# NS MIGRATION STEPS
+RECAP, but with a vastly improved development experience.
 
-1. Install a CA dev certificate. Easiest way is using [mkcert](https://github.com/FiloSottile/mkcert).
-2.
+This build includes:
+
+- ES6 module support and code-splitting with Webpack!
+- Webpack-Dev-Server with Hot-Module Reloading!
+- Built-in Prettier formatting and support!
+- Webpack bundling and preprocessing for karma jasmine tests!
+- No more vendor copy or importing the entire jquery library!
+- Use of the more modern and leaner Date-FNS over Moment
+- Reduced Dependencies!
+
+**Development Status**
+
+Currently, all but one test passes, specifically:
+
+```
+The ContentDelegate class attachRecapLinkToEligibleDocs when there are valid urls attaches a working click handler FAILED
+        Error: Expected spy handleRecapLinkClick to have been called.
+            at <Jasmine>
+            at UserContext.<anonymous> (spec/ContentDelegateSpec.js:30527:41)
+            at <Jasmine>
+```
+
+**Upcoming Features**
+
+- Final removal of jQuery
+- Refactored and simplified content_delegate
+- Refactored and simplified spec tests
+- Appellate Support
+- Typescript?
+
+## To get started with development
+
+1. Install [mkcert](https://github.com/FiloSottile/mkcert).
+2. run `mkcert --install`
+3. clone the repo
+4. cd into the dev subdirectory
+5. run `mkcert localhost`
+6. cd ..
+7. npm i
+8. npm run dev
+
+---
+
+# FROM OLD VERSION
 
 # What is this?
 
