@@ -790,7 +790,7 @@ export class ContentDelegate {
           );
           recap_link.append(
             $('<img/>').attr({
-              src: chrome.extension.getURL('assets/images/icon-16.png'),
+              src: chrome.extension.getURL('icon-16.png'),
             })
           );
           recap_link.insertAfter(this.links[i]);
