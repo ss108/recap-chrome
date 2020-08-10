@@ -400,42 +400,40 @@ export class ContentDelegate {
       return;
     }
 
-    let callback = $.proxy(function (api_results) {
-      console.info(
-        `RECAP: Got results from API. Running callback on API results to ` +
-          `insert link`
-      );
-
-      let result = api_results.results.filter(function (obj) {
-        return obj.pacer_doc_id === pacer_doc_id;
-      })[0];
-      if (!result) {
-        return;
-      }
-
-      let href = `https://www.courtlistener.com/${result.filepath_local}`;
-      // Insert a RECAP download link at the bottom of the form.
-      $('<div class="recap-banner"/>')
-        .append(
-          $('<a/>', {
-            title: 'Document is available for free in the RECAP Archive.',
-            href: href,
-          })
-            .append(
-              $('<img/>', {
-                src: chrome.extension.getURL('icon-16.png'),
-              })
-            )
-            .append(' Get this document for free from the RECAP Archive.')
-        )
-        .appendTo($('form'));
-    }, this);
-
     let cl_court = PACER.convertToCourtListenerCourt(this.court);
     this.recap.getAvailabilityForDocuments(
       [this.pacer_doc_id],
       cl_court,
-      callback
+      (api_results) => {
+        console.info(
+          `RECAP: Got results from API. Running callback on API results to ` +
+            `insert link`
+        );
+
+        let result = api_results.results.filter((obj) => {
+          return obj.pacer_doc_id === this.pacer_doc_id;
+        })[0];
+        if (!result) {
+          return;
+        }
+
+        let href = `https://www.courtlistener.com/${result.filepath_local}`;
+        // Insert a RECAP download link at the bottom of the form.
+        $('<div class="recap-banner"/>')
+          .append(
+            $('<a/>', {
+              title: 'Document is available for free in the RECAP Archive.',
+              href: href,
+            })
+              .append(
+                $('<img/>', {
+                  src: chrome.extension.getURL('icon-16.png'),
+                })
+              )
+              .append(' Get this document for free from the RECAP Archive.')
+          )
+          .appendTo($('form'));
+      }
     );
   }
 
@@ -771,7 +769,7 @@ export class ContentDelegate {
             `attach links and icons where appropriate.`
         );
         for (let i = 0; i < this.links.length; i++) {
-          let pacer_doc_id = $(this.links[i]).data('pacer_doc_id');
+          const pacer_doc_id = $(this.links[i]).data('pacer_doc_id');
           if (!pacer_doc_id) {
             continue;
           }
