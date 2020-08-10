@@ -800,6 +800,7 @@ export class ContentDelegate {
   }
 
   async onDownloadAllSubmit(event) {
+    if (!event.data.id) return;
     // helper function - extract the zip by creating html and querying the frame
     const extractUrl = (html) => {
       const page = document.createElement('html');
@@ -843,7 +844,7 @@ export class ContentDelegate {
     };
     history.replaceState({ content: document.documentElement.innerHTML }, '');
     // tell the user to wait
-    $('body').css('cursor', 'wait');
+    document.querySelector('body').classList += 'cursor wait';
 
     // in Firefox, use content.fetch for content-specific fetch requests
     // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_scripts#XHR_and_Fetch
@@ -854,7 +855,7 @@ export class ContentDelegate {
     const htmlPage = await browserSpecificFetch(event.data.id).then((res) =>
       res.text()
     );
-    console.log('RECAP: Successfully submitted zip file request');
+    console.log('RECAP: Successfully submitted zip file request', htmlPage);
     const zipUrl = extractUrl(htmlPage);
     //download zip file and save it to chrome storage
     const blob = await fetch(zipUrl).then((res) => res.blob());

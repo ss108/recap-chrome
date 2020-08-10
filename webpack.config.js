@@ -7,7 +7,8 @@ https: var webpack = require('webpack'),
   CopyWebpackPlugin = require('copy-webpack-plugin'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
   WriteFilePlugin = require('write-file-webpack-plugin'),
-  HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
+  HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin'),
+  ReloadPlugin = require('./dev/reloadPlugin');
 // load the secrets
 var alias = {};
 
@@ -65,8 +66,12 @@ var options = {
     alias: alias,
   },
   plugins: [
+    new ReloadPlugin({
+      contentScripts: ['content'],
+      backgroundScript: 'background',
+    }),
     // clean the build folder
-    new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),
+    new CleanWebpackPlugin(),
     // expose and write the allowed env vars on the compiled bundle
     new webpack.EnvironmentPlugin(['NODE_ENV']),
     new CopyWebpackPlugin({
@@ -106,14 +111,10 @@ var options = {
     }),
     new WriteFilePlugin(),
   ],
-  // need to exclude injected content scripts from HMR
-  chromeExtensionBoilerplate: {
-    notHotReload: ['content'],
-  },
 };
 
 if (env.NODE_ENV === 'development') {
-  options.devtool = 'cheap-module-source-map';
+  options.devtool = 'inline-cheap-module-source-map';
 }
 
 module.exports = options;
