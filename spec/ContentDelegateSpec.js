@@ -767,17 +767,10 @@ describe('The ContentDelegate class', () => {
       });
 
       describe('for pacer doc id 531591', () => {
-        beforeEach(() => {
-          window.pacer_doc_id = 531591;
-        });
-
-        afterEach(() => {
-          delete window.pacer_doc_id;
-        });
-
         it('responds to a positive result', () => {
           const fakePacerDocId = 531591;
           const cd = singleDocContentDelegate;
+          cd.pacer_doc_id = fakePacerDocId;
           const fake = function (pc, pci, callback) {
             const response = {
               results: [
