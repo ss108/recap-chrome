@@ -3,13 +3,6 @@ import PACER from '../src/pacer';
 import { ContentDelegate } from '../src/content_delegate';
 import { blobToDataURL } from '../src/utils';
 
-console.profile('cause of reload');
-
-window.addEventListener('beforeunload', function () {
-  console.profileEnd('cause of reload');
-  debugger;
-});
-
 describe('The ContentDelegate class', function () {
   // 'tabId' values
   const tabId = 1234;
