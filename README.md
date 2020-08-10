@@ -42,6 +42,7 @@ The ContentDelegate class attachRecapLinkToEligibleDocs when there are valid url
 6. cd ..
 7. npm i
 8. npm run dev
+9. Load the unpacked extension from the /build sub folder. 
 
 ---
 
