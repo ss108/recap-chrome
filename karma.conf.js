@@ -1,22 +1,14 @@
 // Karma configuration
-// Generated on Wed Jan 03 2018 21:51:16 GMT-0800 (PST)
-var webpackConfig = require('./webpack.config');
+const { SourceMapDevToolPlugin } = require('webpack');
+const webpackConfig = require('./webpack.config');
+
+// modify the webpackConfig for Karma
 delete webpackConfig.chromeExtensionBoilerplate;
 
 module.exports = function (config) {
   config.set({
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: '',
-
-    plugins: [
-      'karma-jasmine',
-      'karma-jasmine-ajax',
-      'karma-chrome-launcher',
-      'karma-jquery',
-      'karma-coverage',
-      'karma-webpack',
-    ],
-
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['jasmine-ajax', 'jasmine', 'jquery-3.2.1'],
