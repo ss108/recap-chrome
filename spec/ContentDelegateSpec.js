@@ -3,7 +3,7 @@ import PACER from '../src/pacer';
 import { ContentDelegate } from '../src/content_delegate';
 import { blobToDataURL } from '../src/utils';
 
-describe('The ContentDelegate class', function () {
+describe('The ContentDelegate class', () => {
   // 'tabId' values
   const tabId = 1234;
 
@@ -111,7 +111,7 @@ describe('The ContentDelegate class', function () {
   }
 
   let nativeFetch;
-  beforeEach(function () {
+  beforeEach(() => {
     // stub the chrome.runtime.sendMessage function
     window.fetch = () =>
       Promise.resolve(
@@ -128,7 +128,7 @@ describe('The ContentDelegate class', function () {
     removeChromeSpy();
   });
 
-  describe('ContentDelegate constructor', function () {
+  describe('ContentDelegate constructor', () => {
     const expected_url =
       'https://ecf.canb.uscourts.gov/cgi-bin/DktRpt.pl?531591';
     const restricted_url = 'https://ecf.canb.uscourts.gov/doc1/04503837920';
@@ -143,7 +143,7 @@ describe('The ContentDelegate class', function () {
     const expected_links = [link_0, link_1];
     const expected_tabId = 1234;
 
-    it('gets created with necessary arguments', function () {
+    it('gets created with necessary arguments', () => {
       const cd = new ContentDelegate(
         tabId,
         expected_url,
@@ -163,7 +163,7 @@ describe('The ContentDelegate class', function () {
       expect(cd.restricted).toBe(false);
     });
 
-    it('should flag restriction for Warning!', function () {
+    it('should flag restriction for Warning!', () => {
       const form = document.createElement('form');
       const input = document.createElement('input');
       input.value = 'View Document';
@@ -194,7 +194,7 @@ describe('The ContentDelegate class', function () {
       form.remove();
     });
 
-    it('should flag restriction for bold restriction', function () {
+    it('should flag restriction for bold restriction', () => {
       const form = document.createElement('form');
       const input = document.createElement('input');
       input.value = 'View Document';
@@ -228,7 +228,7 @@ describe('The ContentDelegate class', function () {
     });
   });
 
-  describe('handleDocketQueryUrl', function () {
+  describe('handleDocketQueryUrl', () => {
     let form;
     beforeEach(function () {
       form = document.createElement('form');
@@ -245,12 +245,12 @@ describe('The ContentDelegate class', function () {
       };
     });
 
-    afterEach(function () {
+    afterEach(() => {
       form.remove();
       window.chrome = {};
     });
 
-    it('has no effect when not on a docket query url', function () {
+    it('has no effect when not on a docket query url', () => {
       const cd = nonsenseUrlContentDelegate;
       spyOn(PACER, 'hasPacerCookie');
       spyOn(PACER, 'isDocketQueryUrl').and.returnValue(false);
@@ -260,7 +260,7 @@ describe('The ContentDelegate class', function () {
 
     // test is dependent on function order of operations,
     // but does exercise all existing branches
-    it('checks for a Pacer cookie', function () {
+    it('checks for a Pacer cookie', () => {
       const cd = nonsenseUrlContentDelegate;
       spyOn(cd.recap, 'getAvailabilityForDocket');
       spyOn(PACER, 'hasPacerCookie').and.returnValue(false);
@@ -269,7 +269,7 @@ describe('The ContentDelegate class', function () {
       expect(cd.recap.getAvailabilityForDocket).not.toHaveBeenCalled();
     });
 
-    it('handles zero results from getAvailabilityForDocket', function () {
+    it('handles zero results from getAvailabilityForDocket', () => {
       const cd = docketQueryContentDelegate;
       spyOn(PACER, 'hasPacerCookie').and.returnValue(true);
       spyOn(cd.recap, 'getAvailabilityForDocket').and.callFake(
@@ -283,7 +283,7 @@ describe('The ContentDelegate class', function () {
       expect(form.innerHTML).toBe('');
     });
 
-    it('inserts the RECAP banner on an appropriate page', function () {
+    it('inserts the RECAP banner on an appropriate page', () => {
       const cd = docketQueryContentDelegate;
       spyOn(PACER, 'hasPacerCookie').and.returnValue(true);
       spyOn(cd.recap, 'getAvailabilityForDocket').and.callFake(
@@ -312,7 +312,7 @@ describe('The ContentDelegate class', function () {
       );
     });
 
-    it('has no effect when on a docket query that has no RECAP', function () {
+    it('has no effect when on a docket query that has no RECAP', () => {
       const cd = docketQueryContentDelegate;
       spyOn(cd.recap, 'getAvailabilityForDocket').and.callFake(
         (court, pacerId, cb) =>
@@ -328,9 +328,9 @@ describe('The ContentDelegate class', function () {
     });
   });
 
-  describe('handleDocketDisplayPage', function () {
-    describe('option disabled', function () {
-      beforeEach(function () {
+  describe('handleDocketDisplayPage', () => {
+    describe('option disabled', () => {
+      beforeEach(() => {
         window.chrome = {
           storage: {
             local: {
@@ -340,17 +340,17 @@ describe('The ContentDelegate class', function () {
                   options: { recap_enabled: false },
                 });
               }),
-              set: jasmine.createSpy('set').and.callFake(function () {}),
+              set: jasmine.createSpy('set').and.callFake(() => {}),
             },
           },
         };
       });
 
-      afterEach(function () {
+      afterEach(() => {
         window.chrome = {};
       });
 
-      it('has no effect when recap_enabled option is false', function () {
+      it('has no effect when recap_enabled option is false', () => {
         const cd = docketDisplayContentDelegate;
         spyOn(cd.recap, 'uploadDocket');
         cd.handleDocketDisplayPage();
@@ -358,8 +358,8 @@ describe('The ContentDelegate class', function () {
       });
     });
 
-    describe('option enabled', function () {
-      beforeEach(function () {
+    describe('option enabled', () => {
+      beforeEach(() => {
         const table = document.createElement('table');
         const tbody = document.createElement('tbody');
         const tr = document.createElement('tr');
@@ -376,7 +376,7 @@ describe('The ContentDelegate class', function () {
                   options: { recap_enabled: true },
                 });
               }),
-              set: jasmine.createSpy('set').and.callFake(function () {}),
+              set: jasmine.createSpy('set').and.callFake(() => {}),
             },
           },
           runtime: {
@@ -389,19 +389,19 @@ describe('The ContentDelegate class', function () {
         };
       });
 
-      afterEach(function () {
+      afterEach(() => {
         document.querySelector('table').remove();
         window.chrome = {};
       });
 
-      it('has no effect when not on a docket display url', function () {
+      it('has no effect when not on a docket display url', () => {
         const cd = nonsenseUrlContentDelegate;
         spyOn(cd.recap, 'uploadDocket');
         cd.handleDocketDisplayPage();
         expect(cd.recap.uploadDocket).not.toHaveBeenCalled();
       });
 
-      it('has no effect when there is no casenum', function () {
+      it('has no effect when there is no casenum', () => {
         const cd = new ContentDelegate(
           tabId,
           docketDisplayUrl,
@@ -416,25 +416,26 @@ describe('The ContentDelegate class', function () {
         expect(cd.recap.uploadDocket).not.toHaveBeenCalled();
       });
 
-      describe('when the history state is already set', function () {
-        beforeEach(function () {
+      describe('when the history state is already set', () => {
+        beforeEach(() => {
           history.replaceState({ uploaded: true }, '');
         });
 
-        afterEach(function () {
+        afterEach(() => {
           history.replaceState({}, '');
         });
 
-        it('has no effect', function () {
+        it('has no effect', () => {
           const cd = docketDisplayContentDelegate;
           spyOn(cd.recap, 'uploadDocket');
           cd.handleDocketDisplayPage();
           expect(cd.recap.uploadDocket).not.toHaveBeenCalled();
         });
       });
-      // interstitial check is multiple inputs with name 'date_from' and type 'radio'
-      describe('when the docket page is an interstitial page', function () {
-        beforeEach(function () {
+
+      // interstitial check is > 1 input with name 'date_from' and type 'radio'
+      describe('when the docket page is an interstitial page', () => {
+        beforeEach(() => {
           const input = document.createElement('input');
           input.id = 'input1';
           input.name = 'date_from';
@@ -445,20 +446,20 @@ describe('The ContentDelegate class', function () {
           document.body.appendChild(input2);
         });
 
-        afterEach(function () {
+        afterEach(() => {
           document.getElementById('input1').remove();
           document.getElementById('input2').remove();
         });
 
-        it('does not call uploadDocket', async function () {
+        it('does not call uploadDocket', async () => {
           const cd = docketDisplayContentDelegate;
           spyOn(cd.recap, 'uploadDocket');
           await cd.handleDocketDisplayPage();
           expect(cd.recap.uploadDocket).not.toHaveBeenCalled();
         });
       });
-      describe('when the docket page is not an interstitial page', function () {
-        it('inserts a button linking the user to a create alert page on CL', async () => {
+      describe('when the docket page is not an interstitial page', () => {
+        it('adds a button linking to a create alert page on CL', async () => {
           const cd = docketDisplayContentDelegate;
           spyOn(cd.recap, 'getAvailabilityForDocket').and.callFake(
             (court, pacerId, cb) =>
@@ -472,7 +473,7 @@ describe('The ContentDelegate class', function () {
           expect(button).not.toBeNull();
         });
 
-        it('calls uploadDocket and responds to a positive result', async function () {
+        it('calls uploadDocket and responds to a positive result', async () => {
           const cd = docketDisplayContentDelegate;
           spyOn(cd.notifier, 'showUpload');
           spyOn(cd.recap, 'getAvailabilityForDocket').and.callFake(
@@ -500,7 +501,7 @@ describe('The ContentDelegate class', function () {
           expect(button.getAttribute('aria-disabled')).toBe('false');
         });
 
-        it('calls uploadDocket and responds to a positive historical result', async function () {
+        it('calls uploadDocket and responds to a positive historical result', async () => {
           const cd = historyDocketDisplayContentDelegate;
           spyOn(cd.notifier, 'showUpload');
           spyOn(cd.recap, 'getAvailabilityForDocket').and.callFake(
@@ -528,7 +529,7 @@ describe('The ContentDelegate class', function () {
           expect(button.getAttribute('aria-disabled')).toBe('false');
         });
 
-        it('calls uploadDocket and responds to a negative result', async function () {
+        it('calls uploadDocket and responds to a negative result', async () => {
           const cd = docketDisplayContentDelegate;
           spyOn(cd.notifier, 'showUpload');
           spyOn(cd.recap, 'getAvailabilityForDocket').and.callFake(
@@ -553,21 +554,21 @@ describe('The ContentDelegate class', function () {
     });
   });
 
-  describe('handleAttachmentMenuPage', function () {
-    describe('option disabled', function () {
+  describe('handleAttachmentMenuPage', () => {
+    describe('option disabled', () => {
       let form;
       let input;
 
-      beforeEach(function () {
+      beforeEach(() => {
         form = document.createElement('form');
         document.body.appendChild(form);
         window.chrome = {
           storage: {
             local: {
-              get: jasmine.createSpy().and.callFake(function (_, cb) {
+              get: jasmine.createSpy().and.callFake((_, cb) => {
                 cb({ options: { recap_enabled: false } });
               }),
-              set: jasmine.createSpy('set').and.callFake(function () {}),
+              set: jasmine.createSpy('set').and.callFake(() => {}),
             },
           },
         };
@@ -576,12 +577,12 @@ describe('The ContentDelegate class', function () {
         form.appendChild(input);
       });
 
-      afterEach(function () {
+      afterEach(() => {
         form.remove();
         window.chrome = {};
       });
 
-      it('has no effect recap_enabled option is not set', function () {
+      it('has no effect recap_enabled option is not set', () => {
         const cd = singleDocContentDelegate;
         spyOn(cd.recap, 'uploadAttachmentMenu');
         cd.handleAttachmentMenuPage();
@@ -589,38 +590,38 @@ describe('The ContentDelegate class', function () {
       });
     });
 
-    describe('option enabled', function () {
+    describe('option enabled', () => {
       let form;
-      beforeEach(function () {
+      beforeEach(() => {
         form = document.createElement('form');
         document.body.appendChild(form);
         window.chrome = {
           storage: {
             local: {
-              get: jasmine.createSpy().and.callFake(function (_, cb) {
+              get: jasmine.createSpy().and.callFake((_, cb) => {
                 cb({ options: { recap_enabled: true } });
               }),
-              set: jasmine.createSpy('set').and.callFake(function () {}),
+              set: jasmine.createSpy('set').and.callFake(() => {}),
             },
           },
         };
       });
 
-      afterEach(function () {
+      afterEach(() => {
         form.remove();
         window.chrome = {};
       });
 
-      describe('when the history state is already set', function () {
-        beforeEach(function () {
+      describe('when the history state is already set', () => {
+        beforeEach(() => {
           history.replaceState({ uploaded: true }, '');
         });
 
-        afterEach(function () {
+        afterEach(() => {
           history.replaceState({}, '');
         });
 
-        it('has no effect', function () {
+        it('has no effect', () => {
           const cd = docketDisplayContentDelegate;
           spyOn(cd.recap, 'uploadAttachmentMenu');
           cd.handleAttachmentMenuPage();
@@ -628,15 +629,15 @@ describe('The ContentDelegate class', function () {
         });
       });
 
-      describe('when there is NO appropriate form', function () {
-        it('has no effect when the URL is wrong', function () {
+      describe('when there is NO appropriate form', () => {
+        it('has no effect when the URL is wrong', () => {
           const cd = nonsenseUrlContentDelegate;
           spyOn(cd.recap, 'uploadAttachmentMenu');
           cd.handleAttachmentMenuPage();
           expect(cd.recap.uploadAttachmentMenu).not.toHaveBeenCalled();
         });
 
-        it('has no effect with a proper URL', function () {
+        it('has no effect with a proper URL', () => {
           const cd = singleDocContentDelegate;
           spyOn(cd.recap, 'uploadAttachmentMenu');
           cd.handleAttachmentMenuPage();
@@ -644,31 +645,31 @@ describe('The ContentDelegate class', function () {
         });
       });
 
-      describe('when there IS an appropriate form', function () {
+      describe('when there IS an appropriate form', () => {
         let input;
-        beforeEach(function () {
+        beforeEach(() => {
           input = document.createElement('input');
           input.value = 'Download All';
           form.appendChild(input);
         });
 
-        it('has no effect when the URL is wrong', function () {
+        it('has no effect when the URL is wrong', () => {
           const cd = nonsenseUrlContentDelegate;
           spyOn(cd.recap, 'uploadAttachmentMenu');
           cd.handleAttachmentMenuPage();
           expect(cd.recap.uploadAttachmentMenu).not.toHaveBeenCalled();
         });
 
-        it('uploads the page when the URL is right', function () {
+        it('uploads the page when the URL is right', () => {
           const cd = singleDocContentDelegate;
           spyOn(cd.recap, 'uploadAttachmentMenu');
           cd.handleAttachmentMenuPage();
           expect(cd.recap.uploadAttachmentMenu).toHaveBeenCalled();
         });
 
-        it('calls the upload method and responds to positive result', function () {
+        it('calls the upload method and responds to positive result', () => {
           const cd = singleDocContentDelegate;
-          const uploadFake = function (pc, pci, h, callback) {
+          const uploadFake = (pc, pci, h, callback) => {
             callback(true);
           };
           spyOn(cd.recap, 'uploadAttachmentMenu').and.callFake(uploadFake);
@@ -684,9 +685,9 @@ describe('The ContentDelegate class', function () {
           );
         });
 
-        it('calls the upload method and responds to negative result', function () {
+        it('calls the upload method and responds to negative result', () => {
           const cd = singleDocContentDelegate;
-          const uploadFake = function (pc, pci, h, callback) {
+          const uploadFake = (pc, pci, h, callback) => {
             callback(false);
           };
           spyOn(cd.recap, 'uploadAttachmentMenu').and.callFake(uploadFake);
@@ -702,26 +703,24 @@ describe('The ContentDelegate class', function () {
     });
   });
 
-  describe('handleSingleDocumentPageCheck', function () {
+  describe('handleSingleDocumentPageCheck', () => {
     let form;
-    beforeEach(function () {
+    beforeEach(() => {
       form = document.createElement('form');
       document.body.appendChild(form);
     });
 
-    afterEach(function () {
-      form.remove();
-    });
+    afterEach(() => form.remove());
 
-    describe('when there is NO appropriate form', function () {
-      it('has no effect when the URL is wrong', function () {
+    describe('when there is NO appropriate form', () => {
+      it('has no effect when the URL is wrong', () => {
         const cd = nonsenseUrlContentDelegate;
         spyOn(cd.recap, 'getAvailabilityForDocuments');
         cd.handleSingleDocumentPageCheck();
         expect(cd.recap.getAvailabilityForDocuments).not.toHaveBeenCalled();
       });
 
-      it('has no effect with a proper URL', function () {
+      it('has no effect with a proper URL', () => {
         const cd = singleDocContentDelegate;
         spyOn(cd.recap, 'getAvailabilityForDocuments');
         cd.handleSingleDocumentPageCheck();
@@ -729,11 +728,11 @@ describe('The ContentDelegate class', function () {
       });
     });
 
-    describe('when there IS an appropriate form', function () {
+    describe('when there IS an appropriate form', () => {
       let input;
       let table;
 
-      beforeEach(function () {
+      beforeEach(() => {
         input = document.createElement('input');
         input.value = 'View Document';
         form.appendChild(input);
@@ -747,36 +746,36 @@ describe('The ContentDelegate class', function () {
         document.body.appendChild(table);
       });
 
-      afterEach(function () {
+      afterEach(() => {
         // no need to remove input because it is added to
         // the form and removed in the outer scope
         table.remove();
       });
 
-      it('has no effect when the URL is wrong', function () {
+      it('has no effect when the URL is wrong', () => {
         const cd = nonsenseUrlContentDelegate;
         spyOn(cd.recap, 'getAvailabilityForDocuments');
         cd.handleSingleDocumentPageCheck();
         expect(cd.recap.getAvailabilityForDocuments).not.toHaveBeenCalled();
       });
 
-      it('checks availability for the page when the URL is right', function () {
+      it('checks availability for the page when the URL is right', () => {
         const cd = singleDocContentDelegate;
         spyOn(cd.recap, 'getAvailabilityForDocuments');
         cd.handleSingleDocumentPageCheck();
         expect(cd.recap.getAvailabilityForDocuments).toHaveBeenCalled();
       });
 
-      describe('for pacer doc id 531591', function () {
-        beforeEach(function () {
+      describe('for pacer doc id 531591', () => {
+        beforeEach(() => {
           window.pacer_doc_id = 531591;
         });
 
-        afterEach(function () {
+        afterEach(() => {
           delete window.pacer_doc_id;
         });
 
-        it('responds to a positive result', function () {
+        it('responds to a positive result', () => {
           const fakePacerDocId = 531591;
           const cd = singleDocContentDelegate;
           const fake = function (pc, pci, callback) {
@@ -802,9 +801,9 @@ describe('The ContentDelegate class', function () {
           expect(link.href).toBe('https://www.courtlistener.com/download/1234');
         });
 
-        it('responds to a negative result', function () {
+        it('responds to a negative result', () => {
           const cd = singleDocContentDelegate;
-          const fake = function (pc, pci, callback) {
+          const fake = (pc, pci, callback) => {
             const response = {
               results: [{}],
             };
@@ -822,18 +821,18 @@ describe('The ContentDelegate class', function () {
     });
   });
 
-  describe('handleSingleDocumentPageView', function () {
+  describe('handleSingleDocumentPageView', () => {
     let form;
-    beforeEach(function () {
+    beforeEach(() => {
       form = document.createElement('form');
       document.body.appendChild(form);
     });
 
-    afterEach(function () {
+    afterEach(() => {
       form.remove();
     });
 
-    it('handles appellate check', function () {
+    it('handles appellate check', () => {
       const cd = appellateContentDelegate;
       spyOn(console, 'log');
       spyOn(PACER, 'isSingleDocumentPage').and.returnValue(true);
@@ -846,15 +845,15 @@ describe('The ContentDelegate class', function () {
       DEBUGLEVEL = restore;
     });
 
-    describe('when there is NO appropriate form', function () {
-      it('has no effect when the URL is wrong', function () {
+    describe('when there is NO appropriate form', () => {
+      it('has no effect when the URL is wrong', () => {
         const cd = nonsenseUrlContentDelegate;
         spyOn(document, 'createElement');
         cd.handleSingleDocumentPageView();
         expect(document.createElement).not.toHaveBeenCalled();
       });
 
-      it('has no effect with a proper URL', function () {
+      it('has no effect with a proper URL', () => {
         const cd = singleDocContentDelegate;
         spyOn(cd.recap, 'getAvailabilityForDocuments');
         cd.handleSingleDocumentPageView();
@@ -862,11 +861,11 @@ describe('The ContentDelegate class', function () {
       });
     });
 
-    describe('when there IS an appropriate form', function () {
+    describe('when there IS an appropriate form', () => {
       let input;
       let table;
 
-      beforeEach(function () {
+      beforeEach(() => {
         input = document.createElement('input');
         input.value = 'View Document';
         form.appendChild(input);
@@ -881,7 +880,7 @@ describe('The ContentDelegate class', function () {
         spyOn(window, 'addEventListener').and.callThrough();
       });
 
-      afterEach(function () {
+      afterEach(() => {
         table.remove();
         const scripts = [...document.querySelectorAll('script')];
         const lastScript = scripts.find((script) =>
@@ -892,7 +891,7 @@ describe('The ContentDelegate class', function () {
         }
       });
 
-      it('creates a non-empty script element', function () {
+      it('creates a non-empty script element', () => {
         const cd = singleDocContentDelegate;
         const scriptSpy = {};
         spyOn(document, 'createElement').and.returnValue(scriptSpy);
@@ -904,7 +903,7 @@ describe('The ContentDelegate class', function () {
         expect(document.body.appendChild).toHaveBeenCalledWith(scriptSpy);
       });
 
-      it('adds an event listener for the message in the script', function () {
+      it('adds an event listener for the message in the script', () => {
         const cd = singleDocContentDelegate;
         cd.handleSingleDocumentPageView();
 
@@ -917,7 +916,7 @@ describe('The ContentDelegate class', function () {
     });
   });
 
-  describe('onDocumentViewSubmit', function () {
+  describe('onDocumentViewSubmit', () => {
     let form;
     let table;
     const form_id = '1234';
@@ -935,7 +934,7 @@ describe('The ContentDelegate class', function () {
       window.chrome = {};
     });
 
-    beforeEach(function () {
+    beforeEach(() => {
       form = document.createElement('form');
       form.id = form_id;
       document.body.appendChild(form);
@@ -949,12 +948,12 @@ describe('The ContentDelegate class', function () {
       document.body.appendChild(table);
     });
 
-    afterEach(function () {
+    afterEach(() => {
       form.remove();
       table.remove();
     });
 
-    it('handles appellate check', function () {
+    it('handles appellate check', () => {
       const cd = appellateContentDelegate;
       spyOn(console, 'log');
       let restore = DEBUGLEVEL;
@@ -966,7 +965,7 @@ describe('The ContentDelegate class', function () {
       DEBUGLEVEL = restore;
     });
 
-    it('sets the onsubmit attribute of the page form', function () {
+    it('sets the onsubmit attribute of the page form', () => {
       const expected_on_submit = 'expectedOnSubmit();';
       form.setAttribute('onsubmit', expected_on_submit);
       spyOn(form, 'setAttribute');
@@ -982,7 +981,7 @@ describe('The ContentDelegate class', function () {
       );
     });
 
-    it('calls showPdfPage when the response is a PDF', function () {
+    it('calls showPdfPage when the response is a PDF', () => {
       const cd = singleDocContentDelegate;
       spyOn(cd, 'showPdfPage');
       cd.onDocumentViewSubmit(event);
@@ -995,7 +994,7 @@ describe('The ContentDelegate class', function () {
       expect(cd.showPdfPage).toHaveBeenCalled();
     });
 
-    it('calls showPdfPage when the response is HTML', function () {
+    it('calls showPdfPage when the response is HTML', () => {
       const cd = singleDocContentDelegate;
       const fakeFileReader = {
         readAsText: function () {
@@ -1003,7 +1002,7 @@ describe('The ContentDelegate class', function () {
           this.onload();
         },
       };
-      spyOn(window, 'FileReader').and.callFake(function () {
+      spyOn(window, 'FileReader').and.callFake(() => {
         return fakeFileReader;
       });
       spyOn(cd, 'showPdfPage');
@@ -1018,11 +1017,11 @@ describe('The ContentDelegate class', function () {
     });
   });
 
-  describe('showPdfPage', function () {
+  describe('showPdfPage', () => {
     let documentElement;
     const pre =
-      '<head><title>test</title><style>body { margin: 0; } iframe { border: none; }' +
-      '</style></head><body>';
+      '<head><title>test</title><style>body { margin: 0; } ' +
+      'iframe { border: none; }</style></head><body>';
     const iFrameStart = '<iframe src="data:pdf"';
     const iFrameEnd = ' width="100%" height="100%"></iframe>';
     const post = '</body>';
@@ -1030,7 +1029,7 @@ describe('The ContentDelegate class', function () {
     const cd = singleDocContentDelegate;
     const blob = new Blob([new ArrayBuffer(1000)], { type: 'application/pdf' });
 
-    beforeEach(async function () {
+    beforeEach(async () => {
       const dataUrl = await blobToDataURL(blob);
       documentElement = document.createElement('html');
       window.chrome = {
@@ -1070,7 +1069,7 @@ describe('The ContentDelegate class', function () {
       window.chrome = {};
     });
 
-    it('handles no iframe', function () {
+    it('handles no iframe', () => {
       let inner = '<span>html</span>';
       cd.showPdfPage(documentElement, pre + inner + post);
       expect(document.documentElement.innerHTML).toBe(pre + inner + post);
@@ -1087,7 +1086,7 @@ describe('The ContentDelegate class', function () {
       );
     });
 
-    describe('when it downloads the PDF in the iframe', function () {
+    describe('when it downloads the PDF in the iframe', () => {
       const casenum = '437098';
       const cd = singleDocContentDelegate;
 
@@ -1138,7 +1137,7 @@ describe('The ContentDelegate class', function () {
         }
       });
 
-      it('puts the generated HTML in the page history', async function () {
+      it('puts the generated HTML in the page history', async () => {
         await cd.showPdfPage(documentElement, html);
         if (
           navigator.userAgent.indexOf('Chrome') < 0 &&
@@ -1152,12 +1151,12 @@ describe('The ContentDelegate class', function () {
         }
       });
 
-      it('uploads the PDF to RECAP', async function () {
+      it('uploads the PDF to RECAP', async () => {
         await cd.showPdfPage(documentElement, html);
         expect(cd.recap.uploadDocument).toHaveBeenCalled();
       });
 
-      it('calls the notifier once the upload finishes', async function () {
+      it('calls the notifier once the upload finishes', async () => {
         await cd.showPdfPage(documentElement, html);
         expect(cd.notifier.showUpload).toHaveBeenCalled();
       });
@@ -1178,14 +1177,14 @@ describe('The ContentDelegate class', function () {
     return links;
   }
 
-  describe('findAndStorePacerDocIds', function () {
-    it('should handle no cookie', function () {
+  describe('findAndStorePacerDocIds', () => {
+    it('should handle no cookie', () => {
       spyOn(PACER, 'hasPacerCookie').and.returnValue(false);
       expect(nonsenseUrlContentDelegate.findAndStorePacerDocIds()).toBe(
         undefined
       );
     });
-    it('should handle pages without case ids', function () {
+    it('should handle pages without case ids', () => {
       const cd = noPacerCaseIdContentDelegate;
       spyOn(PACER, 'hasPacerCookie').and.returnValue(true);
       spyOn(cd.recap, 'getPacerCaseIdFromPacerDocId').and.callFake(
@@ -1194,13 +1193,11 @@ describe('The ContentDelegate class', function () {
           callback('531931');
         }
       );
-      chrome.storage.local.set = function (docs, cb) {
-        cb();
-      };
+      chrome.storage.local.set = (docs, cb) => cb();
       cd.findAndStorePacerDocIds();
       expect(cd.recap.getPacerCaseIdFromPacerDocId).toHaveBeenCalled();
     });
-    it('should iterate links for DLS', async function () {
+    it('should iterate links for DLS', async () => {
       const link_2 = document.createElement('a');
       link_2.href = 'https://ecf.canb.uscourts.gov/notacase/034031424909';
       const link_3 = document.createElement('a');
@@ -1241,7 +1238,7 @@ describe('The ContentDelegate class', function () {
         '034031424911': '1234',
       });
     });
-    it('should iterate links for PACER case id', async function () {
+    it('should iterate links for PACER case id', async () => {
       const link_2 = document.createElement('a');
       link_2.href = 'https://ecf.canb.uscourts.gov/notacase/034031424909';
       const link_3 = document.createElement('a');
@@ -1278,16 +1275,16 @@ describe('The ContentDelegate class', function () {
   // TODO: Figure out where the functionality of
   //  'addMouseoverToConvertibleLinks' went, and add tests for that.
 
-  describe('handleRecapLinkClick', function () {
+  describe('handleRecapLinkClick', () => {
     const cd = docketDisplayContentDelegate;
     const linkUrl = singleDocUrl;
 
-    describe('when the popup option is not set', function () {
-      beforeEach(function () {
+    describe('when the popup option is not set', () => {
+      beforeEach(() => {
         window.chrome = {
           storage: {
             local: {
-              get: jasmine.createSpy().and.callFake(function (_, cb) {
+              get: jasmine.createSpy().and.callFake((_, cb) => {
                 cb({ options: {} });
               }),
             },
@@ -1295,34 +1292,34 @@ describe('The ContentDelegate class', function () {
         };
       });
 
-      it('redirects to the link url immediately', function () {
+      it('redirects to the link url immediately', () => {
         const window_obj = {};
         cd.handleRecapLinkClick(window_obj, linkUrl);
         expect(window_obj.location).toBe(linkUrl);
       });
     });
 
-    describe('when the popup option is set', function () {
-      beforeEach(function () {
+    describe('when the popup option is set', () => {
+      beforeEach(() => {
         window.chrome = {
           storage: {
             local: {
-              get: jasmine.createSpy().and.callFake(function (_, cb) {
+              get: jasmine.createSpy().and.callFake((_, cb) => {
                 cb({ options: { recap_link_popups: true } });
               }),
-              set: jasmine.createSpy('set').and.callFake(function () {}),
+              set: jasmine.createSpy('set').and.callFake(() => {}),
             },
           },
         };
       });
 
-      it('attaches the RECAP popup', function () {
+      it('attaches the RECAP popup', () => {
         cd.handleRecapLinkClick({}, linkUrl);
         expect($('#recap-shade').length).not.toBe(0);
         expect($('.recap-popup').length).not.toBe(0);
 
         let foundLink = false;
-        $('.recap-popup a').each(function (i, link) {
+        $('.recap-popup a').each((i, link) => {
           if (link.href === linkUrl) {
             foundLink = true;
           }
@@ -1334,7 +1331,7 @@ describe('The ContentDelegate class', function () {
     });
   });
 
-  describe('attachRecapLinkToEligibleDocs', function () {
+  describe('attachRecapLinkToEligibleDocs', () => {
     const fake_urls = ['http://foo.fake/bar/0', 'http://foo.fake/bar/1'];
 
     const urls = [
@@ -1344,10 +1341,10 @@ describe('The ContentDelegate class', function () {
     const expected_url =
       'https://ecf.canb.uscourts.gov/cgi-bin/DktRpt.pl?531591';
 
-    describe('when there are no valid urls', function () {
+    describe('when there are no valid urls', () => {
       let links;
       let cd;
-      beforeEach(function () {
+      beforeEach(() => {
         links = linksFromUrls(fake_urls);
         cd = new ContentDelegate(
           tabId,
@@ -1361,15 +1358,15 @@ describe('The ContentDelegate class', function () {
         cd.attachRecapLinkToEligibleDocs();
       });
 
-      it('does nothing', function () {
+      it('does nothing', () => {
         expect(jasmine.Ajax.requests.mostRecent()).toBeUndefined();
       });
     });
 
-    describe('when there are valid urls', function () {
+    describe('when there are valid urls', () => {
       let links;
       let cd;
-      beforeEach(function () {
+      beforeEach(() => {
         links = linksFromUrls(urls);
         $('body').append(links);
         cd = new ContentDelegate(
@@ -1384,42 +1381,40 @@ describe('The ContentDelegate class', function () {
         cd.pacer_doc_ids = [1234];
       });
 
-      afterEach(function () {
+      afterEach(() => {
         for (let link of links) {
           link.remove();
         }
       });
 
-      it('does not attach any links if no urls have recap', function () {
-        spyOn(cd.recap, 'getAvailabilityForDocuments').and.callFake(function (
-          pc,
-          pci,
-          callback
-        ) {
-          callback({
-            results: [],
-          });
-        });
+      it('does not attach any links if no urls have recap', () => {
+        spyOn(cd.recap, 'getAvailabilityForDocuments').and.callFake(
+          (pc, pci, callback) => {
+            callback({
+              results: [],
+            });
+          }
+        );
         cd.attachRecapLinkToEligibleDocs();
         expect($('.recap-inline').length).toBe(0);
       });
 
-      it('attaches a single link to the one url with recap', function () {
-        spyOn(cd.recap, 'getAvailabilityForDocuments').and.callFake(function (
-          pc,
-          pci,
-          callback
-        ) {
-          callback({
-            results: [{ pacer_doc_id: 1234, filepath_local: 'download/1234' }],
-          });
-        });
+      it('attaches a single link to the one url with recap', () => {
+        spyOn(cd.recap, 'getAvailabilityForDocuments').and.callFake(
+          (pc, pci, callback) => {
+            callback({
+              results: [
+                { pacer_doc_id: 1234, filepath_local: 'download/1234' },
+              ],
+            });
+          }
+        );
         cd.attachRecapLinkToEligibleDocs();
         expect($('.recap-inline').length).toBe(1);
         document.getElementsByClassName('recap-inline')[0].remove();
       });
 
-      it('attaches a working click handler', function () {
+      it('attaches a working click handler', () => {
         spyOn(cd, 'handleRecapLinkClick').and.callFake((window, href) => {});
         spyOn(cd.recap, 'getAvailabilityForDocuments').and.callFake(
           (pc, pci, callback) => {
