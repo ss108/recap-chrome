@@ -11,11 +11,13 @@ export function handleSingleDocumentPageCheck() {
     cl_court,
     (api_results) => {
       console.info(
-        `RECAP: Got results from API. Running callback on API results to ` +
-          `insert link`
+        'RECAP: Got results from API. Running callback on' +
+          'API results to insert link'
       );
+      // don't do anything if there are no results
 
       let result = api_results.results.filter((obj) => {
+        if (Object.keys(obj).length < 1) return;
         return obj.pacer_doc_id === this.pacer_doc_id;
       })[0];
       if (!result) {

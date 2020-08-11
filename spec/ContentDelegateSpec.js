@@ -767,6 +767,13 @@ describe('The ContentDelegate class', () => {
       });
 
       describe('for pacer doc id 531591', () => {
+        afterEach(() => {
+          const banner = document.querySelector('.recap-banner');
+          if (banner) {
+            banner.remove();
+          }
+        });
+
         it('responds to a positive result', () => {
           const fakePacerDocId = 531591;
           const cd = singleDocContentDelegate;
@@ -797,9 +804,7 @@ describe('The ContentDelegate class', () => {
         it('responds to a negative result', () => {
           const cd = singleDocContentDelegate;
           const fake = (pc, pci, callback) => {
-            const response = {
-              results: [{}],
-            };
+            const response = { results: [{}] };
             callback(response);
           };
           spyOn(cd.recap, 'getAvailabilityForDocuments').and.callFake(fake);
@@ -1000,7 +1005,6 @@ describe('The ContentDelegate class', () => {
       });
       spyOn(cd, 'showPdfPage');
       cd.onDocumentViewSubmit(event);
-
       jasmine.Ajax.requests.mostRecent().respondWith({
         status: 200,
         contentType: 'text/html',
@@ -1050,6 +1054,9 @@ describe('The ContentDelegate class', () => {
           },
         },
       };
+      window.saveAs = jasmine
+        .createSpy('saveAs')
+        .and.callFake((blob, file) => Promise.resolve(true));
       spyOn(cd.recap, 'uploadDocument').and.callFake(
         (court, caseId, docId, docNumber, attachNumber, callback) => {
           callback.tab = { id: 1234 };
@@ -1060,6 +1067,7 @@ describe('The ContentDelegate class', () => {
 
     afterEach(() => {
       window.chrome = {};
+      window.saveAs = null;
     });
 
     it('handles no iframe', () => {
@@ -1083,7 +1091,7 @@ describe('The ContentDelegate class', () => {
       const casenum = '437098';
       const cd = singleDocContentDelegate;
 
-      beforeEach(function () {
+      beforeEach(() => {
         spyOn(cd.recap, 'getPacerCaseIdFromPacerDocId').and.callFake(
           (pdi, callback) => {
             callback.tab = { id: 1234 };
@@ -1095,11 +1103,9 @@ describe('The ContentDelegate class', () => {
         );
         spyOn(URL, 'createObjectURL').and.returnValue('data:blob');
         spyOn(history, 'pushState').and.callFake(() => {});
-
-        window.saveAs = jasmine
-          .createSpy('saveAs')
-          .and.callFake((blob, file) => Promise.resolve(true));
       });
+
+      afterEach(() => (window.saveAs = null));
 
       it('makes the back button redisplay the previous page', async () => {
         await cd.showPdfPage(documentElement, html);
