@@ -989,14 +989,14 @@ describe('The ContentDelegate class', () => {
 
     it('calls showPdfPage when the response is HTML', () => {
       const cd = singleDocContentDelegate;
-      const fakeFileReader = {
-        readAsText: function () {
-          this.result = '<html lang="en"></html>';
-          this.onload();
-        },
-      };
-      spyOn(window, 'FileReader').and.callFake(() => {
-        return fakeFileReader;
+      // can't use arrow functions because mock has 'this'
+      spyOn(window, 'FileReader').and.callFake(function () {
+        return {
+          readAsText: function () {
+            this.result = '<html lang="en"></html>';
+            this.onload();
+          },
+        };
       });
       spyOn(cd, 'showPdfPage');
       cd.onDocumentViewSubmit(event);
