@@ -1,6 +1,6 @@
 // Pop up a dialog offering the link to the free cached copy of the document,
 // or just go directly to the free document if popups are turned off.
-export const handleRecapLinkClick = (window_obj, url) => {
+export function handleRecapLinkClick(window_obj, url) {
   chrome.storage.local.get('options', function (items) {
     if (!items.options.recap_link_popups) {
       window_obj.location = url;
@@ -37,4 +37,4 @@ export const handleRecapLinkClick = (window_obj, url) => {
       .appendTo($('body'));
   });
   return false;
-};
+}

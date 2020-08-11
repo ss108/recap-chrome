@@ -1,17 +1,24 @@
+import {
+  blobToDataURL,
+  getItemsFromStorage,
+  iFrameForPdf,
+  updateTabStorage,
+  waitingPage,
+} from '../utils';
 // Given the HTML for a page with an <iframe> in it, downloads the PDF
 // document in the iframe, displays it in the browser, and also
 // uploads the PDF document to RECAP.
 //
 // The documentElement is provided via dependency injection so that it
 // can be properly mocked in tests.
-export const showPdfPage = async (
+export async function showPdfPage(
   documentElement,
   html,
   previousPageHtml,
   document_number,
   attachment_number,
   docket_number
-) => {
+) {
   // Find the <iframe> URL in the HTML string.
   let match = html.match(/([^]*?)<iframe[^>]*src="(.*?)"([^]*)/);
   if (!match) {
@@ -126,4 +133,4 @@ export const showPdfPage = async (
   } else {
     console.info('RECAP: Not uploading PDF. RECAP is disabled.');
   }
-};
+}

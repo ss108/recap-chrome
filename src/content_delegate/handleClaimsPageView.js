@@ -1,4 +1,5 @@
-export const handleClaimsPageView = () => {
+import PACER from '../pacer';
+export function handleClaimsPageView() {
   // return if not a claims register page
   if (!PACER.isClaimsRegisterPage(this.url, document)) {
     return;
@@ -26,4 +27,4 @@ export const handleClaimsPageView = () => {
       }
     }
   );
-};
+}

@@ -1,4 +1,6 @@
-export const onDownloadAllSubmit = (event) => {
+import PACER from '../pacer';
+import { blobToDataURL, getItemsFromStorage, updateTabStorage } from '../utils';
+export async function onDownloadAllSubmit(event) {
   if (!event.data.id) return;
   // helper function - extract the zip by creating html and querying the frame
   const extractUrl = (html) => {

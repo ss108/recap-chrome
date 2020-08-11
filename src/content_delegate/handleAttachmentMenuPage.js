@@ -1,6 +1,7 @@
+import PACER from '../pacer';
 // If this is a document's menu of attachments (subdocuments), upload it to
 // RECAP.
-export const handleAttachmentMenuPage = () => {
+export function handleAttachmentMenuPage() {
   if (history.state && history.state.uploaded) {
     return;
   }
@@ -36,4 +37,4 @@ export const handleAttachmentMenuPage = () => {
       }
     }.bind(this)
   );
-};
+}

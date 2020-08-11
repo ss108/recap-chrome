@@ -1,5 +1,7 @@
+import PACER from '../pacer';
+import { debug } from '../utils';
 // Same as handleSingleDocumentPageView, but for zip files
-export const handleZipFilePageView = () => {
+export function handleZipFilePageView() {
   // return if not the download all page
   if (!PACER.isDownloadAllDocumentsPage(this.url, document)) {
     return;
@@ -47,4 +49,4 @@ export const handleZipFilePageView = () => {
   // When we receive the message from the above submit method, submit the form
   // via fetch so we can get the document before the browser does.
   window.addEventListener('message', this.onDownloadAllSubmit.bind(this));
-};
+}

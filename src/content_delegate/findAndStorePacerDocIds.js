@@ -1,6 +1,8 @@
+import PACER from '../pacer';
+import { debug, updateTabStorage } from '../utils';
 // Use a variety of approaches to get and store pacer_doc_id to pacer_case_id
 // mappings in local storage.
-export const findAndStorePacerDocIds = () => {
+export function findAndStorePacerDocIds() {
   if (!PACER.hasPacerCookie(document.cookie)) {
     return;
   }
@@ -56,4 +58,4 @@ export const findAndStorePacerDocIds = () => {
   updateTabStorage({
     [this.tabId]: payload,
   });
-};
+}

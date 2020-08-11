@@ -1,4 +1,7 @@
-export const onDocumentViewSubmit = (event) => {
+import PACER from '../pacer';
+import { debug, httpRequest, iFrameForPdf } from '../utils';
+
+export function onDocumentViewSubmit(event) {
   if (!event.data.id) return;
 
   // Save a copy of the page source, altered so that the "View Document"
@@ -95,4 +98,4 @@ export const onDocumentViewSubmit = (event) => {
       }
     }.bind(this)
   );
-};
+}

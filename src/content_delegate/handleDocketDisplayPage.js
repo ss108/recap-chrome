@@ -1,5 +1,7 @@
+import PACER from '../pacer';
+import { getItemsFromStorage, recapAlertButton } from '../utils';
 // If this is a docket page, upload it to RECAP.
-export const handleDocketDisplayPage = async () => {
+export async function handleDocketDisplayPage() {
   // helper functions
   const createAlertButtonTr = () => {
     const tr = document.createElement('tr');
@@ -111,4 +113,4 @@ export const handleDocketDisplayPage = async () => {
   } else {
     console.info('RECAP: Not uploading docket. RECAP is disabled.');
   }
-};
+}

@@ -1,4 +1,7 @@
-export const checkRestrictions = () => {
+import PACER from '../pacer';
+import { getImage, restrictedErrorDiv } from '../utils';
+
+export function checkRestrictions() {
   // Some documents are restricted to case participants. Typically
   // this is offered with either an interstitial page (in the case
   // of free looks) or an extra box on the receipt page. In both cases
@@ -74,4 +77,4 @@ export const checkRestrictions = () => {
   }
 
   return restrictedDoc;
-};
+}

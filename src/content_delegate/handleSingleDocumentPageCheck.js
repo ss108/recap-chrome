@@ -1,5 +1,6 @@
+import PACER from '../pacer';
 // If this page offers a single document, ask RECAP whether it has the document.
-export const handleSingleDocumentPageCheck = () => {
+export function handleSingleDocumentPageCheck() {
   if (!PACER.isSingleDocumentPage(this.url, document)) {
     return;
   }
@@ -39,4 +40,4 @@ export const handleSingleDocumentPageCheck = () => {
         .appendTo($('form'));
     }
   );
-};
+}

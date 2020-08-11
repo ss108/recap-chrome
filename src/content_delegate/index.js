@@ -1,8 +1,8 @@
 //  Abstraction of content scripts to make them modular and testable.
-import PACER from './pacer';
-import Notifier from './notifier';
-import Recap from './recap';
-import $ from 'jquery';
+import PACER from '../pacer';
+import Notifier from '../notifier';
+import Recap from '../recap';
+import $, { timers } from 'jquery';
 import {
   blobToDataURL,
   debug,
@@ -17,7 +17,7 @@ import {
   iFrameForPdf,
   waitingPage,
   showPdfHtml,
-} from './utils';
+} from '../utils';
 import { checkRestrictions } from './checkRestrictions';
 import { findAndStorePacerDocIds } from './findAndStorePacerDocIds';
 import { handleDocketQuery } from './handleDocketQueryUrl';
@@ -32,30 +32,38 @@ import { handleRecapLinkClick } from './handleRecapLinkClick';
 import { handleSingleDocumentPageView } from './handleSingleDocumentPageView';
 import { onDownloadAllSubmit } from './onDownloadAllSubmit';
 import { attachRecapLinkToEligibleDocs } from './attachRecapLinkToEligibleDocs';
+import { handleDocketDisplayPage } from './handleDocketDisplayPage';
 
-class ContentDelegate {
-  constructor(tabId, url, path, court, pacer_case_id, pacer_doc_id, links) {
-    this.tabId = tabId;
-    this.url = url;
-    this.path = path;
-    this.court = court;
-    this.pacer_case_id = pacer_case_id;
-    if (pacer_doc_id) {
-      this.pacer_doc_id = pacer_doc_id;
-      this.pacer_doc_ids = [pacer_doc_id];
-    } else {
-      this.pacer_doc_ids = [];
-    }
-    this.links = links || [];
-
-    this.notifier = importInstance(Notifier);
-    this.recap = importInstance(Recap);
-
-    this.findAndStorePacerDocIds();
-
-    this.restricted = this.checkRestrictions();
+export function ContentDelegate(
+  tabId,
+  url,
+  path,
+  court,
+  pacer_case_id,
+  pacer_doc_id,
+  links
+) {
+  this.tabId = tabId;
+  this.url = url;
+  this.path = path;
+  this.court = court;
+  this.pacer_case_id = pacer_case_id;
+  if (pacer_doc_id) {
+    this.pacer_doc_id = pacer_doc_id;
+    this.pacer_doc_ids = [pacer_doc_id];
+  } else {
+    this.pacer_doc_ids = [];
   }
+  this.links = links || [];
+
+  this.notifier = importInstance(Notifier);
+  this.recap = importInstance(Recap);
+
+  this.findAndStorePacerDocIds();
+
+  this.restricted = this.checkRestrictions();
 }
+
 ContentDelegate.prototype.checkRestrictions = checkRestrictions;
 ContentDelegate.prototype.findAndStorePacerDocIds = findAndStorePacerDocIds;
 ContentDelegate.prototype.handleDocketDisplayPage = handleDocketDisplayPage;
@@ -70,5 +78,3 @@ ContentDelegate.prototype.showPdfPage = showPdfPage;
 ContentDelegate.prototype.attachRecapLinkToEligibleDocs = attachRecapLinkToEligibleDocs;
 ContentDelegate.prototype.handleZipFilePageView = handleZipFilePageView;
 ContentDelegate.prototype.handleRecapLinkClick = handleRecapLinkClick;
-
-export default ContentDelegate;
