@@ -1,23 +1,7 @@
 //  Abstraction of content scripts to make them modular and testable.
-import PACER from '../pacer';
 import Notifier from '../notifier';
 import Recap from '../recap';
-import $, { timers } from 'jquery';
-import {
-  blobToDataURL,
-  debug,
-  getImage,
-  getItemsFromStorage,
-  httpRequest,
-  restrictedErrorDiv,
-  importInstance,
-  recapAlertButton,
-  recapBanner,
-  updateTabStorage,
-  iFrameForPdf,
-  waitingPage,
-  showPdfHtml,
-} from '../utils';
+import { importInstance } from '../utils';
 import { checkRestrictions } from './checkRestrictions';
 import { findAndStorePacerDocIds } from './findAndStorePacerDocIds';
 import { handleDocketQuery } from './handleDocketQueryUrl';
@@ -67,7 +51,7 @@ export function ContentDelegate(
 ContentDelegate.prototype.checkRestrictions = checkRestrictions;
 ContentDelegate.prototype.findAndStorePacerDocIds = findAndStorePacerDocIds;
 ContentDelegate.prototype.handleDocketDisplayPage = handleDocketDisplayPage;
-ContentDelegate.prototype.handleDocketQuery = handleDocketQuery;
+ContentDelegate.prototype.handleDocketQueryUrl = handleDocketQueryUrl;
 ContentDelegate.prototype.handleAttachmentMenuPage = handleAttachmentMenuPage;
 ContentDelegate.prototype.handleClaimsPageView = handleClaimsPageView;
 ContentDelegate.prototype.handleSingleDocumentPageCheck = handleSingleDocumentPageCheck;

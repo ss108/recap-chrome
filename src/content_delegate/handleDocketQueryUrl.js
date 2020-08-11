@@ -1,4 +1,5 @@
 import PACER from '../pacer';
+import { recapAlertButton, recapBanner } from '../utils';
 // If this is a docket query page, ask RECAP whether it has the docket page.
 export function handleDocketQueryUrl() {
   if (!PACER.isDocketQueryUrl(this.url)) {

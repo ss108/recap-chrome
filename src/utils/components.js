@@ -1,5 +1,7 @@
 // HTML components built and used by content script
 
+import { formatDistanceToNow, parseISO } from 'date-fns';
+
 export const showPdfHtml = ({ blobUrl, filename, match }) => {
   const onload =
     'setTimeout(' +
