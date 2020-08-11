@@ -21,6 +21,11 @@ module.exports = function (config) {
     exclude: [],
 
     webpack: webpackConfig,
+
+    webpackMiddleware: {
+      stats: 'errors-only',
+    },
+
     // preprocess matching files before serving them to the browser
     // available preprocessors:
     // https://npmjs.org/browse/keyword/karma-preprocessor
@@ -30,9 +35,9 @@ module.exports = function (config) {
     },
 
     // test results reporter to use
-    // possible values: 'dots', 'progress'
+    // possible values: 'dots', 'progress', 'mocha', 'coverage'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress', 'coverage'],
+    reporters: ['mocha'],
 
     // web server port
     port: 9876,
@@ -48,15 +53,9 @@ module.exports = function (config) {
     // https://npmjs.org/browse/keyword/karma-launcher
     browsers: ['Chrome'],
 
-    // set these options to view logs in development
-    // browserConsoleLogOptions: {
-    //   level: 'log',
-    //   format: '%b %T: %m',
-    //   terminal: true,
-    // },
     // possible values: config.LOG_DISABLE || config.LOG_ERROR ||
     // config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-    logLevel: config.LOG_DEBUG,
+    logLevel: config.LOG_ERROR,
 
     client: {
       captureConsole: true,

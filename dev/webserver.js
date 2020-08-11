@@ -53,15 +53,15 @@ if (copyPluginIndex !== -1) {
 const compiler = webpack(config);
 
 var server = new WebpackDevServer(compiler, {
+  contentBase: path.join(__dirname, '../build'),
+  disableHostCheck: true,
+  headers: { 'Access-Control-Allow-Origin': '*' },
+  hot: true,
+  sockPort: env.PORT,
+  // enable https and assign certifictes for dev
   https: true,
   cert: path.join(__dirname, './localhost.pem'),
   key: path.join(__dirname, './localhost-key.pem'),
-  hot: true,
-  contentBase: path.join(__dirname, '../build'),
-  sockPort: env.PORT,
-  headers: {
-    'Access-Control-Allow-Origin': '*',
-  },
-  disableHostCheck: true,
+  stats: 'minimal',
 });
 server.listen(env.PORT);

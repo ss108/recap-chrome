@@ -1171,6 +1171,9 @@ describe('The ContentDelegate class', () => {
   }
 
   describe('findAndStorePacerDocIds', () => {
+    beforeEach(() => setupChromeSpy());
+    afterEach(() => removeChromeSpy());
+
     it('should handle no cookie', () => {
       spyOn(PACER, 'hasPacerCookie').and.returnValue(false);
       expect(nonsenseUrlContentDelegate.findAndStorePacerDocIds()).toBe(
