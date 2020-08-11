@@ -95,7 +95,7 @@ export async function showPdfPage(
     }
     if (!external_pdf) {
       const html = showPdfHtml({ blobUrl, filename, match });
-      document.querySelector('body').innerHTML = `${html}`;
+      document.querySelector('body').innerHTML = html;
       history.pushState({ content: html }, '');
     } else {
       // Saving to an external PDF.

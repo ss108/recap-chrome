@@ -3,21 +3,20 @@
 import { formatDistanceToNow, parseISO } from 'date-fns';
 
 export const showPdfHtml = ({ blobUrl, filename, match }) => {
-  const onload =
+  const iframe =
+    '<iframe src="' +
+    blobUrl +
+    '" onload="' +
     'setTimeout(' +
     '() => document.getElementById("recap-download")' +
-    '.className = ""' +
-    ', 7500)';
-  const link =
+    '.classList.remove("initial")' +
+    ', 7500)"';
+  const link = document.createElement('div');
+  link.id = 'recap-download';
+  link.classList += 'initial';
+  link.innerHTML =
     `<a href="${blobUrl}" download="${filename}">` + `Save as ${filename}</a>`;
-  return [
-    match[1],
-    '<div id="recap-download" class="initial">',
-    link,
-    '</div>',
-    `<iframe src="${blobUrl}" onload="${onload}"`,
-    match[3],
-  ].join('');
+  return match[1] + link.outerHTML + iframe + match[3];
 };
 
 export const restrictedErrorDiv = ({ imgSrc }) => {
@@ -48,11 +47,12 @@ export const iFrameForPdf = ({ src }) => {
 };
 
 export const waitingPage = ({ match }) => {
-  return `
-    ${match[1]}
-    <p id="recap-waiting">Waiting for download...</p>
-    <iframe src="about:blank"${match[3]}
-  `;
+  return (
+    match[1] +
+    '<p id="recap-waiting">Waiting for download...</p>' +
+    '<iframe src="about:blank"' +
+    match[3]
+  );
 };
 
 // inject a "follow this case on RECAP" button
