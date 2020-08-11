@@ -1,3 +1,4 @@
+//  Abstraction of content scripts to make them modular and testable.
 import PACER from './pacer';
 import Notifier from './notifier';
 import Recap from './recap';
@@ -5,28 +6,18 @@ import $ from 'jquery';
 import {
   blobToDataURL,
   debug,
+  getImage,
   getItemsFromStorage,
   httpRequest,
+  restrictedErrorDiv,
   importInstance,
   recapAlertButton,
   recapBanner,
   updateTabStorage,
+  iFrameForPdf,
+  waitingPage,
+  showPdfHtml,
 } from './utils';
-//  Abstraction of content scripts to make them modular and testable.
-//  Functions:
-//  checkRestrictions
-//  findAndStorePacerIds
-//  handleDocketQueryUrl
-//  handleDocketDisplayPage
-//  handleAttachmentPageMenu
-//  handleSingleDocumentPageCheck
-//  handleOnDocumentViewSubmit
-//  showPdfPage
-//  handleSingleDocumentPageView
-//  handleRecapLinkClick
-//  attachRecapLinkToEligibleDocs
-//  onDownloadAllSubmit
-//  handleZipFilePageView
 
 export class ContentDelegate {
   constructor(tabId, url, path, court, pacer_case_id, pacer_doc_id, links) {
@@ -121,22 +112,10 @@ export class ContentDelegate {
         document.forms[document.forms.length - 1].lastChild;
 
       // Nested div for horizontal centering.
-      const imgSrc = chrome.extension.getURL('disabled-38.png');
-      const nestedDiv = `
-      <div style="text-align: center">
-        <div style="display: inline-block; text-align: left; align: top">
-          <div class="recap-banner" style="display: table">
-            <div style="display: table-cell; padding: 12px; ">
-              <img style="width: auto; height: auto" src="${imgSrc}">
-            </div>
-            <div style="display: table-cell; vertical-align: middle">
-              This document <b>will not be uploaded</b> to the RECAP Archive because the RECAP extension has detected that it may be restricted from public distribution.
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-      target.insertAdjacentHTML('beforebegin', nestedDiv);
+      target.insertAdjacentHTML(
+        'beforebegin',
+        restrictedErrorDiv({ imgSrc: getImage('disabled-38.png') })
+      );
     }
 
     return restrictedDoc;
@@ -481,19 +460,20 @@ export class ContentDelegate {
       data,
       function (type, ab, xhr) {
         console.info(
-          `RECAP: Successfully submitted RECAP "View" button form: ${xhr.statusText}`
+          'RECAP: Successfully submitted RECAP "View" button form: ' +
+            xhr.statusText
         );
         const blob = new Blob([new Uint8Array(ab)], { type: type });
-        // If we got a PDF, we wrap it in a simple HTML page.  This lets us treat
-        // both cases uniformly: either way we have an HTML page with an <iframe>
-        // in it, which is handled by showPdfPage.
+        // If we got a PDF, we wrap it in a simple HTML page.
+        // This lets us treat both cases uniformly: either
+        // way we have an HTML page with an <iframe> in it,
+        // which is handled by showPdfPage.
         if (type === 'application/pdf') {
           // canb and ca9 return PDFs and trigger this code path.
           const newHtml = document.documentElement;
-          const dataUrl = URL.createObjectURL(blob);
-          newHtml.querySelector('body').innerHTML = `
-            <style>body { margin: 0; } iframe { border: none; }</style>
-            <iframe src="${dataUrl}" width="100%" height="100%"></iframe>`;
+          newHtml.querySelector('body').innerHTML = iFrameForPdf({
+            src: URL.createObjectURL(blob),
+          });
           const html = newHtml.innerHTML;
           this.showPdfPage(
             document.documentElement,
@@ -515,11 +495,10 @@ export class ContentDelegate {
               html.matchAll(/window\.location\s*=\s*["']([^"']+)["'];?/g)
             );
             if (redirectResult.length > 0) {
-              const url = redirectResult[0][1];
               const newHtml = document.documentElement;
-              newHtml.querySelector('body').innerHTML = `
-                <style>body { margin: 0; } iframe { border: none; }</style>
-                <iframe src="${url}" width="100%" height="100%"></iframe>`;
+              newHtml.querySelector('body').innerHTML = iFrameForPdf({
+                src: redirectResult[0][1],
+              });
               html = newHtml.innerHTML;
             }
             this.showPdfPage(
@@ -561,7 +540,7 @@ export class ContentDelegate {
     const options = await getItemsFromStorage('options');
 
     // Show the page with a blank <iframe> while waiting for the download.
-    document.documentElement.innerHTML = `${match[1]}<p id="recap-waiting">Waiting for download...</p><iframe src="about:blank"${match[3]}`;
+    document.documentElement.innerHTML = waitingPage({ match });
 
     // Make the Back button redisplay the previous page.
     window.onpopstate = function (event) {
@@ -628,13 +607,8 @@ export class ContentDelegate {
         external_pdf = true;
       }
       if (!external_pdf) {
-        let downloadLink = `<div id="recap-download" class="initial">
-                            <a href="${blobUrl}" download="${filename}">Save as ${filename}</a>
-                          </div>`;
-        const html = `${match[1]}${downloadLink}<iframe onload="setTimeout(function() {
-                document.getElementById('recap-download').className = '';
-              }, 7500)" src="${blobUrl}"${match[3]}`;
-        document.querySelector('body').innerHTML = html;
+        const html = showPdfHtml({ blobUrl, filename, match });
+        document.querySelector('body').innerHTML = `${html}`;
         history.pushState({ content: html }, '');
       } else {
         // Saving to an external PDF.
