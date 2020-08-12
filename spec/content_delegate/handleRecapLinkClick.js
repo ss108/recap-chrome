@@ -1,5 +1,5 @@
 import { ContentDelegate } from '../../src/content_delegate';
-import './mocks';
+import { docketDisplayContentDelegate, singleDocUrl } from './mocks';
 
 export const handleRecapLinkClickTests = () =>
   describe('handleRecapLinkClick', () => {

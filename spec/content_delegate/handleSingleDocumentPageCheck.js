@@ -1,5 +1,10 @@
 import { ContentDelegate } from '../../src/content_delegate';
-import './mocks';
+import {
+  singleDocContentDelegate,
+  nonsenseUrlContentDelegate,
+  setupChromeSpy,
+  removeChromeSpy,
+} from './mocks';
 
 export const handleSingleDocumentPageCheckTests = () =>
   describe('handleSingleDocumentPageCheck', () => {
@@ -7,9 +12,13 @@ export const handleSingleDocumentPageCheckTests = () =>
     beforeEach(() => {
       form = document.createElement('form');
       document.body.appendChild(form);
+      setupChromeSpy();
     });
 
-    afterEach(() => form.remove());
+    afterEach(() => {
+      removeChromeSpy();
+      form.remove();
+    });
 
     describe('when there is NO appropriate form', () => {
       it('has no effect when the URL is wrong', () => {

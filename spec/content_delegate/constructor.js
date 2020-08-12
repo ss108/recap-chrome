@@ -1,9 +1,10 @@
 import { ContentDelegate } from '../../src/content_delegate';
-import './mocks';
+import { tabId, setupChromeSpy, removeChromeSpy } from './mocks';
 
 export const constructorTests = () =>
   describe('ContentDelegate constructor', () => {
-    beforeEach(() => {});
+    beforeEach(() => setupChromeSpy());
+    afterEach(() => removeChromeSpy());
 
     const expected_url =
       'https://ecf.canb.uscourts.gov/cgi-bin/DktRpt.pl?531591';

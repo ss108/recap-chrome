@@ -1,11 +1,27 @@
 import { ContentDelegate } from '../../src/content_delegate';
-import './mocks';
+import {
+  docketDisplayContentDelegate,
+  docketDisplayUrl,
+  historyDocketDisplayContentDelegate,
+  nonsenseUrlContentDelegate,
+  tabId,
+} from './mocks';
 
 export const handleDocketDisplayPageTests = () =>
   describe('handleDocketDisplayPage', () => {
     describe('option disabled', () => {
       beforeEach(() => {
         window.chrome = {
+          extension: {
+            getURL: jasmine.createSpy().and.returnValue('icon.png'),
+          },
+          runtime: {
+            sendMessage: jasmine
+              .createSpy()
+              .and.callFake((_, cb) =>
+                cb({ count: 1, results: [{ stuff: 'text' }] })
+              ),
+          },
           storage: {
             local: {
               get: jasmine.createSpy().and.callFake((_, cb) => {

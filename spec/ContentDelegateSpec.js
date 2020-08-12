@@ -14,38 +14,31 @@ import {
   handleSingleDocumentPageViewTests,
   onDocumentViewSubmitTests,
   showPdfPageTests,
-} from './contentDelegate';
-import './contentDelegate/mocks';
+} from './content_delegate';
+import { setupChromeSpy, removeChromeSpy } from './content_delegate/mocks';
 
 describe('The ContentDelegate class', () => {
-  // 'tabId' values
   let nativeFetch;
   beforeEach(() => {
-    // stub the chrome.runtime.sendMessage function
-    window.fetch = () =>
-      Promise.resolve(
-        new window.Response(new Blob([pdf_data], { type: 'application/pdf' }), {
-          status: 200,
-        })
-      );
-    jasmine.Ajax.install();
-    setupChromeSpy();
+    nativeFetch = window.fetch;
+    window.fetch = async () => Promise.resolve({});
   });
 
-  afterEach(function () {
-    jasmine.Ajax.uninstall();
-    removeChromeSpy();
+  afterEach(() => {
+    window.fetch = nativeFetch;
   });
 
   constructorTests();
   attachRecapLinkToEligibleDocsTests();
   findAndStorePacerDocIdsTests();
   handleAttachmentMenuPageTests();
-  handleDocketDisplayPageTests();
+
   handleDocketQueryUrlTests();
+
   handleRecapLinkClickTests();
   handleSingleDocumentPageCheckTests();
   handleSingleDocumentPageViewTests();
+  handleDocketDisplayPageTests();
   onDocumentViewSubmitTests();
   showPdfPageTests();
 });

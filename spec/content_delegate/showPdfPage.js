@@ -1,20 +1,21 @@
 import { ContentDelegate } from '../../src/content_delegate';
-import './mocks';
+import { blobToDataURL, singleDocContentDelegate } from './mocks';
 
-export const showPdfPage = () =>
+export const showPdfPageTests = () =>
   describe('showPdfPage', () => {
-    let documentElement;
-    const pre =
-      '<head><title>test</title><style>body { margin: 0; } ' +
-      'iframe { border: none; }</style></head><body>';
-    const iFrameStart = '<iframe src="data:pdf"';
-    const iFrameEnd = ' width="100%" height="100%"></iframe>';
-    const post = '</body>';
-    const html = pre + iFrameStart + iFrameEnd + post;
-    const cd = singleDocContentDelegate;
-    const blob = new Blob([new ArrayBuffer(1000)], { type: 'application/pdf' });
-
     beforeEach(async () => {
+      let documentElement;
+      const pre =
+        '<head><title>test</title><style>body { margin: 0; } ' +
+        'iframe { border: none; }</style></head><body>';
+      const iFrameStart = '<iframe src="data:pdf"';
+      const iFrameEnd = ' width="100%" height="100%"></iframe>';
+      const post = '</body>';
+      const html = pre + iFrameStart + iFrameEnd + post;
+      const cd = singleDocContentDelegate;
+      const blob = new Blob([new ArrayBuffer(1000)], {
+        type: 'application/pdf',
+      });
       const dataUrl = await blobToDataURL(blob);
       documentElement = document.createElement('html');
       window.chrome = {
@@ -42,9 +43,11 @@ export const showPdfPage = () =>
           },
         },
       };
+
       window.saveAs = jasmine
         .createSpy('saveAs')
         .and.callFake((blob, file) => Promise.resolve(true));
+
       spyOn(cd.recap, 'uploadDocument').and.callFake(
         (court, caseId, docId, docNumber, attachNumber, callback) => {
           callback.tab = { id: 1234 };

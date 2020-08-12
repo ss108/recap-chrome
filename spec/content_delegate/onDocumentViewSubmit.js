@@ -1,7 +1,11 @@
 import { ContentDelegate } from '../../src/content_delegate';
-import './mocks';
+import {
+  appellateContentDelegate,
+  singleDocContentDelegate,
+  pdf_data,
+} from './mocks';
 
-export const onDocumentViewSubmit = () =>
+export const onDocumentViewSubmitTests = () =>
   describe('onDocumentViewSubmit', () => {
     let form;
     let table;
@@ -11,7 +15,7 @@ export const onDocumentViewSubmit = () =>
     beforeAll(() => {
       window.chrome = {
         runtime: {
-          sendMessage: jasmine.createSpy().and.callFake((_, cb) => cb({})),
+          sendMessage: jasmine.createSpy().and.callFake((_, cb) => cb()),
         },
         extension: { getURL: jasmine.createSpy() },
         storage: {
@@ -42,6 +46,7 @@ export const onDocumentViewSubmit = () =>
       tr_image.appendChild(td_image);
       table.appendChild(tr_image);
       document.body.appendChild(table);
+      // set the fetchSpy
     });
 
     afterEach(() => {
@@ -79,7 +84,19 @@ export const onDocumentViewSubmit = () =>
 
     it('calls showPdfPage when the response is a PDF', async () => {
       const cd = singleDocContentDelegate;
+      spyOn(window, 'fetch').and.callFake((url, options) => {
+        const res = {};
+        res.ok = true;
+        res.blob = jasmine
+          .createSpy()
+          .and.callFake(() =>
+            Promise.resolve(new Blob([pdf_data], { type: 'application/pdf' }))
+          );
+        return Promise.resolve(res);
+      });
+
       spyOn(cd, 'showPdfPage');
+
       await cd.onDocumentViewSubmit(event);
 
       expect(cd.showPdfPage).toHaveBeenCalled();
@@ -87,6 +104,16 @@ export const onDocumentViewSubmit = () =>
 
     it('calls showPdfPage when the response is HTML', async () => {
       const cd = singleDocContentDelegate;
+      spyOn(window, 'fetch').and.callFake((url, options) => {
+        const res = {};
+        res.ok = true;
+        res.blob = jasmine
+          .createSpy()
+          .and.callFake(() =>
+            Promise.resolve(new Blob(['htmlString'], { type: 'text/html' }))
+          );
+        return Promise.resolve(res);
+      });
       // can't use arrow functions because mock has 'this'
       spyOn(window, 'FileReader').and.callFake(function () {
         return {

@@ -69,7 +69,6 @@ export async function onDocumentViewSubmit(event) {
       src: URL.createObjectURL(blob),
     });
     const html = newHtml.innerHTML;
-    console.log(newHtml);
     this.showPdfPage(
       document.documentElement,
       html,

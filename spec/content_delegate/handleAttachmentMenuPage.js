@@ -1,5 +1,9 @@
 import { ContentDelegate } from '../../src/content_delegate';
-import './mocks';
+import {
+  singleDocContentDelegate,
+  nonsenseUrlContentDelegate,
+  docketDisplayContentDelegate,
+} from './mocks';
 
 export const handleAttachmentMenuPageTests = () =>
   describe('handleAttachmentMenuPage', () => {

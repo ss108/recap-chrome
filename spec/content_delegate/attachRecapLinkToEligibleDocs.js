@@ -1,8 +1,12 @@
 import { ContentDelegate } from '../../src/content_delegate';
-import './mocks';
+import PACER from '../../src/pacer';
+import { linksFromUrls, tabId, setupChromeSpy, removeChromeSpy } from './mocks';
 
 export const attachRecapLinkToEligibleDocsTests = () =>
   describe('attachRecapLinkToEligibleDocs', () => {
+    beforeEach(() => setupChromeSpy());
+    afterEach(() => removeChromeSpy());
+
     const fake_urls = ['http://foo.fake/bar/0', 'http://foo.fake/bar/1'];
 
     const urls = [
@@ -13,11 +17,9 @@ export const attachRecapLinkToEligibleDocsTests = () =>
       'https://ecf.canb.uscourts.gov/cgi-bin/DktRpt.pl?531591';
 
     describe('when there are no valid urls', () => {
-      let links;
-      let cd;
-      beforeEach(() => {
-        links = linksFromUrls(fake_urls);
-        cd = new ContentDelegate(
+      it('does nothing', () => {
+        const links = linksFromUrls(fake_urls);
+        const cd = new ContentDelegate(
           tabId,
           expected_url,
           null,
@@ -27,29 +29,14 @@ export const attachRecapLinkToEligibleDocsTests = () =>
           links
         );
         cd.attachRecapLinkToEligibleDocs();
-      });
-
-      it('does nothing', () => {
         expect(jasmine.Ajax.requests.mostRecent()).toBeUndefined();
       });
     });
 
     describe('when there are valid urls', () => {
-      let links;
-      let cd;
+      const links = linksFromUrls(fake_urls);
       beforeEach(() => {
-        links = linksFromUrls(urls);
         $('body').append(links);
-        cd = new ContentDelegate(
-          tabId,
-          expected_url,
-          null,
-          null,
-          null,
-          null,
-          links
-        );
-        cd.pacer_doc_ids = [1234];
       });
 
       afterEach(() => {
@@ -59,6 +46,16 @@ export const attachRecapLinkToEligibleDocsTests = () =>
       });
 
       it('does not attach any links if no urls have recap', () => {
+        const cd = new ContentDelegate(
+          tabId,
+          expected_url,
+          null,
+          null,
+          null,
+          null,
+          links
+        );
+        cd.pacer_doc_ids = [1234];
         spyOn(cd.recap, 'getAvailabilityForDocuments').and.callFake(
           (pc, pci, callback) => {
             callback({
@@ -71,6 +68,16 @@ export const attachRecapLinkToEligibleDocsTests = () =>
       });
 
       it('attaches a single link to the one url with recap', () => {
+        const cd = new ContentDelegate(
+          tabId,
+          expected_url,
+          null,
+          null,
+          null,
+          null,
+          links
+        );
+        cd.pacer_doc_ids = [1234];
         spyOn(cd.recap, 'getAvailabilityForDocuments').and.callFake(
           (pc, pci, callback) => {
             callback({
@@ -84,6 +91,7 @@ export const attachRecapLinkToEligibleDocsTests = () =>
         expect($('.recap-inline').length).toBe(1);
         document.getElementsByClassName('recap-inline')[0].remove();
       });
+
       describe('attachRecapLinkToEligibleDocs', () => {
         const fake_urls = ['http://foo.fake/bar/0', 'http://foo.fake/bar/1'];
 
@@ -95,11 +103,9 @@ export const attachRecapLinkToEligibleDocsTests = () =>
           'https://ecf.canb.uscourts.gov/cgi-bin/DktRpt.pl?531591';
 
         describe('when there are no valid urls', () => {
-          let links;
-          let cd;
-          beforeEach(() => {
-            links = linksFromUrls(fake_urls);
-            cd = new ContentDelegate(
+          it('does nothing', () => {
+            const links = linksFromUrls(fake_urls);
+            const cd = new ContentDelegate(
               tabId,
               expected_url,
               null,
@@ -109,29 +115,14 @@ export const attachRecapLinkToEligibleDocsTests = () =>
               links
             );
             cd.attachRecapLinkToEligibleDocs();
-          });
-
-          it('does nothing', () => {
             expect(jasmine.Ajax.requests.mostRecent()).toBeUndefined();
           });
         });
 
         describe('when there are valid urls', () => {
-          let links;
-          let cd;
+          const links = linksFromUrls(urls);
           beforeEach(() => {
-            links = linksFromUrls(urls);
             $('body').append(links);
-            cd = new ContentDelegate(
-              tabId,
-              expected_url,
-              null,
-              null,
-              null,
-              null,
-              links
-            );
-            cd.pacer_doc_ids = [1234];
           });
 
           afterEach(() => {
@@ -141,6 +132,16 @@ export const attachRecapLinkToEligibleDocsTests = () =>
           });
 
           it('does not attach any links if no urls have recap', () => {
+            const cd = new ContentDelegate(
+              tabId,
+              expected_url,
+              null,
+              null,
+              null,
+              null,
+              links
+            );
+            cd.pacer_doc_ids = [1234];
             spyOn(cd.recap, 'getAvailabilityForDocuments').and.callFake(
               (pc, pci, callback) => {
                 callback({
@@ -153,6 +154,16 @@ export const attachRecapLinkToEligibleDocsTests = () =>
           });
 
           it('attaches a single link to the one url with recap', () => {
+            const cd = new ContentDelegate(
+              tabId,
+              expected_url,
+              null,
+              null,
+              null,
+              null,
+              links
+            );
+            cd.pacer_doc_ids = [1234];
             spyOn(cd.recap, 'getAvailabilityForDocuments').and.callFake(
               (pc, pci, callback) => {
                 callback({
@@ -168,6 +179,16 @@ export const attachRecapLinkToEligibleDocsTests = () =>
           });
 
           it('attaches a working click handler', () => {
+            const cd = new ContentDelegate(
+              tabId,
+              expected_url,
+              null,
+              null,
+              null,
+              null,
+              links
+            );
+            cd.pacer_doc_ids = [1234];
             spyOn(
               cd,
               'handleRecapLinkClick'
@@ -190,6 +211,16 @@ export const attachRecapLinkToEligibleDocsTests = () =>
       });
 
       it('attaches a working click handler', () => {
+        const cd = new ContentDelegate(
+          tabId,
+          expected_url,
+          null,
+          null,
+          null,
+          null,
+          links
+        );
+        cd.pacer_doc_ids = [1234];
         spyOn(cd, 'handleRecapLinkClick').and.callFake((window, href) => {});
         spyOn(cd.recap, 'getAvailabilityForDocuments').and.callFake(
           (pc, pci, callback) => {

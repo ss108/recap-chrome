@@ -1,5 +1,9 @@
 import { ContentDelegate } from '../../src/content_delegate';
-import './mocks';
+import PACER from '../../src/pacer';
+import {
+  docketQueryContentDelegate,
+  nonsenseUrlContentDelegate,
+} from './mocks';
 
 export const handleDocketQueryUrlTests = () =>
   describe('handleDocketQueryUrl', () => {
@@ -25,7 +29,7 @@ export const handleDocketQueryUrlTests = () =>
     });
 
     it('has no effect when not on a docket query url', () => {
-      const cd = mocks.nonsenseUrlContentDelegate;
+      const cd = nonsenseUrlContentDelegate;
       spyOn(PACER, 'hasPacerCookie');
       spyOn(PACER, 'isDocketQueryUrl').and.returnValue(false);
       cd.handleDocketQueryUrl();

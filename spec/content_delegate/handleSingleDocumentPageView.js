@@ -1,5 +1,10 @@
 import { ContentDelegate } from '../../src/content_delegate';
-import './mocks';
+import PACER from '../../src/pacer';
+import {
+  singleDocContentDelegate,
+  appellateContentDelegate,
+  nonsenseUrlContentDelegate,
+} from './mocks';
 
 export const handleSingleDocumentPageViewTests = () =>
   describe('handleSingleDocumentPageView', () => {

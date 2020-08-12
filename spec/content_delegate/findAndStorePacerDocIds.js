@@ -1,10 +1,19 @@
 import { ContentDelegate } from '../../src/content_delegate';
-import './mocks';
+import PACER from '../../src/pacer';
+import {
+  docketQueryPath,
+  docketQueryUrl,
+  noPacerCaseIdContentDelegate,
+  nonsenseUrlContentDelegate,
+  setupChromeSpy,
+  removeChromeSpy,
+  tabId,
+} from './mocks';
 
 export const findAndStorePacerDocIdsTests = () =>
   describe('findAndStorePacerDocIds', () => {
-    beforeEach(() => setupChromeSpy());
-    afterEach(() => removeChromeSpy());
+    beforeAll(() => setupChromeSpy());
+    afterAll(() => removeChromeSpy());
 
     it('should handle no cookie', () => {
       spyOn(PACER, 'hasPacerCookie').and.returnValue(false);
