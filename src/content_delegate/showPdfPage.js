@@ -1,6 +1,8 @@
+import PACER from '../pacer';
 import {
   blobToDataURL,
   getItemsFromStorage,
+  showPdfHtml,
   updateTabStorage,
   waitingPageHtml,
 } from '../utils';

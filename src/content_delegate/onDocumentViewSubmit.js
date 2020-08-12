@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import PACER from '../pacer';
 import { debug, httpRequest, iFrameForPdf } from '../utils';
 
@@ -68,6 +69,7 @@ export async function onDocumentViewSubmit(event) {
       src: URL.createObjectURL(blob),
     });
     const html = newHtml.innerHTML;
+    console.log(newHtml);
     this.showPdfPage(
       document.documentElement,
       html,
@@ -79,7 +81,7 @@ export async function onDocumentViewSubmit(event) {
   } else {
     // dcd (and presumably others) trigger this code path.
     const reader = new FileReader();
-    reader.onload = function () {
+    reader.onload = () => {
       let html = reader.result;
       // check if we have an HTML page which redirects the user to the PDF
       // this was first display by the Northern District of Georgia
@@ -104,7 +106,7 @@ export async function onDocumentViewSubmit(event) {
         attachment_number,
         docket_number
       );
-    }.bind(this);
+    };
     reader.readAsText(blob); // convert blob to HTML text
   }
 }

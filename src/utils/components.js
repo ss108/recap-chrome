@@ -1,16 +1,15 @@
 // HTML string and element components built and used by content script
 
 import { formatDistanceToNow, parseISO } from 'date-fns';
+import { getImage } from '../utils';
 
 export const showPdfHtml = ({ blobUrl, filename, match }) => {
+  const targetId = 'recap-download';
+  const initial = 'initial';
   const iframe =
-    '<iframe src="' +
-    blobUrl +
-    '" onload="' +
-    'setTimeout(' +
-    '() => document.getElementById("recap-download")' +
-    '.classList.remove("initial")' +
-    ', 7500)"';
+    `<iframe src="${blobUrl}" onload="setTimeout(` +
+    `() => document.getElementById('${targetId}')` +
+    `.classList.remove('${initial}'), 7500)"`;
   const link = document.createElement('div');
   link.id = 'recap-download';
   link.classList += 'initial';
@@ -98,17 +97,17 @@ export const recapAlertButton = ({ court, caseId, isActive }) => {
 };
 
 export const documentBanner = ({ path }) => {
-  const href = `https://www.courtlistener.com/${path}`;
-  const linkTitle = 'Document is available for free in the RECAP Archive.';
   const linkText = ' Get this document for free from the Recap Archive.';
   const div = document.createElement('div');
   div.classList += 'recap-banner';
-  div.innerHTML = `
-    <a title='${linkTitle}' href='${href}'>
-      <img src="${chrome.extension.getURL('icon-16.png')}></img>  
-      ${linkText}
-    </a>
-  `;
+  const a = document.createElement('a');
+  a.title = 'Document is available for free in the RECAP Archive.';
+  a.href = `https://www.courtlistener.com/${path}`;
+  const img = document.createElement('img');
+  img.src = getImage('icon-16.png');
+  a.appendChild(img);
+  img.insertAdjacentText('afterend', linkText);
+  div.appendChild(a);
   return div;
 };
 
