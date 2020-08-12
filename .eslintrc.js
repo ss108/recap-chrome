@@ -14,16 +14,6 @@ module.exports = {
   },
   plugins: ['prettier'],
   rules: {
-    indent: ['error', 2],
-    'linebreak-style': ['error', 'unix'],
-    quotes: ['error', 'single'],
-    semi: ['error', 'always'],
-    'max-len': [
-      'error',
-      {
-        code: 80,
-      },
-    ],
     'prettier/prettier': 'error',
   },
   extends: ['plugin:prettier/recommended'],

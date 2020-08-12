@@ -1,5 +1,6 @@
 import PACER from '../pacer';
 
+// FUNCTION PROTOTYPE START
 export function handleClaimsPageView() {
   // return if not a claims register page
   if (!PACER.isClaimsRegisterPage(this.url, document)) return;
@@ -13,8 +14,10 @@ export function handleClaimsPageView() {
   // render the page as a string
   const claimsPageHtml = document.documentElement.outerHTML;
 
-  const errorMsg = 'RECAP: Page not uploaded to the public RECAP archive.';
-  const successMsg = 'Claims page uploaded to the public RECAP archive.';
+  const msg = {
+    error: 'RECAP: Page not uploaded to the public RECAP archive.',
+    success: 'Claims page uploaded to the public RECAP archive.',
+  };
 
   // upload it to recap
   this.recap.uploadClaimsRegister(
@@ -23,8 +26,8 @@ export function handleClaimsPageView() {
     claimsPageHtml,
     (ok) => {
       // callback - dispatch the notifier if upload is ok
-      if (!ok) return console.error(errorMsg);
-      this.notifier.showUpload(successMsg, () => {});
+      if (!ok) return console.error(msg.error);
+      this.notifier.showUpload(msg.success, () => {});
     }
   );
 }

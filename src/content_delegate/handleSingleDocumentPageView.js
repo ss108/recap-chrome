@@ -7,8 +7,7 @@ export function handleSingleDocumentPageView() {
   if (!PACER.isSingleDocumentPage(this.url, document)) return;
 
   if (PACER.isAppellateCourt(this.court)) {
-    debug(4, 'No interposition for appellate downloads yet');
-    return;
+    return debug(4, 'No interposition for appellate downloads yet');
   }
 
   // Monkey-patch the <form> prototype so that its submit() method sends a

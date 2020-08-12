@@ -13,7 +13,7 @@ export function findAndStorePacerDocIds() {
     ? this.pacer_case_id
     : this.recap.getPacerCaseIdFromPacerDocId(this.pacer_doc_id, () => {});
 
-  let docsToCases = {};
+  const docsToCases = {};
 
   // Try getting a mapping from a pacer_doc_id in the URL to a
   if (
@@ -25,33 +25,39 @@ export function findAndStorePacerDocIds() {
     docsToCases[this.pacer_doc_id] = page_pacer_case_id;
   }
 
-  for (let i = 0; i < this.links.length; i++) {
-    let link = this.links[i];
-    if (PACER.isDocumentUrl(link.href)) {
-      let pacer_doc_id = PACER.getDocumentIdFromUrl(link.href);
-      $(link).data('pacer_doc_id', pacer_doc_id);
-      this.pacer_doc_ids.push(pacer_doc_id);
+  [...this.links].map((link) => {
+    // do nothing if the link is not to a document URL
+    if (!PACER.isDocumentUrl(link.href)) return;
 
-      let onclick = link.getAttribute('onclick');
-      let goDLS = PACER.parseGoDLSFunction(onclick);
+    // find the pacer_doc_id and store it in data-attribute
+    const pacer_doc_id = PACER.getDocumentIdFromUrl(link.href);
+    $(link).data('pacer_doc_id', pacer_doc_id);
 
-      if (goDLS && goDLS.de_caseid) {
-        docsToCases[pacer_doc_id] = goDLS.de_caseid;
-        debug(3, `Y doc ${pacer_doc_id} to ${goDLS.de_caseid}`);
-      } else if (page_pacer_case_id) {
-        docsToCases[pacer_doc_id] = page_pacer_case_id;
-        debug(3, `X doc ${pacer_doc_id} to ${page_pacer_case_id}`);
-      }
+    // add the pacer_doc_id to the delegate instance
+    this.pacer_doc_ids.push(pacer_doc_id);
+
+    // if you have a goDLS Id, associate it in object
+    const goDLS = PACER.parseGoDLSFunction(link.getAttribute('onclick'));
+    if (goDLS && goDLS.de_caseid) {
+      debug(3, `Y doc ${pacer_doc_id} to ${goDLS.de_caseid}`);
+      return (docsToCases[pacer_doc_id] = goDLS.de_caseid);
     }
-  }
-  // save JSON object in chrome storage under the tabId
-  // append caseId if a docketQueryUrl
+    // else if you have a page_pacer_case_id, associate that
+    if (page_pacer_case_id) {
+      debug(3, `X doc ${pacer_doc_id} to ${page_pacer_case_id}`);
+      return (docsToCases[pacer_doc_id] = page_pacer_case_id);
+    }
+  });
+
   const payload = { docsToCases };
+  // add docId to store if it exists
   if (!!this.pacer_doc_id) {
     payload['docId'] = this.pacer_doc_id;
   }
+  // add caseId to store if it is a docketQueryUrl
   if (PACER.isDocketQueryUrl(this.url) && page_pacer_case_id) {
     payload['caseId'] = page_pacer_case_id;
   }
+  // save JSON object in chrome storage under the tabId
   updateTabStorage({ [this.tabId]: payload });
 }
