@@ -4,9 +4,8 @@ import { debug, updateTabStorage } from '../utils';
 // Use a variety of approaches to get and store pacer_doc_id to pacer_case_id
 // mappings in local storage.
 export function findAndStorePacerDocIds() {
-  if (!PACER.hasPacerCookie(document.cookie)) {
-    return;
-  }
+  // no cookie, no love
+  if (!PACER.hasPacerCookie(document.cookie)) return;
 
   // Not all pages have a case ID, and there are corner-cases in merged dockets
   // where there are links to documents on another case.
@@ -47,16 +46,12 @@ export function findAndStorePacerDocIds() {
   }
   // save JSON object in chrome storage under the tabId
   // append caseId if a docketQueryUrl
-  const payload = {
-    docsToCases: docsToCases,
-  };
+  const payload = { docsToCases };
   if (!!this.pacer_doc_id) {
     payload['docId'] = this.pacer_doc_id;
   }
   if (PACER.isDocketQueryUrl(this.url) && page_pacer_case_id) {
     payload['caseId'] = page_pacer_case_id;
   }
-  updateTabStorage({
-    [this.tabId]: payload,
-  });
+  updateTabStorage({ [this.tabId]: payload });
 }

@@ -1,40 +1,33 @@
 import PACER from '../pacer';
-// If this is a document's menu of attachments (subdocuments), upload it to
-// RECAP.
+// If this is a document's menu of attachments (subdocuments),
+// upload it to RECAP.
 export function handleAttachmentMenuPage() {
-  if (history.state && history.state.uploaded) {
-    return;
-  }
+  // if document already uploaded, do nothing
+  if (history.state && history.state.uploaded) return;
 
-  if (!PACER.isAttachmentMenuPage(this.url, document)) {
-    return;
-  }
+  // if not an attachment page, do nothing
+  if (!PACER.isAttachmentMenuPage(this.url, document)) return;
 
-  chrome.storage.local.get(
-    'options',
-    function (items) {
-      if (items['options']['recap_enabled']) {
-        let callback = $.proxy(function (ok) {
-          if (ok) {
-            history.replaceState({ uploaded: true }, '');
-            this.notifier.showUpload(
-              'Menu page uploaded to the public RECAP Archive.',
-              function () {}
-            );
-          }
-        }, this);
+  const disabledMsg = 'RECAP: Not uploading attachment menu. RECAP is disabled';
+  const successMsg = 'Menu page uploaded to the public RECAP Archive.';
 
-        this.recap.uploadAttachmentMenu(
-          this.court,
-          this.pacer_case_id,
-          document.documentElement.innerHTML,
-          callback
-        );
-      } else {
-        console.info(
-          'RECAP: Not uploading attachment menu. RECAP is disabled.'
-        );
+  // check if the user enabled recap
+  chrome.storage.local.get('options', (items) => {
+    // return the disabled message if it isn't
+    if (!items.options.recap_enabled) {
+      return console.info(disabledMsg);
+    }
+
+    //otherwise upload to recap and call notifier
+    this.recap.uploadAttachmentMenu(
+      this.court,
+      this.pacer_case_id,
+      document.documentElement.innerHTML,
+      (ok) => {
+        if (!ok) return;
+        history.replaceState({ uploaded: true }, '');
+        this.notifier.showUpload(successMsg, () => {});
       }
-    }.bind(this)
-  );
+    );
+  });
 }

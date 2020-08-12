@@ -4,9 +4,7 @@ import { debug } from '../utils';
 // view page.  The "View Document" button calls the goDLS() function, which
 // creates a <form> element and calls submit() on it, so we hook into submit().
 export function handleSingleDocumentPageView() {
-  if (!PACER.isSingleDocumentPage(this.url, document)) {
-    return;
-  }
+  if (!PACER.isSingleDocumentPage(this.url, document)) return;
 
   if (PACER.isAppellateCourt(this.court)) {
     debug(4, 'No interposition for appellate downloads yet');

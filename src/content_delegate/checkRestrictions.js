@@ -24,22 +24,26 @@ import { getImage, restrictedErrorDiv } from '../utils';
 // in the first <td> cell of a table, as well as any <b> containing
 // "document is restricted", "SEALED", or "do not allow it to be seen".
 // Case-insensitively.
+
+// returns true/false if el has textContent matching regex
+const isRestricted = (str, regex) => {
+  const arr = Array.from(document.querySelectorAll(str));
+  return !!arr.find((el) => el.textContent.match(regex));
+};
+
 export function checkRestrictions() {
   // The regexes below are pretty broad by design.
   // Only trigger this code on doc1 pages.
   if (!PACER.isSingleDocumentPage(this.url, document)) return false;
 
-  const restrictedTableItems = [
-    ...document.querySelectorAll('table td:first-child'),
-  ].find((td) => td.textContent.match(/Warning!/));
-
-  const restrictedBoldItems = [...document.querySelectorAll('b')].find((b) => {
-    const regex = /document is restricted|SEALED|do not allow it to be seen/i;
-    b.textContent.match(regex);
-  });
+  const firstTest = isRestricted('table td:first-child', /Warning!/);
+  const secondTest = isRestricted(
+    'b',
+    /document is restricted|SEALED|do not allow it to be seen/i
+  );
 
   // if no restrictedItems found, do nothing
-  if (restrictedBoldItems === -1 && restrictedTableItems === -1) return false;
+  if (!firstTest && !secondTest) return false;
 
   console.log('RECAP: Restricted document detected. Skipping upload.');
   // We would like to alter the [R] icon to indicate what's going
