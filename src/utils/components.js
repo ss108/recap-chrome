@@ -113,13 +113,14 @@ export const documentBanner = ({ path }) => {
 };
 
 export const inlineDocumentBanner = ({ path }) => {
-  const href = `https://www.courtlistener.com/${path}`;
-  const linkTitle = 'Available for free from the RECAP Archive.';
-  return `
-    <a class='recap-inline' title='${title}' href='${href}'>
-      <img src=${chrome.extension.getURL('icon-16.png')}></img>
-    </a>
-  `;
+  const banner = document.createElement('a');
+  banner.classList += 'recap-inline';
+  banner.title = 'Available for free from the RECAP Archive.';
+  banner.href = `https://www.courtlistener.com/${path}`;
+  const img = document.createElement('img');
+  img.src = chrome.extension.getURL('icon-16.png');
+  banner.appendChild(img);
+  return banner;
 };
 
 export const recapBanner = (result) => {
