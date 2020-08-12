@@ -10,6 +10,7 @@ import {
 //
 // The documentElement is provided via dependency injection so that it
 // can be properly mocked in tests.
+
 export async function showPdfPage(
   documentElement,
   html,

@@ -1,7 +1,7 @@
 import PACER from '../pacer';
 import { debug, httpRequest, iFrameForPdf } from '../utils';
 
-export function onDocumentViewSubmit(event) {
+export async function onDocumentViewSubmit(event) {
   if (!event.data.id) return;
 
   // Save a copy of the page source, altered so that the "View Document"
@@ -37,65 +37,74 @@ export function onDocumentViewSubmit(event) {
   // return an HTML page containing an <iframe> that loads the PDF document;
   // others just return the PDF document.  As we don't know whether we'll get
   // HTML (text) or PDF (binary), we ask for an ArrayBuffer and convert later.
-  $('body').css('cursor', 'wait');
-  let data = new FormData(form);
-  httpRequest(
-    form.action,
-    data,
-    function (type, ab, xhr) {
-      console.info(
-        'RECAP: Successfully submitted RECAP "View" button form: ' +
-          xhr.statusText
+  document.querySelector('body').classList += 'cursor wait';
+
+  const msg = {
+    submit: (status) =>
+      `RECAP: Successfully submitted RECAP "View" button form: ${
+        status ? 'Success' : 'Error'
+      }`,
+  };
+
+  const browserSpecificFetch =
+    navigator.userAgent.indexOf('Chrome') < 0 ? content.fetch : window.fetch;
+
+  const blob = await fetch(form.action, {
+    method: 'POST',
+    body: new FormData(form),
+  }).then((res) => {
+    console.info(msg.submit(res.ok));
+    return res.blob();
+  });
+
+  // If we got a PDF, we wrap it in a simple HTML page.
+  // This lets us treat both cases uniformly: either
+  // way we have an HTML page with an <iframe> in it,
+  // which is handled by showPdfPage.
+  if (blob.type === 'application/pdf') {
+    // canb and ca9 return PDFs and trigger this code path.
+    const newHtml = document.documentElement;
+    newHtml.querySelector('body').innerHTML = iFrameForPdf({
+      src: URL.createObjectURL(blob),
+    });
+    const html = newHtml.innerHTML;
+    this.showPdfPage(
+      document.documentElement,
+      html,
+      previousPageHtml,
+      document_number,
+      attachment_number,
+      docket_number
+    );
+  } else {
+    // dcd (and presumably others) trigger this code path.
+    const reader = new FileReader();
+    reader.onload = function () {
+      let html = reader.result;
+      // check if we have an HTML page which redirects the user to the PDF
+      // this was first display by the Northern District of Georgia
+      // https://github.com/freelawproject/recap/issues/277
+      const redirectResult = Array.from(
+        html.matchAll(/window\.location\s*=\s*["']([^"']+)["'];?/g)
       );
-      const blob = new Blob([new Uint8Array(ab)], { type: type });
-      // If we got a PDF, we wrap it in a simple HTML page.
-      // This lets us treat both cases uniformly: either
-      // way we have an HTML page with an <iframe> in it,
-      // which is handled by showPdfPage.
-      if (type === 'application/pdf') {
-        // canb and ca9 return PDFs and trigger this code path.
+
+      if (redirectResult.length > 0) {
         const newHtml = document.documentElement;
         newHtml.querySelector('body').innerHTML = iFrameForPdf({
-          src: URL.createObjectURL(blob),
+          src: redirectResult[0][1],
         });
-        const html = newHtml.innerHTML;
-        this.showPdfPage(
-          document.documentElement,
-          html,
-          previousPageHtml,
-          document_number,
-          attachment_number,
-          docket_number
-        );
-      } else {
-        // dcd (and presumably others) trigger this code path.
-        const reader = new FileReader();
-        reader.onload = function () {
-          let html = reader.result;
-          // check if we have an HTML page which redirects the user to the PDF
-          // this was first display by the Northern District of Georgia
-          // https://github.com/freelawproject/recap/issues/277
-          const redirectResult = Array.from(
-            html.matchAll(/window\.location\s*=\s*["']([^"']+)["'];?/g)
-          );
-          if (redirectResult.length > 0) {
-            const newHtml = document.documentElement;
-            newHtml.querySelector('body').innerHTML = iFrameForPdf({
-              src: redirectResult[0][1],
-            });
-            html = newHtml.innerHTML;
-          }
-          this.showPdfPage(
-            document.documentElement,
-            html,
-            previousPageHtml,
-            document_number,
-            attachment_number,
-            docket_number
-          );
-        }.bind(this);
-        reader.readAsText(blob); // convert blob to HTML text
+        html = newHtml.innerHTML;
       }
-    }.bind(this)
-  );
+
+      this.showPdfPage(
+        document.documentElement,
+        html,
+        previousPageHtml,
+        document_number,
+        attachment_number,
+        docket_number
+      );
+    }.bind(this);
+    reader.readAsText(blob); // convert blob to HTML text
+  }
 }

@@ -925,6 +925,16 @@ describe('The ContentDelegate class', () => {
         runtime: {
           sendMessage: jasmine.createSpy().and.callFake((_, cb) => cb({})),
         },
+        extension: { getURL: jasmine.createSpy() },
+        storage: {
+          local: {
+            get: jasmine.createSpy().and.callFake(function (_, cb) {
+              cb({ options: {} });
+            }),
+            set: jasmine.createSpy('set').and.callFake(function () {}),
+            remove: jasmine.createSpy('remove').and.callFake(() => {}),
+          },
+        },
       };
     });
 
@@ -979,20 +989,15 @@ describe('The ContentDelegate class', () => {
       );
     });
 
-    it('calls showPdfPage when the response is a PDF', () => {
+    it('calls showPdfPage when the response is a PDF', async () => {
       const cd = singleDocContentDelegate;
       spyOn(cd, 'showPdfPage');
-      cd.onDocumentViewSubmit(event);
+      await cd.onDocumentViewSubmit(event);
 
-      jasmine.Ajax.requests.mostRecent().respondWith({
-        status: 200,
-        contentType: 'application/pdf',
-        responseText: pdf_data,
-      });
       expect(cd.showPdfPage).toHaveBeenCalled();
     });
 
-    it('calls showPdfPage when the response is HTML', () => {
+    it('calls showPdfPage when the response is HTML', async () => {
       const cd = singleDocContentDelegate;
       // can't use arrow functions because mock has 'this'
       spyOn(window, 'FileReader').and.callFake(function () {
@@ -1004,12 +1009,7 @@ describe('The ContentDelegate class', () => {
         };
       });
       spyOn(cd, 'showPdfPage');
-      cd.onDocumentViewSubmit(event);
-      jasmine.Ajax.requests.mostRecent().respondWith({
-        status: 200,
-        contentType: 'text/html',
-        responseText: '<html lang="en"></html>',
-      });
+      await cd.onDocumentViewSubmit(event);
       expect(cd.showPdfPage).toHaveBeenCalled();
     });
   });
