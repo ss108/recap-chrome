@@ -1,8 +1,14 @@
+// Abstraction of the RECAP server APIs.
 import PACER from './pacer';
 import $ from 'jquery';
-import { debug, destroyTabStorage, getItemsFromStorage, N87GC2 } from './utils';
-// Abstraction of the RECAP server APIs.
-// Public impure functions.  (See utils.js for details on defining services.)
+import {
+  debug,
+  destroyTabStorage,
+  fetchPostOptions,
+  getHostname,
+  getItemsFromStorage,
+} from './utils';
+
 export default function Recap() {
   const DEBUG = false, // When true, don't publish what's sent to the archive.
     SERVER_ROOT = 'https://www.courtlistener.com/api/rest/v3/',
@@ -183,22 +189,22 @@ export default function Recap() {
       });
     },
 
-    // Asynchronously uploads a PDF document to the RECAP server, calling the callback with
-    // a boolean success flag.
-    uploadDocument: (
+    // Asynchronously uploads a PDF document to the RECAP server,
+    // calling the callback with a boolean success flag.
+    uploadDocument: function (
       pacer_court,
       pacer_case_id,
       pacer_doc_id,
       document_number,
       attachment_number,
       cb
-    ) => {
+    ) {
       console.info(
         [
-          `RECAP: Attempting PDF upload to RECAP Archive with details:`,
-          `pacer_court: ${pacer_court}`,
-          `pacer_case_id: ${pacer_case_id}`,
-          `pacer_doc_id: ${pacer_doc_id}`,
+          'RECAP: Attempting PDF upload to RECAP Archive with details:',
+          `pacer_court: ${pacer_court},`,
+          `pacer_case_id: ${pacer_case_id},`,
+          `pacer_doc_id: ${pacer_doc_id},`,
           `document_number: ${document_number},`,
           `attachment_number: ${attachment_number}.`,
         ].join(' ')
@@ -229,17 +235,11 @@ export default function Recap() {
           formData.append('debug', DEBUG);
           return formData;
         })
-        .then((data) =>
-          fetch(`${SERVER_ROOT}recap/`, {
-            method: 'POST',
-            body: data,
-            headers: { Authorization: `Token ${N87GC2}` },
-          })
-        )
+        .then((data) => fetch(`${SERVER_ROOT}recap/`, fetchPostOptions(data)))
         .then((res) => res.json())
         .then((result) => {
           console.info(
-            `RECAP: Successfully uploaded PDF: 'Success' ` +
+            'RECAP: Successfully uploaded PDF: "Success" ' +
               `with processing queue id of ${result.id}`
           );
           cb(result || null);
@@ -247,14 +247,13 @@ export default function Recap() {
         })
         .catch((error) => console.log(`RECAP: Error uploading PDF: ${error}`));
     },
-
     // Upload a zip file to the RECAP server, calling the cb with ok flag
-    uploadZipFile: (pacer_court, pacer_case_id, cb) => {
+    uploadZipFile: function (pacer_court, pacer_case_id, cb) {
       console.info(
         [
-          `RECAP: Attempting Zip upload to RECAP Archive with details:`,
-          `pacer_court: ${pacer_court}`,
-          `pacer_case_id: ${pacer_case_id}`,
+          'RECAP: Attempting Zip upload to RECAP Archive with details:',
+          `pacer_court: ${pacer_court},`,
+          `pacer_case_id: ${pacer_case_id}.`,
         ].join(' ')
       );
 
@@ -282,17 +281,11 @@ export default function Recap() {
           formData.append('filepath_local', blob);
           return formData;
         })
-        .then((data) =>
-          fetch(`${SERVER_ROOT}recap/`, {
-            method: 'POST',
-            body: data,
-            headers: { Authorization: `Token ${N87GC2}` },
-          })
-        )
+        .then((data) => fetch(`${SERVER_ROOT}recap/`, fetchPostOptions(data)))
         .then((res) => res.json())
         .then((result) => {
           console.info(
-            `RECAP: Successfully uploaded Zip: 'Success' ` +
+            'RECAP: Successfully uploaded Zip: "Success" ' +
               `with processing queue id of ${result.id}`
           );
           cb(result);
@@ -316,15 +309,8 @@ export default function Recap() {
       formData.append('court', PACER.convertToCourtListenerCourt(pacerCourt));
       formData.append('upload_type', UPLOAD_TYPES['CLAIMS_REGISTER_PAGE']);
       formData.append('filepath_local', html);
-      const fetchOptions = {
-        method: 'POST',
-        body: formData,
-        headers: {
-          Authorization: `Token ${N87GC2}`,
-        },
-      };
 
-      fetch(`${SERVER_ROOT}recap/`, fetchOptions)
+      fetch(`${SERVER_ROOT}recap/`, fetchPostOptions(formData))
         .then((res) => res.json())
         .then((result) => {
           console.log('RECAP: Claims Page uploaded successfully');

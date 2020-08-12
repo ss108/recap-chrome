@@ -1,9 +1,8 @@
 import {
   blobToDataURL,
   getItemsFromStorage,
-  iFrameForPdf,
   updateTabStorage,
-  waitingPage,
+  waitingPageHtml,
 } from '../utils';
 // Given the HTML for a page with an <iframe> in it, downloads the PDF
 // document in the iframe, displays it in the browser, and also
@@ -22,20 +21,18 @@ export async function showPdfPage(
   // Find the <iframe> URL in the HTML string.
   let match = html.match(/([^]*?)<iframe[^>]*src="(.*?)"([^]*)/);
   if (!match) {
-    document.documentElement.innerHTML = html;
-    return;
+    return (document.documentElement.innerHTML = html);
   }
 
   const options = await getItemsFromStorage('options');
 
   // Show the page with a blank <iframe> while waiting for the download.
-  document.documentElement.innerHTML = waitingPage({ match });
+  document.documentElement.innerHTML = waitingPageHtml({ match });
 
   // Make the Back button redisplay the previous page.
   window.onpopstate = function (event) {
-    if (event.state.content) {
-      document.documentElement.innerHTML = event.state.content;
-    }
+    if (!event.state.content) return;
+    document.documentElement.innerHTML = event.state.content;
   };
   history.replaceState({ content: previousPageHtml }, '');
 
@@ -43,7 +40,6 @@ export async function showPdfPage(
   const browserSpecificFetch =
     navigator.userAgent.indexOf('Chrome') < 0 ? content.fetch : window.fetch;
   const blob = await browserSpecificFetch(match[2]).then((res) => res.blob());
-  let blobUrl = URL.createObjectURL(blob);
   const dataUrl = await blobToDataURL(blob);
   await updateTabStorage({ [this.tabId]: { ['pdf_blob']: dataUrl } });
   console.info('RECAP: Successfully got PDF as arraybuffer via ajax request.');
@@ -51,12 +47,9 @@ export async function showPdfPage(
   // to either display the PDF in the provided <iframe>, or, if
   // external_pdf is set, save it using FileSaver.js's saveAs().
 
-  const pacer_case_id = this.pacer_case_id
-    ? this.pacer_case_id
-    : await this.recap.getPacerCaseIdFromPacerDocId(
-        this.pacer_doc_id,
-        () => {}
-      );
+  const pacer_case_id = !this.pacer_case_id
+    ? await this.recap.getPacerCaseIdFromPacerDocId(this.pacer_doc_id, () => {})
+    : this.pacer_case_id;
 
   const generateFileName = (pacer_case_id) => {
     let filename, pieces;
@@ -94,43 +87,40 @@ export async function showPdfPage(
       external_pdf = true;
     }
     if (!external_pdf) {
-      const html = showPdfHtml({ blobUrl, filename, match });
+      const html = showPdfHtml({
+        blobUrl: URL.createObjectURL(blob),
+        filename,
+        match,
+      });
       document.querySelector('body').innerHTML = html;
       history.pushState({ content: html }, '');
     } else {
       // Saving to an external PDF.
-      const waitingGraph = document.getElementById('recap-waiting');
-      if (waitingGraph) {
-        waitingGraph.remove();
-      }
+      const loadingText = document.getElementById('recap-waiting');
+      if (loadingText) loadingText.remove();
       window.saveAs(blob, filename);
     }
   };
 
   setInnerHtml(pacer_case_id);
 
-  // store the blob in chrome storage for background worker
-  if (options['recap_enabled'] && !this.restricted) {
-    // If we have the pacer_case_id, upload the file to RECAP.
-    // We can't pass an ArrayBuffer directly to the background
-    // page, so we have to convert to a regular array.
-    this.recap.uploadDocument(
-      this.court,
-      pacer_case_id,
-      this.pacer_doc_id,
-      document_number,
-      attachment_number,
-      (ok) => {
-        // callback
-        if (ok) {
-          this.notifier.showUpload(
-            'PDF uploaded to the public RECAP Archive.',
-            () => {}
-          );
-        }
-      }
-    );
-  } else {
-    console.info('RECAP: Not uploading PDF. RECAP is disabled.');
+  // upload the document unless the user has disabled the option
+  // or the page is restricted
+  if (!options['recap_enabled'] || this.restricted) {
+    return console.info('Recap: Not uploading PDF. RECAP is disabled.');
   }
+  this.recap.uploadDocument(
+    this.court,
+    pacer_case_id,
+    this.pacer_doc_id,
+    document_number,
+    attachment_number,
+    (ok) => {
+      if (!ok) return;
+      this.notifier.showUpload(
+        'PDF uploaded to the public RECAP Archive.',
+        () => {}
+      );
+    }
+  );
 }

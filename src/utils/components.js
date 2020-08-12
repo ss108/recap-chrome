@@ -39,6 +39,7 @@ export const restrictedErrorDiv = ({ imgSrc }) => {
     </div>
   `;
 };
+
 export const iFrameForPdf = ({ src }) => {
   return (
     '<style>body { margin: 0; } iframe { border: none; }</style>' +
@@ -46,7 +47,7 @@ export const iFrameForPdf = ({ src }) => {
   );
 };
 
-export const waitingPage = ({ match }) => {
+export const waitingPageHtml = ({ match }) => {
   return (
     match[1] +
     '<p id="recap-waiting">Waiting for download...</p>' +
@@ -55,8 +56,24 @@ export const waitingPage = ({ match }) => {
   );
 };
 
+export const alertButtonTr = ({ court, caseId, isActive }) => {
+  const tr = document.createElement('tr');
+  tr.appendChild(recapAlertButton({ court, caseId, isActive }));
+  return tr;
+};
+
+export const changeAlertButtonStateToActive = ({ el }) => {
+  if (!el) return;
+  el.setAttribute('aria-disabled', 'false');
+  el.classList.remove('disabled');
+  const img = document.createElement('img');
+  img.src = chrome.extension.getURL('icon-16.png');
+  el.innerText = 'Create an Alert for This Case on RECAP';
+  el.insertBefore(img, el.childNodes[0]);
+};
+
 // inject a "follow this case on RECAP" button
-export const recapAlertButton = (court, pacerCaseId, isActive) => {
+export const recapAlertButton = ({ court, caseId, isActive }) => {
   const anchor = document.createElement('a');
   anchor.setAttribute('id', 'recap-alert-button');
   anchor.setAttribute('role', 'button');
@@ -71,13 +88,38 @@ export const recapAlertButton = (court, pacerCaseId, isActive) => {
     : 'Alerts not yet Supported for this Docket';
 
   const url = new URL('https://www.courtlistener.com/alert/docket/new/');
-  url.searchParams.append('pacer_case_id', pacerCaseId);
+  url.searchParams.append('pacer_case_id', caseId);
   url.searchParams.append('court_id', court);
   anchor.href = url.toString();
   const img = document.createElement('img');
   img.src = chrome.extension.getURL(`${icon}-16.png`);
   anchor.innerHTML = `${img.outerHTML} ${text}`;
   return anchor;
+};
+
+export const documentBanner = ({ path }) => {
+  const href = `https://www.courtlistener.com/${path}`;
+  const linkTitle = 'Document is available for free in the RECAP Archive.';
+  const linkText = ' Get this document for free from the Recap Archive.';
+  const div = document.createElement('div');
+  div.classList += 'recap-banner';
+  div.innerHTML = `
+    <a title='${linkTitle}' href='${href}'>
+      <img src="${chrome.extension.getURL('icon-16.png')}></img>  
+      ${linkText}
+    </a>
+  `;
+  return div;
+};
+
+export const inlineDocumentBanner = ({ path }) => {
+  const href = `https://www.courtlistener.com/${path}`;
+  const linkTitle = 'Available for free from the RECAP Archive.';
+  return `
+    <a class='recap-inline' title='${title}' href='${href}'>
+      <img src=${chrome.extension.getURL('icon-16.png')}></img>
+    </a>
+  `;
 };
 
 export const recapBanner = (result) => {

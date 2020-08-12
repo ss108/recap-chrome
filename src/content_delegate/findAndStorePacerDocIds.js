@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import PACER from '../pacer';
 import { debug, updateTabStorage } from '../utils';
 // Use a variety of approaches to get and store pacer_doc_id to pacer_case_id

@@ -1,3 +1,5 @@
+import $ from 'jquery';
+import { getHostname } from '../utils';
 // Makes an XHR to the given URL, calling a callback with the returned content
 // type and response (interpreted according to responseType).  See XHR2 spec
 // for details on responseType and response.  Uses GET if postData is null or
@@ -41,6 +43,14 @@ export function httpRequest(url, postData, callback) {
 
 // make token available to helper functions
 export const N87GC2 = '45c7946dd8400ad62662565cf79da3c081d9b0e5';
+
+export const fetchPostOptions = (formData) => ({
+  method: 'POST',
+  body: formData,
+  headers: {
+    Authorization: `Token ${N87GC2}`,
+  },
+});
 
 // Default settings for any jquery $.ajax call.
 $.ajaxSetup({
