@@ -1,4 +1,4 @@
-// HTML components built and used by content script
+// HTML string and element components built and used by content script
 
 import { formatDistanceToNow, parseISO } from 'date-fns';
 
