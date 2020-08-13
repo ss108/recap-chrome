@@ -12,6 +12,7 @@ export const onDocumentViewSubmitTests = () =>
     const form_id = '1234';
     const event = { data: { id: form_id } };
 
+    const blob = new Blob([pdf_data], { type: 'application/pdf' });
     beforeAll(() => {
       window.chrome = {
         runtime: {
@@ -84,15 +85,12 @@ export const onDocumentViewSubmitTests = () =>
 
     it('calls showPdfPage when the response is a PDF', async () => {
       const cd = singleDocContentDelegate;
-      spyOn(window, 'fetch').and.callFake((url, options) => {
+      spyOn(window, 'fetch').and.callFake(async (url, options) => {
         const res = {};
+        res.type = 'application/pdf';
         res.ok = true;
-        res.blob = jasmine
-          .createSpy()
-          .and.callFake(() =>
-            Promise.resolve(new Blob([pdf_data], { type: 'application/pdf' }))
-          );
-        return Promise.resolve(res);
+        res.blob = jasmine.createSpy().and.callFake(() => blob);
+        return res;
       });
 
       spyOn(cd, 'showPdfPage');

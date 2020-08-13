@@ -36,13 +36,13 @@ export const attachRecapLinkToEligibleDocsTests = () =>
     describe('when there are valid urls', () => {
       const links = linksFromUrls(fake_urls);
       beforeEach(() => {
-        $('body').append(links);
+        Array.from(links).map((link) =>
+          document.querySelector('body').appendChild(link)
+        );
       });
 
       afterEach(() => {
-        for (let link of links) {
-          link.remove();
-        }
+        Array.from(links).map((link) => link.remove());
       });
 
       it('does not attach any links if no urls have recap', () => {
@@ -122,13 +122,13 @@ export const attachRecapLinkToEligibleDocsTests = () =>
         describe('when there are valid urls', () => {
           const links = linksFromUrls(urls);
           beforeEach(() => {
-            $('body').append(links);
+            Array.from(links).map((link) =>
+              document.querySelector('body').appendChild(link)
+            );
           });
 
           afterEach(() => {
-            for (let link of links) {
-              link.remove();
-            }
+            Array.from(links).map((link) => link.remove());
           });
 
           it('does not attach any links if no urls have recap', () => {
@@ -208,33 +208,6 @@ export const attachRecapLinkToEligibleDocsTests = () =>
             document.getElementsByClassName('recap-inline')[0].remove();
           });
         });
-      });
-
-      it('attaches a working click handler', () => {
-        const cd = new ContentDelegate(
-          tabId,
-          expected_url,
-          null,
-          null,
-          null,
-          null,
-          links
-        );
-        cd.pacer_doc_ids = [1234];
-        spyOn(cd, 'handleRecapLinkClick').and.callFake((window, href) => {});
-        spyOn(cd.recap, 'getAvailabilityForDocuments').and.callFake(
-          (pc, pci, callback) => {
-            callback({
-              results: [
-                { pacer_doc_id: 1234, filepath_local: 'download/1234' },
-              ],
-            });
-          }
-        );
-        cd.attachRecapLinkToEligibleDocs();
-        const link = $(links[0]).next().click();
-        expect(cd.handleRecapLinkClick).toHaveBeenCalled();
-        document.getElementsByClassName('recap-inline')[0].remove();
       });
     });
   });

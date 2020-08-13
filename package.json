@@ -46,6 +46,7 @@
     "karma-jasmine-ajax": "^0.1.13",
     "karma-jquery": "^0.2.4",
     "karma-mocha-reporter": "^2.2.5",
+    "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^4.0.2",
     "prettier": "^2.0.5",
     "style-loader": "^1.2.1",
