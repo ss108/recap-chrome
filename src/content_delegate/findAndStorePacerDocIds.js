@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import PACER from '../pacer';
 import { debug, updateTabStorage } from '../utils';
 // Use a variety of approaches to get and store pacer_doc_id to pacer_case_id
@@ -31,7 +30,7 @@ export function findAndStorePacerDocIds() {
 
     // find the pacer_doc_id and store it in data-attribute
     const pacer_doc_id = PACER.getDocumentIdFromUrl(link.href);
-    $(link).data('pacer_doc_id', pacer_doc_id);
+    link.dataset.pacer_doc_id = pacer_doc_id;
 
     // add the pacer_doc_id to the delegate instance
     this.pacer_doc_ids.push(pacer_doc_id);

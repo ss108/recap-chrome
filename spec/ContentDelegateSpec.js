@@ -34,6 +34,8 @@ describe('The ContentDelegate class', () => {
   });
 
   afterEach(() => {
+    // clear the DOM
+    document.documentElement.innerHTML = '';
     window.fetch = nativeFetch;
   });
 

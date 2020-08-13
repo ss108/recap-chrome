@@ -2,17 +2,15 @@ import { ContentDelegate } from '../../src/content_delegate';
 export const tabId = 1234;
 
 export function linksFromUrls(urls) {
-  let index;
-  const links = [];
-  for (index = 0; index < urls.length; index++) {
+  return urls.map((url, index) => {
     const link = document.createElement('a');
-    link.href = urls[index];
+    link.id = 'recap-test-suite';
+    link.href = url;
     if (index === 0) {
       link.dataset.pacer_doc_id = '1234';
     }
-    links.push(link);
-  }
-  return links;
+    return link;
+  });
 }
 
 // 'path' values

@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import { inlineDocumentBanner } from '../utils';
 // Check every link in the document to see if there is a free RECAP document
 // available. If there is, put a link with a RECAP icon.
@@ -23,24 +22,30 @@ export function attachRecapLinkToEligibleDocs() {
 
       [...this.links].map((link) => {
         // get data attribute using jquery
-        const pacer_doc_id = $(link).data('pacer_doc_id');
+        const pacer_doc_id = link.dataset.pacer_doc_id;
+
+        // if data attribute doesn't exist, exit
         if (!pacer_doc_id) return;
 
-        const result = api_results.results.filter((obj) => {
+        // find the corresponding link in the dom
+        const result = api_results.results.find((obj) => {
           if (Object.keys(obj).length < 1) return;
           return obj.pacer_doc_id === pacer_doc_id;
-        })[0];
+        });
 
+        // no result, punt
         if (!result) return;
 
         const recapLink = inlineDocumentBanner({ path: result.filepath_local });
         // insert link onto DOM
         link.insertAdjacentElement('afterend', recapLink);
         // attach event listener
-        recapLink.addEventListener('click', function (ev) {
+        recapLink.addEventListener('click', (ev) => {
           ev.preventDefault();
-          ev.stopPropogation();
-          this.handleRecapLinkClick(window, href);
+          this.handleRecapLinkClick(
+            window,
+            `https://www.courtlistener.com/${result.filepath_local}`
+          );
         });
       });
     }
