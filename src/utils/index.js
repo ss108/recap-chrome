@@ -3,6 +3,7 @@ import $ from 'jquery';
 export * from './chrome';
 export * from './fetch';
 export * from './components';
+export * from './messages';
 // -------------------------------------------------------------------------
 // Browser-specific utilities for use in background pages and content scripts.
 
@@ -52,14 +53,13 @@ export function exportInstance(constructor) {
   let name = constructor.name; // function name identifies the service
   let instance = new constructor();
   chrome.runtime.onMessage.addListener(function (request, sender, cb) {
-    if (request.name === name) {
-      let pack = function () {
-        cb(Array.prototype.slice.apply(arguments));
-      };
-      pack.tab = sender.tab;
-      instance[request.verb].apply(instance, request.args.concat([pack]));
-      return true; // allow cb to be called after listener returns
-    }
+    if (!request.name !== name) return;
+    let pack = function () {
+      cb(Array.prototype.slice.apply(arguments));
+    };
+    pack.tab = sender.tab;
+    instance[request.verb].apply(instance, request.args.concat([pack]));
+    return true; // allow cb to be called after listener returns
   });
 }
 

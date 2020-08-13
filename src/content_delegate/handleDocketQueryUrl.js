@@ -1,8 +1,8 @@
 import PACER from '../pacer';
-import { recapAlertButton, recapBanner } from '../utils';
+import { recapAlertButton, recapBanner, dispatchFetch } from '../utils';
 
 // If this is a docket query page, ask RECAP whether it has the docket page.
-export function handleDocketQueryUrl() {
+export async function handleDocketQueryUrl() {
   if (!PACER.isDocketQueryUrl(this.url)) return;
 
   // Logged out users that load a docket page, see a login page, so they
@@ -14,26 +14,29 @@ export function handleDocketQueryUrl() {
   const tooManyMsg = (count) =>
     'Recap: More than one result found for docket lookup. ' + `Found ${count}`;
 
-  this.recap.getAvailabilityForDocket(
-    this.court,
-    this.pacer_case_id,
-    (result) => {
-      if (result.count === 0) return console.warn(warnMsg);
-      if (result.count > 1) return console.error(tooManyMsg(result.count));
-      if (!result.results) return console.error(errorMsg);
+  // fetch using new fetchHandler
+  const result = await dispatchFetch({
+    type: 'getAvailabilityForDocket',
+    payload: {
+      pacer_case_id: this.pacer_case_id,
+      court: PACER.convertToCourtListenerCourt(this.court),
+    },
+  });
 
-      const form = document.querySelector('form');
-      const div = document.createElement('div');
-      div.classList.add('recap-banner');
-      div.appendChild(
-        recapAlertButton({
-          court: this.court,
-          caseId: this.pacer_case_id,
-          isActive: true,
-        })
-      );
-      form.appendChild(recapBanner(result.results[0]));
-      form.appendChild(div);
-    }
+  if (result.count === 0) return console.warn(warnMsg);
+  if (result.count > 1) return console.error(tooManyMsg(result.count));
+  if (!result.results) return console.error(errorMsg);
+
+  const form = document.querySelector('form');
+  const div = document.createElement('div');
+  div.classList.add('recap-banner');
+  div.appendChild(
+    recapAlertButton({
+      court: this.court,
+      caseId: this.pacer_case_id,
+      isActive: true,
+    })
   );
+  form.appendChild(recapBanner(result.results[0]));
+  form.appendChild(div);
 }

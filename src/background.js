@@ -1,10 +1,13 @@
-import { exportInstance } from './utils';
+import { exportInstance, backgroundFetchListener } from './utils';
 import './recap';
 import $ from 'jquery';
 import Notifier from './notifier';
 import Recap from './recap';
 import { getTabById, updateToolbarButton } from './toolbar_button';
+
 // Make services callable from content scripts.
+
+backgroundFetchListener();
 exportInstance(Notifier);
 exportInstance(Recap);
 

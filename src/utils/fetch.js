@@ -52,6 +52,13 @@ export const fetchPostOptions = (formData) => ({
   },
 });
 
+export const fetchGetOptions = () => ({
+  method: 'GET',
+  headers: {
+    Authorization: `Token ${N87GC2}`,
+  },
+});
+
 // Default settings for any jquery $.ajax call.
 $.ajaxSetup({
   // The dataType parameter is a security measure requested by Opera code
@@ -71,3 +78,25 @@ $.ajaxSetup({
     }
   },
 });
+
+// django requires the suffix to be followed by a slash
+export const courtListenerURL = (suffix) =>
+  'https://www.courtlistener.com/api/rest/v3/' + suffix + '/';
+
+// encode the search params for use in the GET request
+// https://fetch.spec.whatwg.org/#fetch-api
+export const searchParamsURL = ({ url, params }) => {
+  const newUrl = new URL(url);
+  Object.keys(params).forEach((key) =>
+    newUrl.searchParams.append(key, params[key])
+  );
+  return newUrl;
+};
+
+export const dispatchFetch = ({ type, payload }) =>
+  new Promise((resolve, reject) =>
+    chrome.runtime.sendMessage({ type, payload }, (res) => {
+      if (res.error) reject(res.error);
+      resolve(res);
+    })
+  );

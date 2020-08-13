@@ -3,6 +3,7 @@ import {
   alertButtonTr,
   changeAlertButtonStateToActive,
   getItemsFromStorage,
+  dispatchFetch,
 } from '../utils';
 
 // LOCAL HELPERS //

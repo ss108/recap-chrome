@@ -15,21 +15,16 @@ This build includes:
 
 **Development Status**
 
-Currently, all but one test passes, specifically:
+_Update 08/13/20_
 
-```
-The ContentDelegate class attachRecapLinkToEligibleDocs when there are valid urls attaches a working click handler FAILED
-        Error: Expected spy handleRecapLinkClick to have been called.
-            at <Jasmine>
-            at UserContext.<anonymous> (spec/ContentDelegateSpec.js:30527:41)
-            at <Jasmine>
-```
+- Content Delegate and its correspnding tests are modularized with all tests passing
 
 **Upcoming Features**
 
 - Final removal of jQuery
-- Refactored and simplified content_delegate
-- Refactored and simplified spec tests
+- Refactored and simplified PACER functions and specs
+- Refactored and simplified RECAP functions and specs
+- Removal of confusing and unsafe import instance functions
 - Appellate Support
 - Typescript?
 
@@ -43,7 +38,7 @@ The ContentDelegate class attachRecapLinkToEligibleDocs when there are valid url
 6. cd ..
 7. npm i
 8. npm run dev
-9. Load the unpacked extension from the /build sub folder. 
+9. Load the unpacked extension from the /build sub folder.
 
 ---
 

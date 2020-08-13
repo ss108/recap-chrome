@@ -1,4 +1,5 @@
 import { ContentDelegate } from '../../src/content_delegate';
+
 export const tabId = 1234;
 
 export function linksFromUrls(urls) {
