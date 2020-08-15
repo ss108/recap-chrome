@@ -1,102 +1,56 @@
-import $ from 'jquery';
-import { getHostname } from '../utils';
-// Makes an XHR to the given URL, calling a callback with the returned content
-// type and response (interpreted according to responseType).  See XHR2 spec
-// for details on responseType and response.  Uses GET if postData is null or
-// POST otherwise.  postData can be any type accepted by XMLHttpRequest.send().
-export function httpRequest(url, postData, callback) {
-  let type = null,
-    result = null,
-    xhr;
-
-  // Firefox requires a special call to get an XMLHttpRequest() that
-  // sends Referer headers, which is CMECF needs because of their
-  // choice in how to fix the 2017 cross-site/same-origin security
-  // vulnerability.
-  try {
-    // eslint-disable-next-line
-    // Firefox. See: https://discourse.mozilla.org/t/webextension-xmlhttprequest-issues-no-cookies-or-referrer-solved/11224/18
-    xhr = XPCNativeWrapper(new window.wrappedJSObject.XMLHttpRequest());
-  } catch (evt) {
-    // Chrome.
-    xhr = new XMLHttpRequest();
-  }
-
-  xhr.responseType = 'arraybuffer';
-  xhr.onreadystatechange = function () {
-    if (xhr.readyState === 4) {
-      if (xhr.status === 200) {
-        type = xhr.getResponseHeader('Content-Type');
-        result = xhr.response;
-      }
-      callback && callback(type, result, xhr);
-    }
-  };
-  if (postData) {
-    xhr.open('POST', url);
-    xhr.send(postData);
-  } else {
-    xhr.open('GET', url);
-    xhr.send();
-  }
-}
+// helper functions for fetching data frim content script
+import { getHostname } from './index';
 
 // make token available to helper functions
 export const N87GC2 = '45c7946dd8400ad62662565cf79da3c081d9b0e5';
+export const authHeader = { Authorization: `Token ${N87GC2}` };
+export const jsonHeader = { 'Content-Type': 'application/json' };
 
-export const fetchPostOptions = (formData) => ({
-  method: 'POST',
-  body: formData,
-  headers: {
-    Authorization: `Token ${N87GC2}`,
-  },
-});
+// from JSON object, return a formData object
+export const buildFormData = (body) => {
+  const formData = new FormData();
+  Object.keys(body).map((key) => formData.append(key, body[key]));
+  return formData;
+};
 
-export const fetchGetOptions = () => ({
-  method: 'GET',
-  headers: {
-    Authorization: `Token ${N87GC2}`,
-  },
-});
-
-// Default settings for any jquery $.ajax call.
-$.ajaxSetup({
-  // The dataType parameter is a security measure requested by Opera code
-  // review. 'json' is the default, but if it is not explicitly set, and if the
-  // CourtListener server was hacked, the API could be used to serve JSONP to
-  // our users. If the server did that, all of our users would be at risk of
-  // running custom JavaScript. We don't want that, so we set this explicitly.
-  dataType: 'json',
-  beforeSend: function (xhr, settings) {
-    let hostname = getHostname(settings.url);
-    if (hostname === 'www.courtlistener.com') {
-      // If you are reading this code, we ask that you please refrain from
-      // using this token. Unfortunately, there is no way to distribute
-      // extensions that use hardcoded tokens except through begging and using
-      // funny variable names. Do not abuse the RECAP service.
-      xhr.setRequestHeader('Authorization', `Token ${N87GC2}`);
-    }
-  },
-});
-
+// build courtlistener URL
 // django requires the suffix to be followed by a slash
 export const courtListenerURL = (suffix) =>
   'https://www.courtlistener.com/api/rest/v3/' + suffix + '/';
 
-// encode the search params for use in the GET request
-// https://fetch.spec.whatwg.org/#fetch-api
-export const searchParamsURL = ({ url, params }) => {
-  const newUrl = new URL(url);
-  Object.keys(params).forEach((key) =>
-    newUrl.searchParams.append(key, params[key])
-  );
-  return newUrl;
-};
-
-export const dispatchFetch = ({ type, payload }) =>
+// same as regular fetch with some differences:
+// (1) it calls fetch from the background worker instead of brownser
+// (2) the accepted arguments are { url: string, options: Object } instead of (string, Object)
+// (3) if the options object has key filepath_local, it is replaced with blob in storage
+export const dispatchBackgroundFetch = ({ url, options }) =>
   new Promise((resolve, reject) =>
-    chrome.runtime.sendMessage({ type, payload }, (res) => {
+    chrome.runtime.sendMessage({ fetch: { url, options } }, (res) => {
       if (res.error) reject(res.error);
       resolve(res);
     })
   );
+
+// encodes the search params for use in a GET request
+// https://fetch.spec.whatwg.org/#fetch-api
+export const searchParamsURL = ({ base, params }) => {
+  const url = new URL(base);
+  Object.keys(params).forEach((key) =>
+    url.searchParams.append(key, params[key])
+  );
+  return url.toString();
+};
+
+// given a string, return the correct upload_type
+export const uploadType = (str) => {
+  const UPLOAD_TYPES = {
+    DOCKET: 1,
+    ATTACHMENT_PAGE: 2,
+    PDF: 3,
+    DOCKET_HISTORY_REPORT: 4,
+    APPELLATE_DOCKET: 5,
+    APPELLATE_ATTACHMENT_PAGE: 6,
+    CLAIMS_REGISTER_PAGE: 9,
+    ZIP: 10,
+  };
+  return UPLOAD_TYPES[str];
+};

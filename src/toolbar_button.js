@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import PACER from './pacer';
-import { setDefaultOptions } from './background';
+import { setDefaultOptions } from './utils';
 // This file is part of RECAP for Chrome.
 // Copyright 2013 Ka-Ping Yee <ping@zesty.ca>
 //

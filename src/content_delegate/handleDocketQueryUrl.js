@@ -1,5 +1,12 @@
 import PACER from '../pacer';
-import { recapAlertButton, recapBanner, dispatchFetch } from '../utils';
+import {
+  authHeader,
+  recapAlertButton,
+  recapBanner,
+  dispatchBackgroundFetch,
+  courtListenerURL,
+  searchParamsURL,
+} from '../utils';
 
 // If this is a docket query page, ask RECAP whether it has the docket page.
 export async function handleDocketQueryUrl() {
@@ -9,23 +16,36 @@ export async function handleDocketQueryUrl() {
   // shouldn't check for docket availability.
   if (!PACER.hasPacerCookie(document.cookie)) return;
 
-  const warnMsg = 'RECAP: Zero results found for docket lookup.';
-  const errorMsg = 'RECAP: Upload failed. Check the logs for more information.';
-  const tooManyMsg = (count) =>
-    'Recap: More than one result found for docket lookup. ' + `Found ${count}`;
+  const msg = {
+    warn: 'RECAP: Zero results found for docket lookup.',
+    error: 'RECAP: Upload failed. Check the logs for more information.',
+    tooMany: (count) =>
+      'Recap: More than one result found for docket lookup. ' +
+      `Found ${count}`,
+  };
 
   // fetch using new fetchHandler
-  const result = await dispatchFetch({
-    type: 'getAvailabilityForDocket',
-    payload: {
-      pacer_case_id: this.pacer_case_id,
-      court: PACER.convertToCourtListenerCourt(this.court),
+
+  const result = await dispatchBackgroundFetch({
+    url: searchParamsURL({
+      base: courtListenerURL('dockets'),
+      params: {
+        pacer_case_id: this.pacer_case_id,
+        court: PACER.convertToCourtListenerCourt(this.court),
+        // Ensure RECAP is a source so we don't get back IDB-only dockets.
+        source__in: '1,3,5,7,9,11,13,15',
+        fields: 'absolute_url,date_modified',
+      },
+    }),
+    options: {
+      method: 'GET',
+      headers: authHeader,
     },
   });
 
-  if (result.count === 0) return console.warn(warnMsg);
-  if (result.count > 1) return console.error(tooManyMsg(result.count));
-  if (!result.results) return console.error(errorMsg);
+  if (result.count < 1) return console.warn(msg.warn);
+  if (result.count > 1) return console.error(msg.tooMany(result.count));
+  if (!result.results) return console.error(msg.error);
 
   const form = document.querySelector('form');
   const div = document.createElement('div');

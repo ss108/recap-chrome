@@ -1,31 +1,56 @@
-import { inlineDocumentBanner, dispatchFetch } from '../utils';
+import {
+  inlineDocumentBanner,
+  dispatchBackgroundFetch,
+  searchParamsURL,
+  courtListenerURL,
+  fetchGetOptions,
+  authHeader,
+} from '../utils';
 import PACER from '../pacer';
 // Check every link in the document to see if there is a free RECAP document
 // available. If there is, put a link with a RECAP icon.
-export async function attachRecapLinkToEligibleDocs() {
-  let linkCount = this.pacer_doc_ids.length;
-  console.info(
-    `RECAP: Attaching links to all eligible documents (${linkCount} found)`
-  );
-  if (linkCount === 0) return;
 
-  const successMsg =
+const msg = {
+  noLinks: 'RECAP: No eligible documents found',
+  yesLinks: (count) =>
+    `RECAP: Attaching links to all eligible documents (${count} found)`,
+  error: 'RECAP: Failed getting availability for dockets.',
+  success:
     'RECAP: Got results from API. Running callback on API results to ' +
-    'attach links and icons where appropriate.';
+    'attach links and icons where appropriate.',
+};
+
+export async function attachRecapLinkToEligibleDocs() {
+  // check if links exist and return if none eligible
+  if (this.pacer_doc_ids.length === 0) return console.info(msg.noLinks);
+
+  // tell the user we've got links
+  console.info(msg.yesLinks(this.pacer_doc_ids.length));
 
   // Ask the server whether any of these documents are available from RECAP.
-  const api_results = await dispatchFetch({
-    type: 'getAvailabilityForDocuments',
-    payload: {
-      pacer_doc_id__in: this.pacer_doc_ids.join(','),
-      docket_entry__docket__court: PACER.convertToCourtListenerCourt(
-        this.court
-      ),
+
+  const clCourt = PACER.convertToCourtListenerCourt(this.court);
+
+  // submit fetch request through background worker
+  const api_results = await dispatchBackgroundFetch({
+    url: searchParamsURL({
+      base: courtListenerURL('recap-query'),
+      params: {
+        docket_entry__docket__court: clCourt,
+        pacer_doc_id__in: this.pacer_doc_ids.join(','),
+      },
+    }),
+    options: {
+      method: 'GET',
+      headers: authHeader,
     },
   });
 
-  // tell the user we've got results
-  console.info(successMsg);
+  // return if there are no results
+  if (!api_results) return console.error(msg.error);
+
+  // tell the user we've got results from the API
+  console.info(msg.success);
 
   [...this.links].map((link) => {
     // get data attribute using jquery
@@ -43,8 +68,8 @@ export async function attachRecapLinkToEligibleDocs() {
     // no result, punt
     if (!result) return;
 
-    const recapLink = inlineDocumentBanner({ path: result.filepath_local });
     // insert link onto DOM
+    const recapLink = inlineDocumentBanner({ path: result.filepath_local });
     link.insertAdjacentElement('afterend', recapLink);
 
     // attach event listener

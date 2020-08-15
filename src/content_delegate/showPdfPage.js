@@ -5,6 +5,11 @@ import {
   showPdfHtml,
   updateTabStorage,
   waitingPageHtml,
+  dispatchBackgroundFetch,
+  courtListenerURL,
+  authHeader,
+  uploadType,
+  dispatchNotifier,
 } from '../utils';
 // Given the HTML for a page with an <iframe> in it, downloads the PDF
 // document in the iframe, displays it in the browser, and also
@@ -44,7 +49,7 @@ export async function showPdfPage(
     navigator.userAgent.indexOf('Chrome') < 0 ? content.fetch : window.fetch;
   const blob = await browserSpecificFetch(match[2]).then((res) => res.blob());
   const dataUrl = await blobToDataURL(blob);
-  await updateTabStorage({ [this.tabId]: { ['pdf_blob']: dataUrl } });
+  await updateTabStorage({ [this.tabId]: { ['file_blob']: dataUrl } });
   console.info('RECAP: Successfully got PDF as arraybuffer via ajax request.');
   // Get the PACER case ID and, on completion, define displayPDF()
   // to either display the PDF in the provided <iframe>, or, if
@@ -112,18 +117,29 @@ export async function showPdfPage(
   if (!options['recap_enabled'] || this.restricted) {
     return console.info('Recap: Not uploading PDF. RECAP is disabled.');
   }
-  this.recap.uploadDocument(
-    this.court,
-    pacer_case_id,
-    this.pacer_doc_id,
-    document_number,
-    attachment_number,
-    (ok) => {
-      if (!ok) return;
-      this.notifier.showUpload(
-        'PDF uploaded to the public RECAP Archive.',
-        () => {}
-      );
-    }
-  );
+
+  const uploadDocument = dispatchBackgroundFetch({
+    url: courtListenerURL('recap'),
+    options: {
+      method: 'POST',
+      headers: authHeader,
+      body: {
+        court: PACER.convertToCourtListenerCourt(this.court),
+        pacer_case_id: pacer_case_id,
+        pacer_doc_id: this.pacer_doc_id,
+        document_number: document_number,
+        attachment_number: attachment_number,
+        filepath_local: true,
+        upload_type: uploadType('PDF'),
+        debug: false,
+      },
+    },
+  });
+  if (!uploadDocument) return console.error('RECAP: Document not uploaded');
+
+  dispatchNotifier({
+    action: 'showUpload',
+    title: 'Upload Successful',
+    message: 'PDF uploaded to the public RECAP Archive',
+  });
 }

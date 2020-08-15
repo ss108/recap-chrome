@@ -1,7 +1,13 @@
 import PACER from '../pacer';
+import {
+  dispatchBackgroundFetch,
+  courtListenerURL,
+  authHeader,
+  uploadType,
+} from '../utils';
 
 // FUNCTION PROTOTYPE START
-export function handleClaimsPageView() {
+export async function handleClaimsPageView() {
   // return if not a claims register page
   if (!PACER.isClaimsRegisterPage(this.url, document)) return;
 
@@ -12,22 +18,33 @@ export function handleClaimsPageView() {
     : PACER.getCaseIdFromClaimsPage(document);
 
   // render the page as a string
-  const claimsPageHtml = document.documentElement.outerHTML;
 
   const msg = {
     error: 'RECAP: Page not uploaded to the public RECAP archive.',
     success: 'Claims page uploaded to the public RECAP archive.',
   };
 
-  // upload it to recap
-  this.recap.uploadClaimsRegister(
-    this.court,
-    pacerCaseId,
-    claimsPageHtml,
-    (ok) => {
-      // callback - dispatch the notifier if upload is ok
-      if (!ok) return console.error(msg.error);
-      this.notifier.showUpload(msg.success, () => {});
-    }
+  const clCourt = PACER.convertToCourtListenerCourt(this.court);
+  // otherwise stash the blob in the store
+  const dataUrl = await blobToDataURL(
+    new Blob([document.documentElement.innerHTML], { type: 'text/html' })
   );
+  await saveItemToStorage({ [this.tabId]: dataUrl });
+
+  const claimsUpload = await dispatchBackgroundFetch({
+    url: courtListenerURL('recap'),
+    options: {
+      method: 'POST',
+      headers: authHeader,
+      body: {
+        pacer_case_id: pacerCaseId,
+        court: clCourt,
+        filepath_local: true,
+        upload_type: uploadType('CLAIMS_REGISTER_PAGE'),
+      },
+    },
+  });
+
+  if (!claimsUpload) return console.error(msg.erro);
+  this.notifier.showUpload(msg.success, () => {});
 }

@@ -3,7 +3,9 @@ import $ from 'jquery';
 export * from './chrome';
 export * from './fetch';
 export * from './components';
-export * from './messages';
+export * from './background';
+export * from './backgroundFetch';
+export * from './backgroundNotifier';
 // -------------------------------------------------------------------------
 // Browser-specific utilities for use in background pages and content scripts.
 
@@ -102,7 +104,9 @@ export function getHostname(url) {
 // Debug levels:
 //   1   General informational
 //   3   Developer debugging
+global.DEBUG;
 global.DEBUGLEVEL = 1;
+
 export function debug(level, varargs) {
   if (DEBUGLEVEL >= level) {
     var args = Array.prototype.slice.call(arguments, 1);

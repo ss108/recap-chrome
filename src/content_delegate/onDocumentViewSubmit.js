@@ -47,10 +47,10 @@ export async function onDocumentViewSubmit(event) {
       }`,
   };
 
-  const browserSpecificFetch =
+  const contentFetch =
     navigator.userAgent.indexOf('Chrome') < 0 ? content.fetch : window.fetch;
 
-  const blob = await fetch(form.action, {
+  const blob = await contentFetch(form.action, {
     method: 'POST',
     body: new FormData(form),
   }).then((res) => {

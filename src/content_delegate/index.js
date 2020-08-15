@@ -1,6 +1,4 @@
 //  Abstraction of content scripts to make them modular and testable.
-import Notifier from '../notifier';
-import Recap from '../recap';
 import { importInstance } from '../utils';
 import { checkRestrictions } from './checkRestrictions';
 import { findAndStorePacerDocIds } from './findAndStorePacerDocIds';
@@ -39,9 +37,6 @@ export function ContentDelegate(
     this.pacer_doc_ids = [];
   }
   this.links = links || [];
-
-  this.notifier = importInstance(Notifier);
-  this.recap = importInstance(Recap);
 
   this.findAndStorePacerDocIds();
 
