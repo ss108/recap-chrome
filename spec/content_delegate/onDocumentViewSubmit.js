@@ -16,16 +16,16 @@ export const onDocumentViewSubmitTests = () =>
     beforeAll(() => {
       window.chrome = {
         runtime: {
-          sendMessage: jasmine.createSpy().and.callFake((_, cb) => cb()),
+          sendMessage: jest.fn((_, cb) => cb()),
         },
-        extension: { getURL: jasmine.createSpy() },
+        extension: { getURL: jest.fn() },
         storage: {
           local: {
-            get: jasmine.createSpy().and.callFake(function (_, cb) {
+            get: jest.fn(function (_, cb) {
               cb({ options: {} });
             }),
-            set: jasmine.createSpy('set').and.callFake(function () {}),
-            remove: jasmine.createSpy('remove').and.callFake(() => {}),
+            set: jest.fn(function () {}),
+            remove: jest.fn(() => {}),
           },
         },
       };
@@ -57,7 +57,7 @@ export const onDocumentViewSubmitTests = () =>
 
     it('handles appellate check', () => {
       const cd = appellateContentDelegate;
-      spyOn(console, 'log');
+      jest.spyOn(console, 'log').mockImplementation(() => {});
       let restore = DEBUGLEVEL;
       DEBUGLEVEL = 4;
       cd.onDocumentViewSubmit(event);
@@ -70,7 +70,7 @@ export const onDocumentViewSubmitTests = () =>
     it('sets the onsubmit attribute of the page form', () => {
       const expected_on_submit = 'expectedOnSubmit();';
       form.setAttribute('onsubmit', expected_on_submit);
-      spyOn(form, 'setAttribute');
+      jest.spyOn(form, 'setAttribute').mockImplementation(() => {});
       singleDocContentDelegate.onDocumentViewSubmit(event);
 
       expect(form.setAttribute).toHaveBeenCalledWith(
@@ -85,15 +85,15 @@ export const onDocumentViewSubmitTests = () =>
 
     it('calls showPdfPage when the response is a PDF', async () => {
       const cd = singleDocContentDelegate;
-      spyOn(window, 'fetch').and.callFake(async (url, options) => {
+      jest.spyOn(window, 'fetch').mockImplementation(async (url, options) => {
         const res = {};
         res.type = 'application/pdf';
         res.ok = true;
-        res.blob = jasmine.createSpy().and.callFake(() => blob);
+        res.blob = jest.fn(() => blob);
         return res;
       });
 
-      spyOn(cd, 'showPdfPage');
+      jest.spyOn(cd, 'showPdfPage').mockImplementation(() => {});
 
       await cd.onDocumentViewSubmit(event);
 
@@ -102,18 +102,16 @@ export const onDocumentViewSubmitTests = () =>
 
     it('calls showPdfPage when the response is HTML', async () => {
       const cd = singleDocContentDelegate;
-      spyOn(window, 'fetch').and.callFake((url, options) => {
+      jest.spyOn(window, 'fetch').mockImplementation((url, options) => {
         const res = {};
         res.ok = true;
-        res.blob = jasmine
-          .createSpy()
-          .and.callFake(() =>
+        res.blob = jest.fn(() =>
             Promise.resolve(new Blob(['htmlString'], { type: 'text/html' }))
           );
         return Promise.resolve(res);
       });
       // can't use arrow functions because mock has 'this'
-      spyOn(window, 'FileReader').and.callFake(function () {
+      jest.spyOn(window, 'FileReader').mockImplementation(function () {
         return {
           readAsText: function () {
             this.result = '<html lang="en"></html>';
@@ -121,7 +119,7 @@ export const onDocumentViewSubmitTests = () =>
           },
         };
       });
-      spyOn(cd, 'showPdfPage');
+      jest.spyOn(cd, 'showPdfPage').mockImplementation(() => {});
       await cd.onDocumentViewSubmit(event);
       expect(cd.showPdfPage).toHaveBeenCalled();
     });

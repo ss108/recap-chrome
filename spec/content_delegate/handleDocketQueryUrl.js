@@ -13,12 +13,10 @@ export const handleDocketQueryUrlTests = () =>
       document.body.appendChild(form);
       window.chrome = {
         extension: {
-          getURL: jasmine
-            .createSpy()
-            .and.callFake((str) => '/iconimageurl.png'),
+          getURL: jest.fn((str) => '/iconimageurl.png'),
         },
         runtime: {
-          sendMessage: jasmine.createSpy().and.callFake((_, cb) => cb({})),
+          sendMessage: jest.fn((_, cb) => cb({})),
         },
       };
     });
@@ -30,8 +28,8 @@ export const handleDocketQueryUrlTests = () =>
 
     it('has no effect when not on a docket query url', () => {
       const cd = nonsenseUrlContentDelegate;
-      spyOn(PACER, 'hasPacerCookie');
-      spyOn(PACER, 'isDocketQueryUrl').and.returnValue(false);
+      jest.spyOn(PACER, 'hasPacerCookie').mockImplementation(() => {});
+      jest.spyOn(PACER, 'isDocketQueryUrl').mockReturnValue(false);
       cd.handleDocketQueryUrl();
       expect(PACER.hasPacerCookie).not.toHaveBeenCalled();
     });
@@ -40,17 +38,17 @@ export const handleDocketQueryUrlTests = () =>
     // but does exercise all existing branches
     it('checks for a Pacer cookie', () => {
       const cd = nonsenseUrlContentDelegate;
-      spyOn(cd.recap, 'getAvailabilityForDocket');
-      spyOn(PACER, 'hasPacerCookie').and.returnValue(false);
-      spyOn(PACER, 'isDocketQueryUrl').and.returnValue(true);
+      jest.spyOn(cd.recap, 'getAvailabilityForDocket').mockImplementation(() => {});
+      jest.spyOn(PACER, 'hasPacerCookie').mockReturnValue(false);
+      jest.spyOn(PACER, 'isDocketQueryUrl').mockReturnValue(true);
       cd.handleDocketQueryUrl();
       expect(cd.recap.getAvailabilityForDocket).not.toHaveBeenCalled();
     });
 
     it('handles zero results from getAvailabilityForDocket', () => {
       const cd = docketQueryContentDelegate;
-      spyOn(PACER, 'hasPacerCookie').and.returnValue(true);
-      spyOn(cd.recap, 'getAvailabilityForDocket').and.callFake(
+      jest.spyOn(PACER, 'hasPacerCookie').mockReturnValue(true);
+      jest.spyOn(cd.recap, 'getAvailabilityForDocket').mockImplementation(
         (court, pacerId, cb) =>
           cb({
             count: 0,
@@ -63,8 +61,8 @@ export const handleDocketQueryUrlTests = () =>
 
     it('inserts the RECAP banner on an appropriate page', () => {
       const cd = docketQueryContentDelegate;
-      spyOn(PACER, 'hasPacerCookie').and.returnValue(true);
-      spyOn(cd.recap, 'getAvailabilityForDocket').and.callFake(
+      jest.spyOn(PACER, 'hasPacerCookie').mockReturnValue(true);
+      jest.spyOn(cd.recap, 'getAvailabilityForDocket').mockImplementation(
         (court, pacerId, cb) =>
           cb({
             count: 1,
@@ -92,14 +90,14 @@ export const handleDocketQueryUrlTests = () =>
 
     it('has no effect when on a docket query that has no RECAP', () => {
       const cd = docketQueryContentDelegate;
-      spyOn(cd.recap, 'getAvailabilityForDocket').and.callFake(
+      jest.spyOn(cd.recap, 'getAvailabilityForDocket').mockImplementation(
         (court, pacerId, cb) =>
           cb({
             count: 0,
             results: [],
           })
       );
-      spyOn(PACER, 'hasPacerCookie').and.returnValue(true);
+      jest.spyOn(PACER, 'hasPacerCookie').mockReturnValue(true);
       cd.handleDocketQueryUrl();
       const banner = document.querySelector('.recap-banner');
       expect(banner).toBeNull();

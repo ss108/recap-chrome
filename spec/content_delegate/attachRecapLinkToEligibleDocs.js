@@ -42,7 +42,7 @@ export const attachRecapLinkToEligibleDocsTests = () =>
 
       it('does nothing', () => {
         const cd = localCD(links);
-        spyOn(window, 'fetch');
+        jest.spyOn(window, 'fetch').mockImplementation(() => {});
         cd.attachRecapLinkToEligibleDocs();
         expect(window.fetch).not.toHaveBeenCalled();
       });
@@ -62,7 +62,7 @@ export const attachRecapLinkToEligibleDocsTests = () =>
         it('does not attach any links', () => {
           const cd = localCD(links);
           cd.pacer_doc_ids = [1234];
-          spyOn(cd.recap, 'getAvailabilityForDocuments').and.callFake(
+          jest.spyOn(cd.recap, 'getAvailabilityForDocuments').mockImplementation(
             (pc, pci, callback) => {
               callback({
                 results: [],
@@ -87,7 +87,7 @@ export const attachRecapLinkToEligibleDocsTests = () =>
       it('attaches a single link to the one url with recap', () => {
         const cd = localCD(links);
         cd.pacer_doc_ids = [1234];
-        spyOn(cd.recap, 'getAvailabilityForDocuments').and.callFake(
+        jest.spyOn(cd.recap, 'getAvailabilityForDocuments').mockImplementation(
           (pc, pci, callback) => {
             callback({
               results: [
@@ -103,8 +103,8 @@ export const attachRecapLinkToEligibleDocsTests = () =>
       it('attaches a working click handler', () => {
         const cd = localCD(links);
         cd.pacer_doc_ids = [1234];
-        spyOn(cd, 'handleRecapLinkClick').and.callFake((window, href) => {});
-        spyOn(cd.recap, 'getAvailabilityForDocuments').and.callFake(
+        jest.spyOn(cd, 'handleRecapLinkClick').mockImplementation((window, href) => {});
+        jest.spyOn(cd.recap, 'getAvailabilityForDocuments').mockImplementation(
           (pc, pci, callback) => {
             callback({
               results: [

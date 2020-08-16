@@ -37,23 +37,19 @@ export const showPdfPageTests = () =>
         },
       };
       const local = {
-        get: jasmine.createSpy().and.callFake((_, cb) => cb()),
-        remove: jasmine.createSpy().and.callFake((_, cb) => cb()),
-        set: jasmine.createSpy().and.callFake((_, cb) => cb()),
+        get: jest.fn((_, cb) => cb()),
+        remove: jest.fn((_, cb) => cb()),
+        set: jest.fn((_, cb) => cb()),
       };
       window.chrome = {
         storage: { local },
       };
-      window.saveAs = jasmine
-        .createSpy('saveAs')
-        .and.callFake((blob, file) => Promise.resolve(true));
+      window.saveAs = jest.fn((blob, file) => Promise.resolve(true));
 
-      spyOn(window, 'fetch').and.callFake(async (url, options) => {
+      jest.spyOn(window, 'fetch').mockImplementation(async (url, options) => {
         const res = {};
         res.ok = true;
-        res.blob = jasmine
-          .createSpy()
-          .and.callFake(() => Promise.resolve(blob));
+        res.blob = jest.fn(() => Promise.resolve(blob));
         return res;
       });
     });
@@ -65,7 +61,7 @@ export const showPdfPageTests = () =>
     it('handles no iframe', () => {
       let inner = '<span>html</span>';
       const cd = singleDocContentDelegate;
-      spyOn(cd.recap, 'uploadDocument').and.callFake(
+      jest.spyOn(cd.recap, 'uploadDocument').mockImplementation(
         (court, caseId, docId, docNumber, attachNumber, callback) => {
           callback.tab = { id: 1234 };
           callback(true);

@@ -20,8 +20,8 @@ export const handleSingleDocumentPageViewTests = () =>
 
     it('handles appellate check', () => {
       const cd = appellateContentDelegate;
-      spyOn(console, 'log');
-      spyOn(PACER, 'isSingleDocumentPage').and.returnValue(true);
+      jest.spyOn(console, 'log').mockImplementation(() => {});
+      jest.spyOn(PACER, 'isSingleDocumentPage').mockReturnValue(true);
       let restore = DEBUGLEVEL;
       DEBUGLEVEL = 4;
       cd.handleSingleDocumentPageView();
@@ -34,14 +34,14 @@ export const handleSingleDocumentPageViewTests = () =>
     describe('when there is NO appropriate form', () => {
       it('has no effect when the URL is wrong', () => {
         const cd = nonsenseUrlContentDelegate;
-        spyOn(document, 'createElement');
+        jest.spyOn(document, 'createElement').mockImplementation(() => {});
         cd.handleSingleDocumentPageView();
         expect(document.createElement).not.toHaveBeenCalled();
       });
 
       it('has no effect with a proper URL', () => {
         const cd = singleDocContentDelegate;
-        spyOn(cd.recap, 'getAvailabilityForDocuments');
+        jest.spyOn(cd.recap, 'getAvailabilityForDocuments').mockImplementation(() => {});
         cd.handleSingleDocumentPageView();
         expect(cd.recap.getAvailabilityForDocuments).not.toHaveBeenCalled();
       });
@@ -63,7 +63,7 @@ export const handleSingleDocumentPageViewTests = () =>
         table_tr.appendChild(table_td);
         table.appendChild(table_tr);
         document.body.appendChild(table);
-        spyOn(window, 'addEventListener').and.callThrough();
+        jest.spyOn(window, 'addEventListener');
       });
 
       afterEach(() => {
@@ -80,12 +80,12 @@ export const handleSingleDocumentPageViewTests = () =>
       it('creates a non-empty script element', () => {
         const cd = singleDocContentDelegate;
         const scriptSpy = {};
-        spyOn(document, 'createElement').and.returnValue(scriptSpy);
-        spyOn(document.body, 'appendChild');
+        jest.spyOn(document, 'createElement').mockReturnValue(scriptSpy);
+        jest.spyOn(document.body, 'appendChild').mockImplementation(() => {});
         cd.handleSingleDocumentPageView();
 
         expect(document.createElement).toHaveBeenCalledWith('script');
-        expect(scriptSpy.innerText).toEqual(jasmine.any(String));
+        expect(scriptSpy.innerText).toEqual(expect.any(String));
         expect(document.body.appendChild).toHaveBeenCalledWith(scriptSpy);
       });
 
@@ -95,7 +95,7 @@ export const handleSingleDocumentPageViewTests = () =>
 
         expect(window.addEventListener).toHaveBeenCalledWith(
           'message',
-          jasmine.any(Function),
+          expect.any(Function),
           false
         );
       });

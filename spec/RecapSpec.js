@@ -25,7 +25,7 @@ describe('The Recap export module', function () {
   // in utils, the callback is assigned the caller tab info
   // we use that to send the tabId to background worker so
   // we mock it here
-  const callback = jasmine.createSpy().and.callFake(() => {});
+  const callback = jest.fn(() => {});
   callback.tab = { id: 1234 };
 
   const FormDataFake = function () {};
@@ -49,22 +49,16 @@ describe('The Recap export module', function () {
         return formData;
       },
     });
-    spyOn(window, 'fetch').and.callFake((url, options) => {
+    jest.spyOn(window, 'fetch').mockImplementation((url, options) => {
       const res = {};
-      res.status = jasmine
-        .createSpy()
-        .and.callFake(() => Promise.resolve('200'));
-      res.text = jasmine
-        .createSpy()
-        .and.callFake(() =>
+      res.status = jest.fn(() => Promise.resolve('200'));
+      res.text = jest.fn(() =>
           Promise.resolve(
             `<html><iframe src="http://dummylink.com"></iframe></html>`
           )
         );
-      res.json = jasmine
-        .createSpy()
-        .and.callFake(() => Promise.resolve({ result: true }));
-      res.blob = jasmine.createSpy().and.callFake(() => Promise.resolve(blob));
+      res.json = jest.fn(() => Promise.resolve({ result: true }));
+      res.blob = jest.fn(() => Promise.resolve(blob));
       return Promise.resolve(res);
     });
   });
@@ -78,7 +72,7 @@ describe('The Recap export module', function () {
     window.chrome = {
       storage: {
         local: {
-          get: jasmine.createSpy('get').and.callFake((_, cb) => {
+          get: jest.fn((_, cb) => {
             cb({
               options: {
                 recap_enabled: true,
@@ -92,8 +86,8 @@ describe('The Recap export module', function () {
               },
             });
           }),
-          remove: jasmine.createSpy('remove').and.callFake(() => {}),
-          set: jasmine.createSpy('set').and.callFake(function () {}),
+          remove: jest.fn(() => {}),
+          set: jest.fn(function () {}),
         },
       },
     };
@@ -118,7 +112,7 @@ describe('The Recap export module', function () {
     });
 
     it('calls the callback with the parsed server response', function () {
-      const callback = jasmine.createSpy();
+      const callback = jest.fn();
       const expectedCourt = 'canb';
       const expectedCaseNum = '531316';
       recap.getAvailabilityForDocket(expectedCourt, expectedCaseNum, callback);
@@ -144,7 +138,7 @@ describe('The Recap export module', function () {
     });
 
     it('calls the callback with the parsed server response', function () {
-      const callback = jasmine.createSpy();
+      const callback = jest.fn();
       recap.getAvailabilityForDocuments(docUrls, 'canb', callback);
       jasmine.Ajax.requests.mostRecent().respondWith({
         status: 200,
@@ -195,7 +189,7 @@ describe('The Recap export module', function () {
         function () {}
       );
       const actualData = jasmine.Ajax.requests.mostRecent().data();
-      expect(actualData).toEqual(jasmine.objectContaining(expected));
+      expect(actualData).toEqual(expect.objectContaining(expected));
     });
   });
 
@@ -233,7 +227,7 @@ describe('The Recap export module', function () {
 
       recap.uploadAttachmentMenu(court, pacer_case_id, html, function () {});
       const actualData = jasmine.Ajax.requests.mostRecent().data();
-      expect(actualData).toEqual(jasmine.objectContaining(expected));
+      expect(actualData).toEqual(expect.objectContaining(expected));
     });
   });
 
@@ -245,7 +239,7 @@ describe('The Recap export module', function () {
       nativeFetch = window.fetch;
       existingFormData = window.FormData;
       window.FormData = FormDataFake;
-      spyOn(recap, 'uploadDocument').and.callFake(
+      jest.spyOn(recap, 'uploadDocument').mockImplementation(
         (court, case_id, doc_id, doc_number, attach_number, cb) => {
           cb(true);
         }
@@ -291,7 +285,7 @@ describe('The Recap export module', function () {
     beforeEach(async () => {
       existingFormData = window.FormData;
       window.FormData = FormDataFake;
-      spyOn(recap, 'uploadZipFile').and.callFake((court, pacerCaseId, cb) => {
+      jest.spyOn(recap, 'uploadZipFile').mockImplementation((court, pacerCaseId, cb) => {
         cb(true);
       });
       await setupChromeSpy();

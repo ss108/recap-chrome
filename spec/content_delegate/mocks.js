@@ -2,7 +2,7 @@ import { ContentDelegate } from '../../src/content_delegate';
 
 // ts: (modulePath: string, exportSymbolName: string) => jasmine.Spy
 export const spyOnModule = (module, prop) => {
-  const spy = jasmine.createSpy(`Spy of ${module}.${prop}`);
+  const spy = jest.fn();
   spyOnProperty(module, prop).and.returnValue(spy);
 };
 
@@ -108,14 +108,14 @@ export const singleDocContentDelegate = new ContentDelegate(
 );
 export function setupChromeSpy() {
   window.chrome = {
-    extension: { getURL: jasmine.createSpy() },
+    extension: { getURL: jest.fn() },
     storage: {
       local: {
-        get: jasmine.createSpy().and.callFake(function (_, cb) {
+        get: jest.fn(function (_, cb) {
           cb({ options: {} });
         }),
-        set: jasmine.createSpy('set').and.callFake(function () {}),
-        remove: jasmine.createSpy('remove').and.callFake(() => {}),
+        set: jest.fn(function () {}),
+        remove: jest.fn(() => {}),
       },
     },
   };

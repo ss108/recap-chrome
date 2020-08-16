@@ -11,7 +11,7 @@ export const handleRecapLinkClickTests = () =>
         window.chrome = {
           storage: {
             local: {
-              get: jasmine.createSpy().and.callFake((_, cb) => {
+              get: jest.fn((_, cb) => {
                 cb({ options: {} });
               }),
             },
@@ -31,10 +31,10 @@ export const handleRecapLinkClickTests = () =>
         window.chrome = {
           storage: {
             local: {
-              get: jasmine.createSpy().and.callFake((_, cb) => {
+              get: jest.fn((_, cb) => {
                 cb({ options: { recap_link_popups: true } });
               }),
-              set: jasmine.createSpy('set').and.callFake(() => {}),
+              set: jest.fn(() => {}),
             },
           },
         };

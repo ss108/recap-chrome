@@ -23,14 +23,14 @@ export const handleSingleDocumentPageCheckTests = () =>
     describe('when there is NO appropriate form', () => {
       it('has no effect when the URL is wrong', () => {
         const cd = nonsenseUrlContentDelegate;
-        spyOn(cd.recap, 'getAvailabilityForDocuments');
+        jest.spyOn(cd.recap, 'getAvailabilityForDocuments').mockImplementation(() => {});
         cd.handleSingleDocumentPageCheck();
         expect(cd.recap.getAvailabilityForDocuments).not.toHaveBeenCalled();
       });
 
       it('has no effect with a proper URL', () => {
         const cd = singleDocContentDelegate;
-        spyOn(cd.recap, 'getAvailabilityForDocuments');
+        jest.spyOn(cd.recap, 'getAvailabilityForDocuments').mockImplementation(() => {});
         cd.handleSingleDocumentPageCheck();
         expect(cd.recap.getAvailabilityForDocuments).not.toHaveBeenCalled();
       });
@@ -62,14 +62,14 @@ export const handleSingleDocumentPageCheckTests = () =>
 
       it('has no effect when the URL is wrong', () => {
         const cd = nonsenseUrlContentDelegate;
-        spyOn(cd.recap, 'getAvailabilityForDocuments');
+        jest.spyOn(cd.recap, 'getAvailabilityForDocuments').mockImplementation(() => {});
         cd.handleSingleDocumentPageCheck();
         expect(cd.recap.getAvailabilityForDocuments).not.toHaveBeenCalled();
       });
 
       it('checks availability for the page when the URL is right', () => {
         const cd = singleDocContentDelegate;
-        spyOn(cd.recap, 'getAvailabilityForDocuments');
+        jest.spyOn(cd.recap, 'getAvailabilityForDocuments').mockImplementation(() => {});
         cd.handleSingleDocumentPageCheck();
         expect(cd.recap.getAvailabilityForDocuments).toHaveBeenCalled();
       });
@@ -97,7 +97,7 @@ export const handleSingleDocumentPageCheckTests = () =>
             };
             callback(response);
           };
-          spyOn(cd.recap, 'getAvailabilityForDocuments').and.callFake(fake);
+          jest.spyOn(cd.recap, 'getAvailabilityForDocuments').mockImplementation(fake);
 
           cd.handleSingleDocumentPageCheck();
 
@@ -115,7 +115,7 @@ export const handleSingleDocumentPageCheckTests = () =>
             const response = { results: [{}] };
             callback(response);
           };
-          spyOn(cd.recap, 'getAvailabilityForDocuments').and.callFake(fake);
+          jest.spyOn(cd.recap, 'getAvailabilityForDocuments').mockImplementation(fake);
 
           cd.handleSingleDocumentPageCheck();
 

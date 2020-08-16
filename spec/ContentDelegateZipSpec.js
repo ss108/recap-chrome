@@ -45,7 +45,7 @@ describe('The ContentDelegate class', () => {
       window.chrome = {
         storage: {
           local: {
-            get: jasmine.createSpy('get').and.callFake((key, cb) => {
+            get: jest.fn((key, cb) => {
               cb({
                 options: {
                   recap_enabled: true,
@@ -59,36 +59,26 @@ describe('The ContentDelegate class', () => {
                 },
               });
             }),
-            remove: jasmine.createSpy('remove').and.callFake(() => {}),
-            set: jasmine.createSpy('set').and.callFake(function () {}),
+            remove: jest.fn(() => {}),
+            set: jest.fn(function () {}),
           },
         },
       };
       nativeFetch = window.fetch;
-      spyOn(window, 'fetch').and.callFake((url, options) => {
+      jest.spyOn(window, 'fetch').mockImplementation((url, options) => {
         const res = {};
-        res.status = jasmine
-          .createSpy()
-          .and.callFake(() => Promise.resolve('200'));
-        res.text = jasmine
-          .createSpy()
-          .and.callFake(() =>
+        res.status = jest.fn(() => Promise.resolve('200'));
+        res.text = jest.fn(() =>
             Promise.resolve(
               `<html><iframe src="http://dummylink.com"></iframe></html>`
             )
           );
-        res.json = jasmine
-          .createSpy()
-          .and.callFake(() => Promise.resolve({ result: true }));
-        res.blob = jasmine
-          .createSpy()
-          .and.callFake(() => Promise.resolve(blob));
+        res.json = jest.fn(() => Promise.resolve({ result: true }));
+        res.blob = jest.fn(() => Promise.resolve(blob));
         return Promise.resolve(res);
       });
-      window.saveAs = jasmine
-        .createSpy('saveAs')
-        .and.callFake((blob, filename) => Promise.resolve(true));
-      spyOn(window, 'addEventListener').and.callThrough();
+      window.saveAs = jest.fn((blob, filename) => Promise.resolve(true));
+      jest.spyOn(window, 'addEventListener');
     });
 
     afterEach(() => {
@@ -197,13 +187,13 @@ describe('The ContentDelegate class', () => {
     describe('onDownloadAllSubmit', function () {
       const cd = zipFileContentDelegate;
       beforeEach(async () => {
-        spyOn(cd.recap, 'uploadZipFile').and.callFake(
+        jest.spyOn(cd.recap, 'uploadZipFile').mockImplementation(
           (court, pacerCaseId, callback) => {
             callback(true);
           }
         );
-        spyOn(history, 'pushState').and.callFake((...args) => {});
-        spyOn(cd.notifier, 'showUpload').and.callFake((message, callback) => {
+        jest.spyOn(history, 'pushState').mockImplementation((...args) => {});
+        jest.spyOn(cd.notifier, 'showUpload').mockImplementation((message, callback) => {
           callback(true);
         });
         await cd.onDownloadAllSubmit({ data: { id: eventUrl } });

@@ -16,14 +16,14 @@ export const findAndStorePacerDocIdsTests = () =>
   describe('findAndStorePacerDocIds', () => {
     beforeAll(() => {
       window.chrome = {
-        extension: { getURL: jasmine.createSpy() },
+        extension: { getURL: jest.fn() },
         storage: {
           local: {
-            get: jasmine.createSpy().and.callFake(function (_, cb) {
+            get: jest.fn(function (_, cb) {
               cb({ 1234: {} });
             }),
-            set: jasmine.createSpy('set').and.callFake(function () {}),
-            remove: jasmine.createSpy('remove').and.callFake(() => {}),
+            set: jest.fn(function () {}),
+            remove: jest.fn(() => {}),
           },
         },
       };
@@ -31,17 +31,17 @@ export const findAndStorePacerDocIdsTests = () =>
     afterAll(() => removeChromeSpy());
 
     it('should handle no cookie', async () => {
-      spyOn(PACER, 'hasPacerCookie').and.returnValue(false);
+      jest.spyOn(PACER, 'hasPacerCookie').mockReturnValue(false);
       const ids = await nonsenseUrlContentDelegate.findAndStorePacerDocIds();
       expect(ids).toBe(undefined);
     });
 
     it('should handle pages without case ids', async () => {
       const cd = noPacerCaseIdContentDelegate;
-      spyOn(PACER, 'hasPacerCookie').and.returnValue(true);
+      jest.spyOn(PACER, 'hasPacerCookie').mockReturnValue(true);
       chrome.storage.local.set = (docs, cb) => cb();
 
-      spyOn(utils, 'getPacerCaseIdFromStore').and.returnValue('mockedCorrectly');
+      jest.spyOn(utils, 'getPacerCaseIdFromStore').mockReturnValue('mockedCorrectly');
       await cd.findAndStorePacerDocIds();
       utils.getPacerCaseIdFromStore().toBe('mockedCorrectly');
     });
@@ -66,8 +66,8 @@ export const findAndStorePacerDocIdsTests = () =>
       );
 
       let documents = {};
-      spyOn(PACER, 'hasPacerCookie').and.returnValue(true);
-      spyOn(PACER, 'parseGoDLSFunction').and.returnValue({
+      jest.spyOn(PACER, 'hasPacerCookie').mockReturnValue(true);
+      jest.spyOn(PACER, 'parseGoDLSFunction').mockReturnValue({
         de_caseid: '1234',
       });
       const cd = docketQueryWithLinksContentDelegate;
@@ -102,7 +102,7 @@ export const findAndStorePacerDocIdsTests = () =>
         test_links // links
       );
       let documents = {};
-      spyOn(PACER, 'hasPacerCookie').and.returnValue(true);
+      jest.spyOn(PACER, 'hasPacerCookie').mockReturnValue(true);
       const cd = docketQueryWithLinksContentDelegate;
       chrome.storage.local.set = function (storagePayload, cb) {
         const docs = storagePayload[tabId].docsToCases;

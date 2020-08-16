@@ -17,10 +17,10 @@ export const handleAttachmentMenuPageTests = () =>
         window.chrome = {
           storage: {
             local: {
-              get: jasmine.createSpy().and.callFake((_, cb) => {
+              get: jest.fn((_, cb) => {
                 cb({ options: { recap_enabled: false } });
               }),
-              set: jasmine.createSpy('set').and.callFake(() => {}),
+              set: jest.fn(() => {}),
             },
           },
         };
@@ -36,7 +36,7 @@ export const handleAttachmentMenuPageTests = () =>
 
       it('has no effect recap_enabled option is not set', () => {
         const cd = singleDocContentDelegate;
-        spyOn(cd.recap, 'uploadAttachmentMenu');
+        jest.spyOn(cd.recap, 'uploadAttachmentMenu').mockImplementation(() => {});
         cd.handleAttachmentMenuPage();
         expect(cd.recap.uploadAttachmentMenu).not.toHaveBeenCalled();
       });
@@ -50,10 +50,10 @@ export const handleAttachmentMenuPageTests = () =>
         window.chrome = {
           storage: {
             local: {
-              get: jasmine.createSpy().and.callFake((_, cb) => {
+              get: jest.fn((_, cb) => {
                 cb({ options: { recap_enabled: true } });
               }),
-              set: jasmine.createSpy('set').and.callFake(() => {}),
+              set: jest.fn(() => {}),
             },
           },
         };
@@ -75,7 +75,7 @@ export const handleAttachmentMenuPageTests = () =>
 
         it('has no effect', () => {
           const cd = docketDisplayContentDelegate;
-          spyOn(cd.recap, 'uploadAttachmentMenu');
+          jest.spyOn(cd.recap, 'uploadAttachmentMenu').mockImplementation(() => {});
           cd.handleAttachmentMenuPage();
           expect(cd.recap.uploadAttachmentMenu).not.toHaveBeenCalled();
         });
@@ -84,14 +84,14 @@ export const handleAttachmentMenuPageTests = () =>
       describe('when there is NO appropriate form', () => {
         it('has no effect when the URL is wrong', () => {
           const cd = nonsenseUrlContentDelegate;
-          spyOn(cd.recap, 'uploadAttachmentMenu');
+          jest.spyOn(cd.recap, 'uploadAttachmentMenu').mockImplementation(() => {});
           cd.handleAttachmentMenuPage();
           expect(cd.recap.uploadAttachmentMenu).not.toHaveBeenCalled();
         });
 
         it('has no effect with a proper URL', () => {
           const cd = singleDocContentDelegate;
-          spyOn(cd.recap, 'uploadAttachmentMenu');
+          jest.spyOn(cd.recap, 'uploadAttachmentMenu').mockImplementation(() => {});
           cd.handleAttachmentMenuPage();
           expect(cd.recap.uploadAttachmentMenu).not.toHaveBeenCalled();
         });
@@ -107,14 +107,14 @@ export const handleAttachmentMenuPageTests = () =>
 
         it('has no effect when the URL is wrong', () => {
           const cd = nonsenseUrlContentDelegate;
-          spyOn(cd.recap, 'uploadAttachmentMenu');
+          jest.spyOn(cd.recap, 'uploadAttachmentMenu').mockImplementation(() => {});
           cd.handleAttachmentMenuPage();
           expect(cd.recap.uploadAttachmentMenu).not.toHaveBeenCalled();
         });
 
         it('uploads the page when the URL is right', () => {
           const cd = singleDocContentDelegate;
-          spyOn(cd.recap, 'uploadAttachmentMenu');
+          jest.spyOn(cd.recap, 'uploadAttachmentMenu').mockImplementation(() => {});
           cd.handleAttachmentMenuPage();
           expect(cd.recap.uploadAttachmentMenu).toHaveBeenCalled();
         });
@@ -124,9 +124,9 @@ export const handleAttachmentMenuPageTests = () =>
           const uploadFake = (pc, pci, h, callback) => {
             callback(true);
           };
-          spyOn(cd.recap, 'uploadAttachmentMenu').and.callFake(uploadFake);
-          spyOn(cd.notifier, 'showUpload');
-          spyOn(history, 'replaceState');
+          jest.spyOn(cd.recap, 'uploadAttachmentMenu').mockImplementation(uploadFake);
+          jest.spyOn(cd.notifier, 'showUpload').mockImplementation(() => {});
+          jest.spyOn(history, 'replaceState').mockImplementation(() => {});
 
           cd.handleAttachmentMenuPage();
           expect(cd.recap.uploadAttachmentMenu).toHaveBeenCalled();
@@ -142,9 +142,9 @@ export const handleAttachmentMenuPageTests = () =>
           const uploadFake = (pc, pci, h, callback) => {
             callback(false);
           };
-          spyOn(cd.recap, 'uploadAttachmentMenu').and.callFake(uploadFake);
-          spyOn(cd.notifier, 'showUpload');
-          spyOn(history, 'replaceState');
+          jest.spyOn(cd.recap, 'uploadAttachmentMenu').mockImplementation(uploadFake);
+          jest.spyOn(cd.notifier, 'showUpload').mockImplementation(() => {});
+          jest.spyOn(history, 'replaceState').mockImplementation(() => {});
 
           cd.handleAttachmentMenuPage();
           expect(cd.recap.uploadAttachmentMenu).toHaveBeenCalled();
