@@ -1,9 +1,10 @@
-import { getTabById, updateToolbarButton } from './toolbar_button';
 import {
+  getTabById,
   handleBackgroundFetchRequest,
   handleBackgroundNotificationRequest,
   setDefaultOptions,
   showNotificationTab,
+  updateToolbarButton,
 } from './utils';
 
 // Make services callable from content scripts.

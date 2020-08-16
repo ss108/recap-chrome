@@ -1,5 +1,11 @@
 import { ContentDelegate } from '../../src/content_delegate';
 
+// ts: (modulePath: string, exportSymbolName: string) => jasmine.Spy
+export const spyOnModule = (module, prop) => {
+  const spy = jasmine.createSpy(`Spy of ${module}.${prop}`);
+  spyOnProperty(module, prop).and.returnValue(spy);
+};
+
 export const tabId = 1234;
 
 export function linksFromUrls(urls) {
@@ -19,16 +25,13 @@ export const districtCourtURI = 'https://ecf.canb.uscourts.gov';
 export const singleDocPath = '/doc1/034031424909';
 export const docketDisplayPath = '/cgi-bin/DktRpt.pl?101092135737069-L_1_0-1';
 export const docketQueryPath = '/cgi-bin/DktRpt.pl?531591';
-export const historyDocketPath =
-  '/cgi-bin/HistDocQry.pl?101092135737069-L_1_0-1';
+export const historyDocketPath = '/cgi-bin/HistDocQry.pl?101092135737069-L_1_0-1';
 
 // 'url' values
 export const docketQueryUrl = districtCourtURI.concat(docketQueryPath);
 export const docketDisplayUrl = districtCourtURI.concat(docketDisplayPath);
 export const singleDocUrl = districtCourtURI.concat(singleDocPath);
-export const historyDocketDisplayUrl = districtCourtURI.concat(
-  historyDocketPath
-);
+export const historyDocketDisplayUrl = districtCourtURI.concat(historyDocketPath);
 export const nonsenseUrl = 'http://something.uscourts.gov/foobar/baz';
 
 export const appellateURL = ''; // Todo get good example value

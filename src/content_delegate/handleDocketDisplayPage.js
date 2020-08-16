@@ -3,6 +3,8 @@ import {
   alertButtonTr,
   changeAlertButtonStateToActive,
   getItemsFromStorage,
+  isInterstitialDocketPage,
+  isDocketPage,
   dispatchBackgroundFetch,
   uploadType,
   courtListenerURL,
@@ -11,6 +13,7 @@ import {
   searchParamsURL,
   saveItemToStorage,
   blobToDataURL,
+  dispatchNotifier,
 } from '../utils';
 
 // LOCAL HELPERS //
@@ -18,24 +21,9 @@ import {
 const alertBtn = () => document.getElementById('recap-alert-button');
 const alreadyUploaded = (history) => history && history.uploaded;
 
-// returns the docket type or null if neither docket nor docket history page
-const isDocketPage = (url) =>
-  PACER.isDocketDisplayUrl(url)
-    ? 'DOCKET'
-    : PACER.isDocketHistoryDisplayUrl(url)
-    ? 'DOCKET_HISTORY_REPORT'
-    : null;
-
 const insertIntoTableStart = (el) => {
   const table = document.querySelector('body');
   table.insertBefore(el, table.childNodes[0]);
-};
-// check for more than one radioDateInput and return if true
-// (you are on an interstitial page so no docket to display)
-const isInterstitialPage = () => {
-  const arr = [...document.querySelectorAll('input[type="radio"]')];
-  const radioDateInputs = arr.filter((i) => i.name === 'date_from');
-  return radioDateInputs.length > 1;
 };
 const toggleAlertButton = (resultCount) => {
   if (resultCount === 0) return console.warn(msg.warn);
@@ -56,7 +44,7 @@ const msg = {
 export async function handleDocketDisplayPage() {
   if (!isDocketPage(this.url)) return;
   if (alreadyUploaded(history.state)) return;
-  if (isInterstitialPage()) return;
+  if (isInterstitialDocketPage()) return;
 
   // Get the case id. If the delegate does not have a case_id
   // and there is not one in storage, then do nothing.
@@ -118,11 +106,21 @@ export async function handleDocketDisplayPage() {
       },
     },
   });
-
-  // if upload successful, set the upload flag to true, dispatch the
-  // notifier, and change the create alert button state to active
   if (!docketUploaded) return console.error(msg.error);
+
+  // if upload successful, set the upload flag to true, and
+  // change the create alert button state to active
+
+  const notified = await dispatchNotifier({
+    action: 'showUpload',
+    title: 'Successful Docket Upload',
+    message: msg.success,
+  });
+
+  if (notified.success)
+    return console.info('RECAP: User notified of succesful upload');
+
   history.replaceState({ uploaded: true }, '');
-  this.notifier.showUpload(msg.success, () => {});
+
   changeAlertButtonStateToActive({ el: alertBtn() });
 }

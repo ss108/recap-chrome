@@ -8,32 +8,44 @@ import {
   setupChromeSpy,
   removeChromeSpy,
   tabId,
+  spyOnModule,
 } from './mocks';
+import * as utils from '../../src/utils';
 
 export const findAndStorePacerDocIdsTests = () =>
   describe('findAndStorePacerDocIds', () => {
-    beforeAll(() => setupChromeSpy());
+    beforeAll(() => {
+      window.chrome = {
+        extension: { getURL: jasmine.createSpy() },
+        storage: {
+          local: {
+            get: jasmine.createSpy().and.callFake(function (_, cb) {
+              cb({ 1234: {} });
+            }),
+            set: jasmine.createSpy('set').and.callFake(function () {}),
+            remove: jasmine.createSpy('remove').and.callFake(() => {}),
+          },
+        },
+      };
+    });
     afterAll(() => removeChromeSpy());
 
-    it('should handle no cookie', () => {
+    it('should handle no cookie', async () => {
       spyOn(PACER, 'hasPacerCookie').and.returnValue(false);
-      expect(nonsenseUrlContentDelegate.findAndStorePacerDocIds()).toBe(
-        undefined
-      );
+      const ids = await nonsenseUrlContentDelegate.findAndStorePacerDocIds();
+      expect(ids).toBe(undefined);
     });
-    it('should handle pages without case ids', () => {
+
+    it('should handle pages without case ids', async () => {
       const cd = noPacerCaseIdContentDelegate;
       spyOn(PACER, 'hasPacerCookie').and.returnValue(true);
-      spyOn(cd.recap, 'getPacerCaseIdFromPacerDocId').and.callFake(
-        (_, callback) => {
-          callback.tab = { id: 1234 };
-          callback('531931');
-        }
-      );
       chrome.storage.local.set = (docs, cb) => cb();
-      cd.findAndStorePacerDocIds();
-      expect(cd.recap.getPacerCaseIdFromPacerDocId).toHaveBeenCalled();
+
+      spyOn(utils, 'getPacerCaseIdFromStore').and.returnValue('mockedCorrectly');
+      await cd.findAndStorePacerDocIds();
+      utils.getPacerCaseIdFromStore().toBe('mockedCorrectly');
     });
+
     it('should iterate links for DLS', async () => {
       const link_2 = document.createElement('a');
       link_2.href = 'https://ecf.canb.uscourts.gov/notacase/034031424909';
@@ -42,6 +54,7 @@ export const findAndStorePacerDocIdsTests = () =>
       const link_4 = document.createElement('a');
       link_4.href = 'https://ecf.canb.uscourts.gov/doc1/034031424911';
       const test_links = [link_2, link_3, link_4];
+
       const docketQueryWithLinksContentDelegate = new ContentDelegate(
         tabId, // tabId
         docketQueryUrl, // url
@@ -58,23 +71,19 @@ export const findAndStorePacerDocIdsTests = () =>
         de_caseid: '1234',
       });
       const cd = docketQueryWithLinksContentDelegate;
+
       chrome.storage.local.set = function (storagePayload, cb) {
         const docs = storagePayload[tabId].docsToCases;
         documents = docs;
         cb();
       };
-      spyOn(cd.recap, 'getPacerCaseIdFromPacerDocId').and.callFake(
-        (_, callback) => {
-          callback.tab = { id: 1234 };
-          return Promise.resolve(callback('531931'));
-        }
-      );
       await cd.findAndStorePacerDocIds();
       expect(documents).toEqual({
         '034031424910': '1234',
         '034031424911': '1234',
       });
     });
+
     it('should iterate links for PACER case id', async () => {
       const link_2 = document.createElement('a');
       link_2.href = 'https://ecf.canb.uscourts.gov/notacase/034031424909';

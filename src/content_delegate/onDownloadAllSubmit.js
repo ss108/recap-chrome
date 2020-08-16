@@ -8,46 +8,12 @@ import {
   authHeader,
   uploadType,
   debug,
+  setPreviousPageinHistory,
+  toggleLoadingCursor,
+  dispatchNotifier,
+  stringToDocBody,
+  blobDownloadLink,
 } from '../utils';
-
-// helper function - convert string to html document
-const stringToDocBody = (str) => {
-  const parser = new DOMParser();
-  const newDoc = parser.parseFromString(str, 'text/html');
-  return newDoc.body;
-};
-// helper function - extract the zip by creating html and querying the frame
-const extractUrl = (html) => {
-  const page = document.createElement('html');
-  page.innerHTML = html;
-  const frames = page.querySelectorAll('iframe');
-  return frames[0].src;
-};
-// helper function - returns filename based on user preferences
-const generateFileName = (
-  options,
-  pacerCaseId,
-  court,
-  docket_number,
-  document_number
-) => {
-  if (options.ia_style_filenames) {
-    return ['gov', 'uscourts', court, pacerCaseId || 'unknown-case-id']
-      .join('.')
-      .concat('.zip');
-  } else if (options.lawyer_style_filenames) {
-    const firstTable = document.getElementsByTagName('table')[0];
-    const firstTableRows = firstTable.querySelectorAll('tr');
-    // 4th from bottom
-    const matchedRow = firstTableRows[firstTableRows.length - 4];
-    const cells = matchedRow.querySelectorAll('td');
-    const document_number = cells[0].innerText.match(/\d+(?=\-)/)[0];
-    const docket_number = cells[1].innerText;
-    return [PACER.COURT_ABBREVS[court], docket_number, document_number]
-      .join('_')
-      .concat('.zip');
-  }
-};
 
 // PROTOTYPE FUNCTION START //
 export async function onDownloadAllSubmit(event) {
@@ -55,59 +21,31 @@ export async function onDownloadAllSubmit(event) {
   if (!event.data.id) return;
 
   // Make the Back button redisplay the previous page.
-  window.onpopstate = function (event) {
-    if (!event.state.content) return;
-    document.documentElement.innerHTML = event.state.content;
-  };
+  window.onpopstate = (e) => setPreviousPageinHistory(e);
   history.replaceState({ content: document.documentElement.innerHTML }, '');
 
-  // tell the user to wait
-  document.querySelector('body').classList += 'cursor wait';
+  toggleLoadingCursor(); // tell the user to wait
 
-  // in Firefox, use content.fetch for content-specific fetch requests
-  // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_scripts#XHR_and_Fetch
-  const contentFetch =
-    navigator.userAgent.indexOf('Chrome') < 0 ? content.fetch : window.fetch;
+  const fetchAndStoreBlob = await saveZipFileInStorage({
+    url: event.data.id,
+    tabId: this.tabId,
+  });
 
-  // fetch the html page which contains the <iframe> link to the zip document.
-  const htmlPage = await contentFetch(event.data.id).then((res) => res.text());
-  console.log('RECAP: Successfully submitted zip file request', htmlPage);
-  const zipUrl = extractUrl(htmlPage);
+  if (!fetchAndStoreBlob) return console.error('Could not extract blob from page');
 
-  //download zip file and save it to chrome storage
-  const blob = await fetch(zipUrl).then((res) => res.blob());
-  const dataUrl = await blobToDataURL(blob);
-  // save blob in storage under tabId
-  // we store it as an array to chunk the message
-  await updateTabStorage({ [this.tabId]: { ['file_blob']: dataUrl } });
-
-  // the the user we've downloaded the file
-  console.info('RECAP: Downloaded zip file');
-
-  // create the blob and inject it into the page
-  const pacerCaseId = event.data.id
-    .match(/caseid\=\d*/)[0]
-    .replace(/caseid\=/, '');
-
-  // generate the filename
-  const filename = generateFileName(
-    options,
-    pacerCaseId,
-    this.court,
-    docket_number,
-    document_number
-  );
-
+  // do nothing further if the page is restricted
   if (this.restricted) return console.warn('Page is restricted.');
 
-  // load options
+  // else load options, but return if recap not enabled
   const options = await getItemsFromStorage('options');
   if (!options.recap_enabled) return console.error('Recap not enabled.');
 
+  // get the docId from storage if we don't have one.
   const docId = this.pacer_doc_id
     ? this.pacer_doc_id
     : await getItemsFromStorage(this.tabId).docId;
 
+  // dispatch the fetch request
   const uploadZipFile = await dispatchBackgroundFetch({
     url: courtListenerURL('recap'),
     options: {
@@ -124,20 +62,50 @@ export async function onDownloadAllSubmit(event) {
     },
   });
 
+  // if it is not successful, do nothing and report error.
   if (!uploadZipFile) return console.error('RECAP: Upload failed.');
-  // show notifier
-  this.notifier.showUpload(
-    'Zip uploaded to the public RECAP Archive',
-    () => {}
-  );
-  // convert htmlPage to document
-  const blobUrl = URL.createObjectURL(blob);
-  const link = `<a id="recap-download" href=${blobUrl} download=${filename} width="0" height="0"/>`;
+
+  // else, show notifier with a success message
+  const { success } = await dispatchNotifier({
+    action: 'showUpload',
+    title: 'Successful',
+    message: 'Zip uploaded to the public RECAP Archive',
+  });
+
+  if (success) console.info('RECAP: Notified user of successful upload');
+
+  // convert htmlPage to a document element
   const htmlBody = stringToDocBody(htmlPage);
+  // find the target iframe in that document
   const frame = htmlBody.querySelector('iframe');
-  frame.insertAdjacentHTML('beforebegin', link);
+
+  // get the docket and document numbers from the DOM
+  const { docket_number, document_number } = getDocAndDocketNumbersForZipDownload();
+
+  // insert the blob download anchor string before the iframe
+  frame.insertAdjacentHTML(
+    'beforebegin',
+    // construct the anchor by passing the blobUrl key an objectURL
+    // and a filename string, constructed from the included args
+    blobDownloadLink({
+      blobUrl: URL.createObjectURL(blob),
+      filename: generateFileName({
+        docket_number,
+        document_number,
+        court: this.court,
+        style: options.lawyer_style_filenames ? 'lawyer' : 'ia',
+        pacerCaseId: event.data.id.match(/caseid\=(\d*)/)[1],
+      }),
+    })
+  );
+
+  // set the rest of the frame parameters
   frame.src = '';
   frame.onload = () => document.getElementById('recap-download').click();
+
+  // replace the document body with the newly created one
   document.body = htmlBody;
+
+  // add the new html to history
   history.pushState({ content: document.body.innerHTML }, '');
 }

@@ -1,32 +1,58 @@
 import PACER from '../pacer';
+import {
+  getItemsFromStorage,
+  dispatchBackgroundFetch,
+  courtListenerURL,
+  authHeader,
+  uploadType,
+  dispatchNotifier,
+} from '../utils';
 
-export function handleAttachmentMenuPage() {
+const msg = {
+  disabled: 'RECAP: Not uploading attachment menu. RECAP is disabled',
+  error: 'Uploading failed. Please check logs for more information.',
+};
+
+export async function handleAttachmentMenuPage() {
   // don't do anything if already uploaded or if it is not
   // an attachment menu page
   if (history.state && history.state.uploaded) return;
   if (!PACER.isAttachmentMenuPage(this.url, document)) return;
 
-  const msg = {
-    disabled: 'RECAP: Not uploading attachment menu. RECAP is disabled',
-    success: 'Menu page uploaded to the public RECAP Archive.',
-    error: 'Uploading failed. Please check logs for more information.',
-  };
-
   // check if the user enabled recap by fetching the options store
-  chrome.storage.local.get('options', (items) => {
-    // return the disabled message if it isn't
-    if (!items.options.recap_enabled) return console.info(msg.disabled);
+  const options = await getItemsFromStorage('options');
+  if (!options.recap_enabled) return console.info(msg.disabled);
 
-    // upload the attachment menu page to RECAP and dispatch the notifier
-    this.recap.uploadAttachmentMenu(
-      this.court,
-      this.pacer_case_id,
-      document.documentElement.innerHTML,
-      (ok) => {
-        if (!ok) return console.error(msg.error);
-        history.replaceState({ uploaded: true }, '');
-        this.notifier.showUpload(msg.success, () => {});
-      }
-    );
+  // save the page as a blob in storage
+  const dataUrl = await blobToDataURL(
+    new Blob([document.documentElement.innerHTML], { type: 'text/html' })
+  );
+  await saveItemToStorage({ [this.tabId]: dataUrl });
+
+  const uploaded = dispatchBackgroundFetch({
+    url: courtListenerURL('recap'),
+    options: {
+      method: 'POST',
+      headers: authHeader,
+      body: {
+        pacer_case_id: this.pacer_case_id,
+        court: PACER.convertToCourtListenerCourt(this.court),
+        filepath_local: true,
+        upload_type: uploadType('ATTACHMENT_PAGE'),
+        debug: false,
+      },
+    },
   });
+
+  if (!uploaded) return console.error('RECAP: Attachment page not uploaded');
+
+  // dispatch notifier and log success
+  const notified = await dispatchNotifier({
+    action: 'showUpload',
+    title: 'attachment_page_upload_notification',
+    message: 'Menu page uploaded to the public RECAP Archive.',
+  });
+
+  if (notified.success)
+    return console.info('User notified of successful attachment page upload');
 }

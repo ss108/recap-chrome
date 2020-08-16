@@ -6,17 +6,14 @@ export const N87GC2 = '45c7946dd8400ad62662565cf79da3c081d9b0e5';
 export const authHeader = { Authorization: `Token ${N87GC2}` };
 export const jsonHeader = { 'Content-Type': 'application/json' };
 
-// from JSON object, return a formData object
-export const buildFormData = (body) => {
-  const formData = new FormData();
-  Object.keys(body).map((key) => formData.append(key, body[key]));
-  return formData;
-};
-
 // build courtlistener URL
 // django requires the suffix to be followed by a slash
 export const courtListenerURL = (suffix) =>
   'https://www.courtlistener.com/api/rest/v3/' + suffix + '/';
+
+export const recapLinkURL = (filepath) => {
+  return `https://www.courtlistener.com/${filepath}`;
+};
 
 // same as regular fetch with some differences:
 // (1) it calls fetch from the background worker instead of brownser

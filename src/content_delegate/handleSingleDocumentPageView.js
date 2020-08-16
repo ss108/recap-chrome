@@ -23,9 +23,5 @@ export function handleSingleDocumentPageView() {
 
   // When we receive the message from the above submit method, submit the form
   // via XHR so we can get the document before the browser does.
-  window.addEventListener(
-    'message',
-    this.onDocumentViewSubmit.bind(this),
-    false
-  );
+  window.addEventListener('message', this.onDocumentViewSubmit.bind(this), false);
 }

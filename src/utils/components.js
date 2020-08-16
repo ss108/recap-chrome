@@ -3,6 +3,12 @@
 import { formatDistanceToNow, parseISO } from 'date-fns';
 import { getImage } from '../utils';
 
+// injected into the DOM as adjacentHTML, so return String
+// ({ blobUrl: String, filename: String }) => String;
+export const blobDownloadLink = ({ blobUrl, filename }) => {
+  return `<a id="recap-download" href=${blobUrl} download=${filename} width="0" height="0"/>`;
+};
+
 export const showPdfHtml = ({ blobUrl, filename, match }) => {
   const targetId = 'recap-download';
   const initial = 'initial';

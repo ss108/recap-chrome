@@ -5,10 +5,9 @@ import {
   courtListenerURL,
   fetchGetOptions,
   authHeader,
+  recapLinkURL,
 } from '../utils';
 import PACER from '../pacer';
-// Check every link in the document to see if there is a free RECAP document
-// available. If there is, put a link with a RECAP icon.
 
 const msg = {
   noLinks: 'RECAP: No eligible documents found',
@@ -20,6 +19,8 @@ const msg = {
     'attach links and icons where appropriate.',
 };
 
+// Check every link in the document to see if there is a free RECAP document
+// available. If there is, put a link with a RECAP icon.
 export async function attachRecapLinkToEligibleDocs() {
   // check if links exist and return if none eligible
   if (this.pacer_doc_ids.length === 0) return console.info(msg.noLinks);
@@ -32,7 +33,7 @@ export async function attachRecapLinkToEligibleDocs() {
   const clCourt = PACER.convertToCourtListenerCourt(this.court);
 
   // submit fetch request through background worker
-  const api_results = await dispatchBackgroundFetch({
+  const recapLinks = await dispatchBackgroundFetch({
     url: searchParamsURL({
       base: courtListenerURL('recap-query'),
       params: {
@@ -47,38 +48,34 @@ export async function attachRecapLinkToEligibleDocs() {
   });
 
   // return if there are no results
-  if (!api_results) return console.error(msg.error);
+  if (!recapLinks) return console.error(msg.error);
 
   // tell the user we've got results from the API
   console.info(msg.success);
 
   [...this.links].map((link) => {
-    // get data attribute using jquery
+    // get data-attr from link
     const pacer_doc_id = link.dataset.pacer_doc_id;
 
     // if data attribute doesn't exist, exit
     if (!pacer_doc_id) return;
 
     // find the corresponding link in the dom
-    const result = api_results.results.find((obj) => {
-      if (Object.keys(obj).length < 1) return;
-      return obj.pacer_doc_id === pacer_doc_id;
-    });
+    const result = recapLinks.results.find((r) => r.pacer_doc_id === pacer_doc_id);
 
     // no result, punt
     if (!result) return;
 
-    // insert link onto DOM
     const recapLink = inlineDocumentBanner({ path: result.filepath_local });
-    link.insertAdjacentElement('afterend', recapLink);
 
     // attach event listener
     recapLink.addEventListener('click', (ev) => {
+      // stop the native clickhandler from firing;
       ev.preventDefault();
-      this.handleRecapLinkClick(
-        window,
-        `https://www.courtlistener.com/${result.filepath_local}`
-      );
+      this.handleRecapLinkClick(window, recapLinkURL(result.filepath_local));
     });
+
+    // insert recapLink onto DOM adjacent to the pacer link
+    link.insertAdjacentElement('afterend', recapLink);
   });
 }

@@ -1,22 +1,12 @@
 import PACER from '../pacer';
-import { debug, updateTabStorage, getItemsFromStorage } from '../utils';
+import {
+  debug,
+  updateTabStorage,
+  getItemsFromStorage,
+  getPacerCaseIdFromStore,
+} from '../utils';
 // Use a variety of approaches to get and store pacer_doc_id to pacer_case_id
 // mappings in local storage.
-
-const getPacerCaseIdFromStore = async ({ tabId, pacer_doc_id }) => {
-  const tabStorage = await getItemsFromStorage(tabId);
-
-  const docsToCases = tabStorage.docsToCases;
-  if (!docsToCases) return;
-  console.log(docsToCases);
-
-  const caseId = docsToCases[pacer_doc_id];
-  if (!caseId) return console.warn('No pacer_case_id found in storage');
-
-  const success = `RECAP: Got case number ${caseId} for docId ${pacer_doc_id}`;
-  console.info(success);
-  return caseId;
-};
 
 export async function findAndStorePacerDocIds() {
   // no cookie, no love
@@ -24,7 +14,6 @@ export async function findAndStorePacerDocIds() {
 
   // Not all pages have a case ID, and there are corner-cases in merged dockets
   // where there are links to documents on another case.
-  console.log(this);
   const page_pacer_case_id = this.pacer_case_id
     ? this.pacer_case_id
     : await getPacerCaseIdFromStore({
@@ -69,6 +58,7 @@ export async function findAndStorePacerDocIds() {
   });
 
   const payload = { docsToCases };
+
   // add docId to store if it exists
   if (!!this.pacer_doc_id) {
     payload['docId'] = this.pacer_doc_id;

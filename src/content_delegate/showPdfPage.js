@@ -10,6 +10,7 @@ import {
   authHeader,
   uploadType,
   dispatchNotifier,
+  getPacerCaseIdFromStore,
 } from '../utils';
 // Given the HTML for a page with an <iframe> in it, downloads the PDF
 // document in the iframe, displays it in the browser, and also
@@ -26,13 +27,12 @@ export async function showPdfPage(
   attachment_number,
   docket_number
 ) {
+  const options = await getItemsFromStorage('options');
   // Find the <iframe> URL in the HTML string.
   let match = html.match(/([^]*?)<iframe[^>]*src="(.*?)"([^]*)/);
   if (!match) {
     return (document.documentElement.innerHTML = html);
   }
-
-  const options = await getItemsFromStorage('options');
 
   // Show the page with a blank <iframe> while waiting for the download.
   document.documentElement.innerHTML = waitingPageHtml({ match });
@@ -55,36 +55,16 @@ export async function showPdfPage(
   // to either display the PDF in the provided <iframe>, or, if
   // external_pdf is set, save it using FileSaver.js's saveAs().
 
-  const pacer_case_id = !this.pacer_case_id
-    ? await this.recap.getPacerCaseIdFromPacerDocId(this.pacer_doc_id, () => {})
-    : this.pacer_case_id;
+  if (!this.pacer_case_id) {
+    this.pacer_case_id = await getPacerCaseIdFromStore({
+      tabId: this.tabId,
+      pacer_doc_id: this.pacer_doc_id,
+    });
+  }
+  if (!this.pacer_case_id)
+    return console.error('RECAP: No pacer_case_id found');
 
-  const generateFileName = (pacer_case_id) => {
-    let filename, pieces;
-    if (options.ia_style_filenames) {
-      pieces = [
-        'gov',
-        'uscourts',
-        this.court,
-        pacer_case_id || 'unknown-case-id',
-        document_number || '0',
-        attachment_number || '0',
-      ];
-      filename = `${pieces.join('.')}.pdf`;
-    } else if (options.lawyer_style_filenames) {
-      pieces = [
-        PACER.COURT_ABBREVS[this.court],
-        docket_number || '0',
-        document_number || '0',
-        attachment_number || '0',
-      ];
-      filename = `${pieces.join('_')}.pdf`;
-    }
-    return filename;
-  };
-
-  const setInnerHtml = (pacer_case_id) => {
-    const filename = generateFileName(pacer_case_id);
+  const setInnerHtml = (pacer_case_id, filename) => {
     let external_pdf = options.external_pdf;
     if (
       navigator.userAgent.indexOf('Chrome') >= 0 &&
@@ -110,22 +90,32 @@ export async function showPdfPage(
     }
   };
 
-  setInnerHtml(pacer_case_id);
+  const filename = generateFileName({
+    pacerCaseId: this.pacer_case_id,
+    document_number,
+    attachment_number,
+    docket_number,
+    court: this.court,
+    style: options.lawyer_style_filenames ? 'lawyer' : 'ia',
+    suffix: 'pdf',
+  });
+
+  setInnerHtml(this.pacer_case_id, filename);
 
   // upload the document unless the user has disabled the option
   // or the page is restricted
-  if (!options['recap_enabled'] || this.restricted) {
+  if (!options.recap_enabled || this.restricted) {
     return console.info('Recap: Not uploading PDF. RECAP is disabled.');
   }
 
-  const uploadDocument = dispatchBackgroundFetch({
+  const uploaded = await dispatchBackgroundFetch({
     url: courtListenerURL('recap'),
     options: {
       method: 'POST',
       headers: authHeader,
       body: {
         court: PACER.convertToCourtListenerCourt(this.court),
-        pacer_case_id: pacer_case_id,
+        pacer_case_id: this.pacer_case_id,
         pacer_doc_id: this.pacer_doc_id,
         document_number: document_number,
         attachment_number: attachment_number,
@@ -135,11 +125,15 @@ export async function showPdfPage(
       },
     },
   });
-  if (!uploadDocument) return console.error('RECAP: Document not uploaded');
 
-  dispatchNotifier({
+  if (!uploaded) return console.error('RECAP: Document not uploaded');
+
+  const notified = await dispatchNotifier({
     action: 'showUpload',
     title: 'Upload Successful',
     message: 'PDF uploaded to the public RECAP Archive',
   });
+
+  if (notified.success)
+    return console.info('RECAP: User notified of succesful upload');
 }

@@ -20,8 +20,7 @@ export async function handleDocketQueryUrl() {
     warn: 'RECAP: Zero results found for docket lookup.',
     error: 'RECAP: Upload failed. Check the logs for more information.',
     tooMany: (count) =>
-      'Recap: More than one result found for docket lookup. ' +
-      `Found ${count}`,
+      'Recap: More than one result found for docket lookup. ' + `Found ${count}`,
   };
 
   // fetch using new fetchHandler

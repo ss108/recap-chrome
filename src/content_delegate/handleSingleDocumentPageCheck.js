@@ -18,7 +18,7 @@ export function handleSingleDocumentPageCheck() {
 
   const clCourt = PACER.convertToCourtListenerCourt(this.court);
 
-  const getAvailabilityForDocuments = dispatchBackgroundFetch({
+  const recapDocumentCheck = dispatchBackgroundFetch({
     url: searchParamsURL({
       base: courtListenerURL('recap-query'),
       params: {
@@ -33,18 +33,18 @@ export function handleSingleDocumentPageCheck() {
   });
   console.info(successMsg);
 
-  if (!getAvailabilityForDocuments.result) {
+  if (!recapDocumentCheck.result) {
     return console.warn('Recap: No documents found');
   }
 
   // narrow results to links on the page
-  const result = getAvailabilityForDocuments.results.find((obj) => {
-    if (Object.keys(obj).length < 1) return;
-    return obj.pacer_doc_id === this.pacer_doc_id;
-  });
+  const result = recapDocumentCheck.results.find(
+    (r) => r.pacer_doc_id === this.pacer_doc_id
+  );
 
   // don't do anything if there are no filtered results
   if (!result) return;
+
   // else append a recap banner at the end of the form
   document
     .querySelector('form')

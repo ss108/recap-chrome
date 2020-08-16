@@ -1,6 +1,6 @@
 // background fetch handler
 import { destroyTabStorage } from './chrome';
-import { buildFormData } from './fetch';
+import { buildFormData } from './dom';
 
 export const handleBackgroundFetchRequest = (req, sender, sendResponse) => {
   // create a callback to dispatch the background fetch request
@@ -34,6 +34,7 @@ export const handleBackgroundFetchRequest = (req, sender, sendResponse) => {
         console.log(`Fetched blob from browser dataUrl: ${res.statusText}`);
         return res.blob();
       })
+      // then dispatch the callback to send the fetch request with file attached
       .then((blob) => {
         const body = buildFormData({ ...options.body, filepath_local: blob });
         dispatchCallback(url, { ...options, body });
@@ -41,4 +42,6 @@ export const handleBackgroundFetchRequest = (req, sender, sendResponse) => {
     // clear the store
     destroyTabStorage(sender.tab.id);
   });
+  // return true to allow for the async function to complete
+  return true;
 };

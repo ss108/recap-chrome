@@ -404,7 +404,7 @@ function isAppellateCourt(court) {
 }
 // These are all the supported PACER court identifiers, together with their
 // West-style court name abbreviations.
-const COURT_ABBREVS = {
+export const COURT_ABBREVS = {
   // Appellate Courts
   ca1: '1st-Cir.',
   ca2: '2d-Cir.',

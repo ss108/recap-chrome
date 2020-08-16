@@ -1,5 +1,12 @@
-import $ from 'jquery';
 // helper functions for background script
+
+// ts:
+// interface Details {
+//   reason: 'install' | 'update' | 'chrome_update' | 'shared_module_update',
+//   previousVersion?: String,
+//   id?: String
+// }
+// ts: (details: Details) => void;
 export function showNotificationTab(details) {
   // Show some kind of notification tab to the user after install/upgrade.
   const msg = 'RECAP: showing install/upgrade notification if version matches';
@@ -24,13 +31,16 @@ export function showNotificationTab(details) {
   chrome.tabs.create({ url: `https://free.law/fundraisers/${year}/recap/` });
 }
 
+// ts: (details: Details) => void;
 export function setDefaultOptions(details) {
   // Set options to their default values.
+
   console.debug('RECAP: Setting default options after install/upgrade.');
-  chrome.storage.local.get('options', function (items) {
-    const msg =
-      'RECAP: Attempted to get "options" key from localstorage.' +
-      `Got: ${items}`;
+  chrome.storage.local.get('options', (items) => {
+    const options = items.options;
+    if (!options)
+      return console.error('Error: No options found. Please reinstall plugin.');
+    const msg = `RECAP: Successfully retrieved options from store. Got: ${options}`;
     console.debug(msg);
     let defaults = {
       external_pdf: false,
@@ -42,7 +52,8 @@ export function setDefaultOptions(details) {
       ia_style_filenames: false,
       lawyer_style_filenames: true,
     };
-    if ($.isEmptyObject(items)) {
+    // if items are empty
+    if (!Object.keys(options).length) {
       console.debug('RECAP: New install. Attempting to set defaults.');
       chrome.storage.local.set({ options: defaults });
       console.debug('RECAP: Set the defaults on new install successfully.');
@@ -59,23 +70,23 @@ export function setDefaultOptions(details) {
       // so everyone should have it)
       let optionToUpgrade = 'recap_disabled';
       // if the option is a Boolean (as it should be)
-      if (typeof items.options[optionToUpgrade] === 'boolean') {
+      if (typeof options[optionToUpgrade] === 'boolean') {
         // set the inverse option `recap_enabled` to
         // the inverse of `recap_disabled`
-        items.options.recap_enabled = !items.options[optionToUpgrade];
+        options.recap_enabled = !options[optionToUpgrade];
       } else {
         // if for some reason it's _not_ a boolean, let's default to uploading.
-        items.options.recap_enabled = true;
+        options.recap_enabled = true;
       }
 
       // okay now set the rest of the defaults that are missing.
       for (let key in defaults) {
-        if (!(key in items.options)) {
-          items.options[key] = defaults[key];
+        if (!(key in options)) {
+          options[key] = defaults[key];
         }
       }
       console.debug('RECAP: Persisting new settings object.');
-      chrome.storage.local.set({ options: items.options });
+      chrome.storage.local.set({ options });
     }
   });
 }

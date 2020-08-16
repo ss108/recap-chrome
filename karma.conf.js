@@ -2,8 +2,6 @@
 const webpackConfig = require('./webpack.config');
 
 // modify the webpackConfig for Karma
-delete webpackConfig.chromeExtensionBoilerplate;
-// don't use sourcemaps in testing to show failed test data
 delete webpackConfig.devtool;
 
 module.exports = function (config) {
