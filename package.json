@@ -6,9 +6,8 @@
   "scripts": {
     "build": "node dev/build.js",
     "dev": "NODE_ENV=development node dev/webserver.js",
-    "test": "karma start --single-run --browsers Chrome_CI",
-    "test:watch": "karma start --browsers Chrome_CI",
-    "jest": "jest"
+    "test": "jest",
+    "test:watch": "npm run test -- --watch"
   },
   "repository": {
     "type": "git",
@@ -43,6 +42,7 @@
     "html-webpack-harddisk-plugin": "^1.0.2",
     "html-webpack-plugin": "^4.3.0",
     "jest": "^26.4.0",
+    "jest-fetch-mock": "^3.0.3",
     "prettier": "^2.0.5",
     "style-loader": "^1.2.1",
     "webpack": "^4.44.1",
