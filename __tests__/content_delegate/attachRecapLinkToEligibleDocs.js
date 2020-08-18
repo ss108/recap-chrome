@@ -1,6 +1,6 @@
 import { ContentDelegate } from '../../src/content_delegate';
 import PACER from '../../src/pacer';
-import { linksFromUrls, tabId, setupChromeSpy, removeChromeSpy } from './mocks';
+import { linksFromUrls, tabId } from './mocks';
 
 const fake_urls = ['http://foo.fake/bar/0', 'http://foo.fake/bar/1'];
 
@@ -11,21 +11,20 @@ const urls = [
 const expected_url = 'https://ecf.canb.uscourts.gov/cgi-bin/DktRpt.pl?531591';
 
 const localCD = (links) => {
-  return new ContentDelegate(
-    tabId,
-    expected_url,
-    null,
-    null,
-    null,
-    null,
-    links
-  );
+  return new ContentDelegate(tabId, expected_url, null, null, null, null, links);
 };
 
-export const attachRecapLinkToEligibleDocsTests = () =>
+describe('The ContentDelegate class', () => {
   describe('attachRecapLinkToEligibleDocs', () => {
-    beforeEach(() => setupChromeSpy());
-    afterEach(() => removeChromeSpy());
+    beforeEach(() => {
+      chrome.storage.local.get.mockImplementation((msg, cb) => cb({ options: {} }));
+    });
+
+    // clear all mocks after each test
+    afterEach(() => {
+      jest.clearAllMocks();
+      fetch.resetMocks();
+    });
 
     describe('when there are no valid urls', () => {
       const links = linksFromUrls(fake_urls);
@@ -40,11 +39,12 @@ export const attachRecapLinkToEligibleDocsTests = () =>
         staleLinks.map((link) => link.remove());
       });
 
-      it('does nothing', () => {
+      it('does nothing', async () => {
         const cd = localCD(links);
-        jest.spyOn(window, 'fetch').mockImplementation(() => {});
-        cd.attachRecapLinkToEligibleDocs();
-        expect(window.fetch).not.toHaveBeenCalled();
+        fetch.mockResponseOnce({});
+        chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb({}));
+        await cd.attachRecapLinkToEligibleDocs();
+        expect(fetch.mock.calls.length).toEqual(0);
       });
     });
 
@@ -53,24 +53,22 @@ export const attachRecapLinkToEligibleDocsTests = () =>
 
       describe('when no urls have recap', () => {
         beforeEach(() => {
-          const staleLinks = [
-            ...document.querySelectorAll('a#recap-test-suite'),
-          ];
+          const staleLinks = [...document.querySelectorAll('a#recap-test-suite')];
           staleLinks.map((link) => link.remove());
         });
 
-        it('does not attach any links', () => {
+        it('does not attach any links', async () => {
+          const results = [];
+          fetch.mockResponseOnce({ results });
+          chrome.runtime.sendMessage.mockImplementation((msg, cb) =>
+            cb({ results })
+          );
+
           const cd = localCD(links);
           cd.pacer_doc_ids = [1234];
-          jest.spyOn(cd.recap, 'getAvailabilityForDocuments').mockImplementation(
-            (pc, pci, callback) => {
-              callback({
-                results: [],
-              });
-            }
-          );
-          cd.attachRecapLinkToEligibleDocs();
-          expect($('.recap-inline').length).toBe(0);
+          await cd.attachRecapLinkToEligibleDocs();
+          const recapLinks = [...document.querySelectorAll('.recap-inline')];
+          expect(recapLinks.length).toBe(0);
         });
       });
 
@@ -84,39 +82,29 @@ export const attachRecapLinkToEligibleDocsTests = () =>
         staleLinks.map((link) => link.remove());
       });
 
-      it('attaches a single link to the one url with recap', () => {
+      it('attaches a single link to the one url with recap', async () => {
         const cd = localCD(links);
         cd.pacer_doc_ids = [1234];
-        jest.spyOn(cd.recap, 'getAvailabilityForDocuments').mockImplementation(
-          (pc, pci, callback) => {
-            callback({
-              results: [
-                { pacer_doc_id: '1234', filepath_local: 'download/1234' },
-              ],
-            });
-          }
-        );
-        cd.attachRecapLinkToEligibleDocs();
-        expect($('.recap-inline').length).toBe(1);
+        const results = [{ pacer_doc_id: '1234', filepath_local: 'download/1234' }];
+        fetch.mockResponseOnce({ results });
+        chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb({ results }));
+        await cd.attachRecapLinkToEligibleDocs();
+        const recapLinks = [...document.querySelectorAll('.recap-inline')];
+        expect(recapLinks.length).toBe(1);
       });
 
-      it('attaches a working click handler', () => {
+      it('attaches a working click handler', async () => {
         const cd = localCD(links);
         cd.pacer_doc_ids = [1234];
-        jest.spyOn(cd, 'handleRecapLinkClick').mockImplementation((window, href) => {});
-        jest.spyOn(cd.recap, 'getAvailabilityForDocuments').mockImplementation(
-          (pc, pci, callback) => {
-            callback({
-              results: [
-                { pacer_doc_id: '1234', filepath_local: 'download/1234' },
-              ],
-            });
-          }
-        );
-        cd.attachRecapLinkToEligibleDocs();
+        const results = [{ pacer_doc_id: '1234', filepath_local: 'download/1234' }];
+        jest.spyOn(cd, 'handleRecapLinkClick');
+        fetch.mockResponseOnce({ results });
+        chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb({ results }));
+        await cd.attachRecapLinkToEligibleDocs();
         const anchor = document.querySelector('a.recap-inline');
         anchor.click();
         expect(cd.handleRecapLinkClick).toHaveBeenCalled();
       });
     });
   });
+});

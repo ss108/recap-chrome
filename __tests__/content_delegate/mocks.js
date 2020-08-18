@@ -1,11 +1,5 @@
 import { ContentDelegate } from '../../src/content_delegate';
 
-// ts: (modulePath: string, exportSymbolName: string) => jasmine.Spy
-export const spyOnModule = (module, prop) => {
-  const spy = jest.fn();
-  spyOnProperty(module, prop).and.returnValue(spy);
-};
-
 export const tabId = 1234;
 
 export function linksFromUrls(urls) {

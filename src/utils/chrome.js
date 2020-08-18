@@ -33,7 +33,6 @@ export const getPacerCaseIdFromStore = async ({ tabId, pacer_doc_id }) => {
 
   const docsToCases = tabStorage.docsToCases;
   if (!docsToCases) return;
-  console.log(docsToCases);
 
   const caseId = docsToCases[pacer_doc_id];
   if (!caseId) return console.warn('No pacer_case_id found in storage');
@@ -88,7 +87,10 @@ export const saveItemToStorage = async (obj) => {
   const msg = `RECAP: Item saved in storage at tabId: ${tabId}`;
 
   return new Promise((resolve, reject) =>
-    chrome.storage.local.set(obj, () => resolve(console.info(msg)))
+    chrome.storage.local.set(obj, () => {
+      console.info(msg);
+      resolve({ success: msg });
+    })
   );
 };
 
@@ -106,5 +108,5 @@ export const updateTabStorage = async (obj) => {
   const newData = obj[tabId];
   const store = await getItemsFromStorage(tabId);
   // keep store immutable
-  return saveItemToStorage({ [tabId]: { ...store, ...newData } });
+  await saveItemToStorage({ [tabId]: { ...store, ...newData } });
 };

@@ -5,7 +5,7 @@ import {
   pdf_data,
 } from './mocks';
 
-export const onDocumentViewSubmitTests = () =>
+describe('The ContentDelegate class', () => {
   describe('onDocumentViewSubmit', () => {
     let form;
     let table;
@@ -13,29 +13,12 @@ export const onDocumentViewSubmitTests = () =>
     const event = { data: { id: form_id } };
 
     const blob = new Blob([pdf_data], { type: 'application/pdf' });
-    beforeAll(() => {
-      window.chrome = {
-        runtime: {
-          sendMessage: jest.fn((_, cb) => cb()),
-        },
-        extension: { getURL: jest.fn() },
-        storage: {
-          local: {
-            get: jest.fn(function (_, cb) {
-              cb({ options: {} });
-            }),
-            set: jest.fn(function () {}),
-            remove: jest.fn(() => {}),
-          },
-        },
-      };
-    });
-
-    afterAll(() => {
-      window.chrome = {};
-    });
 
     beforeEach(() => {
+      chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb(msg));
+      chrome.storage.local.get.mockImplementation((key, cb) => cb({ options: {} }));
+      chrome.storage.local.set.mockImplementation((key, cb) => cb());
+
       form = document.createElement('form');
       form.id = form_id;
       document.body.appendChild(form);
@@ -53,46 +36,42 @@ export const onDocumentViewSubmitTests = () =>
     afterEach(() => {
       form.remove();
       table.remove();
+      jest.clearAllMocks();
+      fetch.resetMocks();
     });
 
-    it('handles appellate check', () => {
+    it('handles appellate check', async () => {
       const cd = appellateContentDelegate;
       jest.spyOn(console, 'log').mockImplementation(() => {});
       let restore = DEBUGLEVEL;
       DEBUGLEVEL = 4;
-      cd.onDocumentViewSubmit(event);
+      await cd.onDocumentViewSubmit(event);
       expect(console.log).toHaveBeenCalledWith(
         'RECAP debug [4]: Appellate parsing not yet implemented'
       );
       DEBUGLEVEL = restore;
     });
 
-    it('sets the onsubmit attribute of the page form', () => {
+    it('sets the onsubmit attribute of the page form', async () => {
       const expected_on_submit = 'expectedOnSubmit();';
       form.setAttribute('onsubmit', expected_on_submit);
       jest.spyOn(form, 'setAttribute').mockImplementation(() => {});
-      singleDocContentDelegate.onDocumentViewSubmit(event);
+      await singleDocContentDelegate.onDocumentViewSubmit(event);
 
       expect(form.setAttribute).toHaveBeenCalledWith(
         'onsubmit',
         'history.forward(); return false;'
       );
-      expect(form.setAttribute).toHaveBeenCalledWith(
-        'onsubmit',
-        expected_on_submit
-      );
+      expect(form.setAttribute).toHaveBeenCalledWith('onsubmit', expected_on_submit);
     });
 
     it('calls showPdfPage when the response is a PDF', async () => {
       const cd = singleDocContentDelegate;
-      jest.spyOn(window, 'fetch').mockImplementation(async (url, options) => {
-        const res = {};
-        res.type = 'application/pdf';
-        res.ok = true;
-        res.blob = jest.fn(() => blob);
-        return res;
-      });
-
+      const res = {};
+      res.type = 'application/pdf';
+      res.ok = true;
+      res.blob = jest.fn(() => blob);
+      fetch.mockResponseOnce(res);
       jest.spyOn(cd, 'showPdfPage').mockImplementation(() => {});
 
       await cd.onDocumentViewSubmit(event);
@@ -106,8 +85,8 @@ export const onDocumentViewSubmitTests = () =>
         const res = {};
         res.ok = true;
         res.blob = jest.fn(() =>
-            Promise.resolve(new Blob(['htmlString'], { type: 'text/html' }))
-          );
+          Promise.resolve(new Blob(['htmlString'], { type: 'text/html' }))
+        );
         return Promise.resolve(res);
       });
       // can't use arrow functions because mock has 'this'
@@ -124,3 +103,4 @@ export const onDocumentViewSubmitTests = () =>
       expect(cd.showPdfPage).toHaveBeenCalled();
     });
   });
+});

@@ -61,8 +61,7 @@ export async function showPdfPage(
       pacer_doc_id: this.pacer_doc_id,
     });
   }
-  if (!this.pacer_case_id)
-    return console.error('RECAP: No pacer_case_id found');
+  if (!this.pacer_case_id) return console.error('RECAP: No pacer_case_id found');
 
   const setInnerHtml = (pacer_case_id, filename) => {
     let external_pdf = options.external_pdf;

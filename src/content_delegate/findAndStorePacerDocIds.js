@@ -1,9 +1,9 @@
 import PACER from '../pacer';
 import {
   debug,
-  updateTabStorage,
   getItemsFromStorage,
   getPacerCaseIdFromStore,
+  updateTabStorage,
 } from '../utils';
 // Use a variety of approaches to get and store pacer_doc_id to pacer_case_id
 // mappings in local storage.
@@ -12,6 +12,7 @@ export async function findAndStorePacerDocIds() {
   // no cookie, no love
   if (!PACER.hasPacerCookie(document.cookie)) return;
 
+  console.log(this.pacer_case_id);
   // Not all pages have a case ID, and there are corner-cases in merged dockets
   // where there are links to documents on another case.
   const page_pacer_case_id = this.pacer_case_id
@@ -46,11 +47,13 @@ export async function findAndStorePacerDocIds() {
 
     // if you have a goDLS Id, associate it in object
     const goDLS = PACER.parseGoDLSFunction(link.getAttribute('onclick'));
+    console.log(goDLS && goDLS.de_caseid);
     if (goDLS && goDLS.de_caseid) {
       debug(3, `Y doc ${pacer_doc_id} to ${goDLS.de_caseid}`);
       return (docsToCases[pacer_doc_id] = goDLS.de_caseid);
     }
     // else if you have a page_pacer_case_id, associate that
+    console.log(page_pacer_case_id);
     if (page_pacer_case_id) {
       debug(3, `X doc ${pacer_doc_id} to ${page_pacer_case_id}`);
       return (docsToCases[pacer_doc_id] = page_pacer_case_id);
@@ -68,5 +71,6 @@ export async function findAndStorePacerDocIds() {
     payload['caseId'] = page_pacer_case_id;
   }
   // save JSON object in chrome storage under the tabId
-  updateTabStorage({ [this.tabId]: payload });
+  await updateTabStorage({ [this.tabId]: payload });
+  return;
 }

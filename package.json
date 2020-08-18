@@ -42,6 +42,7 @@
     "html-webpack-harddisk-plugin": "^1.0.2",
     "html-webpack-plugin": "^4.3.0",
     "jest": "^26.4.0",
+    "jest-chrome": "^0.7.0",
     "jest-fetch-mock": "^3.0.3",
     "prettier": "^2.0.5",
     "style-loader": "^1.2.1",

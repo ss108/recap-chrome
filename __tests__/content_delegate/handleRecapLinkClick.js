@@ -1,7 +1,6 @@
 import { ContentDelegate } from '../../src/content_delegate';
 import { docketDisplayContentDelegate, singleDocUrl } from './mocks';
-
-export const handleRecapLinkClickTests = () =>
+describe('The ContentDelegate class', () => {
   describe('handleRecapLinkClick', () => {
     const cd = docketDisplayContentDelegate;
     const linkUrl = singleDocUrl;
@@ -57,3 +56,4 @@ export const handleRecapLinkClickTests = () =>
       });
     });
   });
+});

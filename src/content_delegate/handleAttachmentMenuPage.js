@@ -1,11 +1,13 @@
 import PACER from '../pacer';
 import {
+  blobToDataURL,
   getItemsFromStorage,
   dispatchBackgroundFetch,
   courtListenerURL,
   authHeader,
   uploadType,
   dispatchNotifier,
+  saveItemToStorage,
 } from '../utils';
 
 const msg = {
@@ -29,7 +31,7 @@ export async function handleAttachmentMenuPage() {
   );
   await saveItemToStorage({ [this.tabId]: dataUrl });
 
-  const uploaded = dispatchBackgroundFetch({
+  const uploaded = await dispatchBackgroundFetch({
     url: courtListenerURL('recap'),
     options: {
       method: 'POST',
@@ -45,6 +47,9 @@ export async function handleAttachmentMenuPage() {
   });
 
   if (!uploaded) return console.error('RECAP: Attachment page not uploaded');
+
+  // indicate to browser that we've already uploaded the page
+  history.replaceState({ uploaded: true }, '');
 
   // dispatch notifier and log success
   const notified = await dispatchNotifier({

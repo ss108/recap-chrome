@@ -6,8 +6,7 @@ import {
   nonsenseUrlContentDelegate,
   tabId,
 } from './mocks';
-
-export const handleDocketDisplayPageTests = () =>
+describe('The ContentDelegate class', () => {
   describe('handleDocketDisplayPage', () => {
     describe('option disabled', () => {
       beforeEach(() => {
@@ -17,8 +16,8 @@ export const handleDocketDisplayPageTests = () =>
           },
           runtime: {
             sendMessage: jest.fn((_, cb) =>
-                cb({ count: 1, results: [{ stuff: 'text' }] })
-              ),
+              cb({ count: 1, results: [{ stuff: 'text' }] })
+            ),
           },
           storage: {
             local: {
@@ -69,8 +68,8 @@ export const handleDocketDisplayPageTests = () =>
           },
           runtime: {
             sendMessage: jest.fn((_, cb) =>
-                cb({ count: 1, results: [{ stuff: 'text' }] })
-              ),
+              cb({ count: 1, results: [{ stuff: 'text' }] })
+            ),
           },
         };
       });
@@ -147,13 +146,14 @@ export const handleDocketDisplayPageTests = () =>
       describe('when the docket page is not an interstitial page', () => {
         it('adds a button linking to a create alert page on CL', async () => {
           const cd = docketDisplayContentDelegate;
-          jest.spyOn(cd.recap, 'getAvailabilityForDocket').mockImplementation(
-            (court, pacerId, cb) =>
+          jest
+            .spyOn(cd.recap, 'getAvailabilityForDocket')
+            .mockImplementation((court, pacerId, cb) =>
               cb({
                 count: 1,
                 results: [{ stuff: 'text' }],
               })
-          );
+            );
           await cd.handleDocketDisplayPage();
           const button = document.getElementById('recap-alert-button');
           expect(button).not.toBeNull();
@@ -162,26 +162,26 @@ export const handleDocketDisplayPageTests = () =>
         it('calls uploadDocket and responds to a positive result', async () => {
           const cd = docketDisplayContentDelegate;
           jest.spyOn(cd.notifier, 'showUpload').mockImplementation(() => {});
-          jest.spyOn(cd.recap, 'getAvailabilityForDocket').mockImplementation(
-            (court, pacerId, cb) =>
+          jest
+            .spyOn(cd.recap, 'getAvailabilityForDocket')
+            .mockImplementation((court, pacerId, cb) =>
               cb({
                 count: 1,
                 results: [{ stuff: 'text' }],
               })
-          );
-          jest.spyOn(cd.recap, 'uploadDocket').mockImplementation((pc, pci, h, ut, cb) => {
-            cb.tab = { id: 1234 };
-            cb(true);
-          });
+            );
+          jest
+            .spyOn(cd.recap, 'uploadDocket')
+            .mockImplementation((pc, pci, h, ut, cb) => {
+              cb.tab = { id: 1234 };
+              cb(true);
+            });
           jest.spyOn(history, 'replaceState').mockImplementation(() => {});
 
           await cd.handleDocketDisplayPage();
           expect(cd.recap.uploadDocket).toHaveBeenCalled();
           expect(cd.notifier.showUpload).toHaveBeenCalled();
-          expect(history.replaceState).toHaveBeenCalledWith(
-            { uploaded: true },
-            ''
-          );
+          expect(history.replaceState).toHaveBeenCalledWith({ uploaded: true }, '');
           const button = document.getElementById('recap-alert-button');
           expect(button.className.includes('disabled')).not.toBe(true);
           expect(button.getAttribute('aria-disabled')).toBe('false');
@@ -190,26 +190,26 @@ export const handleDocketDisplayPageTests = () =>
         it('calls uploadDocket and responds to a positive historical result', async () => {
           const cd = historyDocketDisplayContentDelegate;
           jest.spyOn(cd.notifier, 'showUpload').mockImplementation(() => {});
-          jest.spyOn(cd.recap, 'getAvailabilityForDocket').mockImplementation(
-            (court, pacerId, cb) =>
+          jest
+            .spyOn(cd.recap, 'getAvailabilityForDocket')
+            .mockImplementation((court, pacerId, cb) =>
               cb({
                 count: 1,
                 results: [{ stuff: 'text' }],
               })
-          );
-          jest.spyOn(cd.recap, 'uploadDocket').mockImplementation((pc, pci, h, ut, cb) => {
-            cb.tab = { id: 1234 };
-            cb(true);
-          });
+            );
+          jest
+            .spyOn(cd.recap, 'uploadDocket')
+            .mockImplementation((pc, pci, h, ut, cb) => {
+              cb.tab = { id: 1234 };
+              cb(true);
+            });
           jest.spyOn(history, 'replaceState').mockImplementation(() => {});
 
           await cd.handleDocketDisplayPage();
           expect(cd.recap.uploadDocket).toHaveBeenCalled();
           expect(cd.notifier.showUpload).toHaveBeenCalled();
-          expect(history.replaceState).toHaveBeenCalledWith(
-            { uploaded: true },
-            ''
-          );
+          expect(history.replaceState).toHaveBeenCalledWith({ uploaded: true }, '');
           const button = document.getElementById('recap-alert-button');
           expect(button.className.includes('disabled')).not.toBe(true);
           expect(button.getAttribute('aria-disabled')).toBe('false');
@@ -218,17 +218,20 @@ export const handleDocketDisplayPageTests = () =>
         it('calls uploadDocket and responds to a negative result', async () => {
           const cd = docketDisplayContentDelegate;
           jest.spyOn(cd.notifier, 'showUpload').mockImplementation(() => {});
-          jest.spyOn(cd.recap, 'getAvailabilityForDocket').mockImplementation(
-            (court, pacerId, cb) =>
+          jest
+            .spyOn(cd.recap, 'getAvailabilityForDocket')
+            .mockImplementation((court, pacerId, cb) =>
               cb({
                 count: 1,
                 results: [{ stuff: 'text' }],
               })
-          );
-          jest.spyOn(cd.recap, 'uploadDocket').mockImplementation((pc, pci, h, ut, cb) => {
-            cb.tab = { id: 1234 };
-            cb(false);
-          });
+            );
+          jest
+            .spyOn(cd.recap, 'uploadDocket')
+            .mockImplementation((pc, pci, h, ut, cb) => {
+              cb.tab = { id: 1234 };
+              cb(false);
+            });
           jest.spyOn(history, 'replaceState').mockImplementation(() => {});
 
           await cd.handleDocketDisplayPage();
@@ -239,3 +242,4 @@ export const handleDocketDisplayPageTests = () =>
       });
     });
   });
+});

@@ -15,16 +15,10 @@ const showNotification = ({ title, message }) => {
   console.info('RECAP: Notifier dispatched. Expect a notification.');
   chrome.notifications.create(id, notificationOptions({ title, message }));
 
-  chrome.notifications.onClicked.addListener((id) =>
-    chrome.notifications.clear(id)
-  );
+  chrome.notifications.onClicked.addListener((id) => chrome.notifications.clear(id));
 };
 
-export const handleBackgroundNotificationRequest = (
-  req,
-  sender,
-  sendResponse
-) => {
+export const handleBackgroundNotificationRequest = (req, sender, sendResponse) => {
   // destructure params
   const { action, title, message } = req.notifier;
 

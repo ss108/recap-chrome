@@ -30,7 +30,7 @@ export const getRecapDataFromPdfDownloadPage = () => {
   const td = [...document.querySelectorAll('td')].find((el) =>
     el.textContent.includes('Image')
   );
-  const image_string = td.textContent();
+  const image_string = td.textContent;
 
   // get all matches for numbers seperated by a hyphen
   const matches = image_string.match(/(\d+)-(\d+)/);
@@ -60,7 +60,7 @@ export const getRecapDataFromPdfDownloadPage = () => {
 // if on a singleDoc Zip Download Page, grab the docket and document
 // numbers from the table with cost and opinion details.
 // ts: () => { document_number: String, docket_number: String }
-const getDocAndDocketNumbersForZipDownload = () => {
+export const getDocAndDocketNumbersForZipDownload = () => {
   const firstTable = document.getElementsByTagName('table')[0];
   const firstTableRows = firstTable.querySelectorAll('tr');
   // 4th from bottom
@@ -72,7 +72,7 @@ const getDocAndDocketNumbersForZipDownload = () => {
   };
 };
 
-const getUrlFromZipFileDownloadPage = () => {
+export const getUrlInZipFilePageView = () => {
   const firstInput = document.querySelector(
     'input[type="button"][value="Download Documents"]'
   );
@@ -88,11 +88,12 @@ const getUrlFromZipFileDownloadPage = () => {
 // if on a zip file page, fetch the html page from the url in the event.data.id
 // and then extract the zip file url from the retrieved html and return it
 // ts: (url: String) => String;
-const getZipFileUrlFromDownloadedPage = async (url) => {
+export const getZipFileUrlFromDownloadedPage = async (url) => {
   const contentFetch = getBrowserFetch();
-  const htmlPage = await contentFetch(event.data.id).then((res) => res.text());
-  console.log('RECAP: Successfully submitted zip file request', htmlPage);
-  return extractUrl(htmlPage);
+  const res = await contentFetch(url);
+  const html = await res.text();
+  console.log('RECAP: Successfully submitted zip file request', html);
+  return extractUrl(html);
 };
 
 // extracts the hostname from a url by injecting it into an anchor
@@ -210,37 +211,36 @@ export const toggleLoadingCursor = () =>
 // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_scripts#XHR_and_Fetch
 // ts: () => Fetch;
 // github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/node-fetch/index.d.ts
-const getBrowserFetch = () =>
+export const getBrowserFetch = () =>
   navigator.userAgent.indexOf('Chrome') < 0 ? content.fetch : window.fetch;
 
 // helper function - extract the zip by creating html and querying the frame
 // ts: (html: String) => String
-const extractUrl = (html) => {
+export const extractUrl = (html) => {
   const page = document.createElement('html');
   page.innerHTML = html;
-  const frames = page.querySelectorAll('iframe');
+  const frames = [...page.querySelectorAll('iframe')];
   return frames[0].src;
 };
 
 // ts: (p: {url: string, tabId: string}) => Promise<void>;
-const saveZipFileInStorage = async ({ url, tabId }) => {
-  try {
-    // get the file from the extracted url
-    const zipUrl = extractZipFileUrl(url);
+export const saveZipFileInStorage = async ({ url, tabId }) => {
+  // get the file from the extracted url
+  const zipUrl = await getZipFileUrlFromDownloadedPage(url);
 
-    // the the user we've downloaded the file
-    const res = await fetch(zipUrl);
-    if (!res.ok) return console.error('Could not fetch blob');
+  // the the user we've downloaded the file
+  const res = await fetch(zipUrl);
+  if (!res.ok) return console.error('Could not fetch blob');
 
-    // convert the zip file to a dataUrl blob
-    console.info('RECAP: Downloaded zip file');
-    const dataUrl = await blobToDataURL(res.blob());
+  const blob = await res.blob();
 
-    // store the dataUrl in the tabStorage
-    await updateTabStorage({ [tabId]: { file_blob: dataUrl } });
-  } catch (err) {
-    return console.error(`Could not save zip file: ${err.messa}`);
-  }
+  // convert the zip file to a dataUrl blob
+  console.info('RECAP: Downloaded zip file');
+  const dataUrl = await blobToDataURL(blob);
+
+  // store the dataUrl in the tabStorage
+  const updated = await updateTabStorage({ [tabId]: { file_blob: dataUrl } });
+  if (!updated.success) return console.error(`Could not save zip file: ${err}`);
 };
 
 // helper function - convert string to html document

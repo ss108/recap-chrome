@@ -1,10 +1,5 @@
 import { ContentDelegate } from '../../src/content_delegate';
-import {
-  blobToDataURL,
-  singleDocContentDelegate,
-  pdf_data,
-  tabId,
-} from './mocks';
+import { blobToDataURL, singleDocContentDelegate, pdf_data, tabId } from './mocks';
 
 const pre =
   '<head><title>test</title><style>body { margin: 0; } ' +
@@ -14,8 +9,7 @@ const iFrameEnd = ' width="100%" height="100%"></iframe>';
 const post = '</body>';
 const html = pre + iFrameStart + iFrameEnd + post;
 const blob = new Blob([pdf_data], { type: 'application/pdf' });
-
-export const showPdfPageTests = () =>
+describe('The ContentDelegate class', () => {
   describe('showPdfPage', () => {
     let documentElement;
     const reader = new FileReader();
@@ -36,37 +30,25 @@ export const showPdfPageTests = () =>
           docsToCases: { ['034031424909']: '531591' },
         },
       };
-      const local = {
-        get: jest.fn((_, cb) => cb()),
-        remove: jest.fn((_, cb) => cb()),
-        set: jest.fn((_, cb) => cb()),
-      };
-      window.chrome = {
-        storage: { local },
-      };
+      chrome.storage.local.get.mockImplementation((msg, cb) => cb(mockStorage));
+      chrome.storage.local.set.mockImplementation((obj, cb) => cb(true));
       window.saveAs = jest.fn((blob, file) => Promise.resolve(true));
 
-      jest.spyOn(window, 'fetch').mockImplementation(async (url, options) => {
-        const res = {};
-        res.ok = true;
-        res.blob = jest.fn(() => Promise.resolve(blob));
-        return res;
-      });
+      const res = {};
+      res.ok = true;
+      res.blob = jest.fn(() => Promise.resolve(blob));
+      fetch.mockResponse(res);
     });
 
     afterEach(() => {
-      window.chrome = {};
+      documentElement = '';
+      jest.clearAllMocks();
+      fetch.resetMocks();
     });
 
     it('handles no iframe', () => {
       let inner = '<span>html</span>';
       const cd = singleDocContentDelegate;
-      jest.spyOn(cd.recap, 'uploadDocument').mockImplementation(
-        (court, caseId, docId, docNumber, attachNumber, callback) => {
-          callback.tab = { id: 1234 };
-          callback(true);
-        }
-      );
       cd.showPdfPage(documentElement, pre + inner + post);
       expect(document.documentElement.innerHTML).toBe(pre + inner + post);
     });
@@ -154,3 +136,4 @@ export const showPdfPageTests = () =>
     //   });
     // });
   });
+});

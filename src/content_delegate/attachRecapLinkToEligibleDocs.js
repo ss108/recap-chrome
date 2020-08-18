@@ -76,6 +76,7 @@ export async function attachRecapLinkToEligibleDocs() {
     });
 
     // insert recapLink onto DOM adjacent to the pacer link
-    link.insertAdjacentElement('afterend', recapLink);
+    return link.insertAdjacentElement('afterend', recapLink);
   });
+  return;
 }

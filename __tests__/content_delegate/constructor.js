@@ -1,13 +1,12 @@
 import { ContentDelegate } from '../../src/content_delegate';
 import { tabId, setupChromeSpy, removeChromeSpy } from './mocks';
 
-export const constructorTests = () =>
+describe('The ContentDelegate class', () => {
   describe('ContentDelegate constructor', () => {
     beforeEach(() => setupChromeSpy());
     afterEach(() => removeChromeSpy());
 
-    const expected_url =
-      'https://ecf.canb.uscourts.gov/cgi-bin/DktRpt.pl?531591';
+    const expected_url = 'https://ecf.canb.uscourts.gov/cgi-bin/DktRpt.pl?531591';
     const restricted_url = 'https://ecf.canb.uscourts.gov/doc1/04503837920';
     const expected_path = '/cgi-bin/DktRpt.pl?531591';
     const expected_court = 'canb';
@@ -55,7 +54,8 @@ export const constructorTests = () =>
       document.body.appendChild(table);
       table_td.textContent = 'Warning! Image';
 
-      expect(document.body.innerText).not.toContain('will not be uploaded');
+      expect(document.body.innerHTML).not.toContain('will not be uploaded');
+
       const cd = new ContentDelegate(
         tabId,
         restricted_url,
@@ -66,7 +66,7 @@ export const constructorTests = () =>
         expected_links
       );
       expect(cd.restricted).toBe(true);
-      expect(document.body.innerText).toContain('will not be uploaded');
+      expect(document.body.innerHTML).toContain('will not be uploaded');
       table.remove();
       form.remove();
     });
@@ -88,7 +88,7 @@ export const constructorTests = () =>
       document.body.appendChild(paragraph);
       bold.textContent = 'SEALED';
 
-      expect(document.body.innerText).not.toContain('will not be uploaded');
+      expect(document.body.innerHTML).not.toContain('will not be uploaded');
       const cd = new ContentDelegate(
         tabId,
         restricted_url,
@@ -99,8 +99,9 @@ export const constructorTests = () =>
         expected_links
       );
       expect(cd.restricted).toBe(true);
-      expect(document.body.innerText).toContain('will not be uploaded');
+      expect(document.body.innerHTML).toContain('will not be uploaded');
       paragraph.remove();
       form.remove();
     });
   });
+});

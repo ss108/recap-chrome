@@ -1,5 +1,13 @@
 import { ContentDelegate } from '../src/content_delegate';
-import { blobToDataURL } from '../src/utils';
+import * as utils from '../src/utils';
+import { pdf_data } from './content_delegate/mocks';
+
+jest.mock('../src/utils', () => ({
+  ...jest.requireActual('../src/utils'),
+  debug: jest.fn(),
+  getBrowserFetch: jest.fn(),
+  updateTabStorage: jest.fn(),
+}));
 
 describe('The ContentDelegate class', () => {
   const tabId = 1234;
@@ -14,7 +22,9 @@ describe('The ContentDelegate class', () => {
   const eventUrl =
     '/cgi-bin/show_multidocs.pl?caseid=178502&arr_de_seq_nums=5&magic_num=&pdf_header=&hdr=&pdf_toggle_possible=&zipit=1&caseid=178502&zipit=1&magic_num=&arr_de_seq_nums=5&got_warning=&create_roa=&create_appendix=&bates_format=&dkt=&got_receipt=1';
 
-  const blob = new Blob([new ArrayBuffer(1000)], { type: 'application/zip' });
+  const blob = new Blob([pdf_data], { type: 'application/pdf' });
+
+  const dummyIFrame = `<html><iframe src="http://dummylink.com"></iframe></html>`;
 
   const zipFileContentDelegate = new ContentDelegate(
     1234,
@@ -37,53 +47,52 @@ describe('The ContentDelegate class', () => {
   };
 
   describe('attempts to download a zip file', () => {
-    let nativeFetch;
     beforeEach(async () => {
-      const dataUrl = await blobToDataURL(
-        new Blob([new ArrayBuffer(1000), { type: 'application/zip' }])
-      );
-      window.chrome = {
-        storage: {
-          local: {
-            get: jest.fn((key, cb) => {
-              cb({
-                options: {
-                  recap_enabled: true,
-                  ['ia_style_filenames']: true,
-                  ['lawyer_style_filenames']: false,
-                  ['external_pdf']: true,
-                },
-                [tabId]: {
-                  ['zip_blob']: dataUrl,
-                  docsToCases: { ['034031424909']: '531591' },
-                },
-              });
-            }),
-            remove: jest.fn(() => {}),
-            set: jest.fn(function () {}),
-          },
-        },
+      // mock the firefox content.fetch function
+      window.content = {
+        fetch: jest.fn(() => {
+          const res = {};
+          res.text = () => Promise.resolve(dummyIFrame);
+          return Promise.resolve(res);
+        }),
       };
-      nativeFetch = window.fetch;
-      jest.spyOn(window, 'fetch').mockImplementation((url, options) => {
+      fetch.mockResponse(() => {
         const res = {};
         res.status = jest.fn(() => Promise.resolve('200'));
-        res.text = jest.fn(() =>
-            Promise.resolve(
-              `<html><iframe src="http://dummylink.com"></iframe></html>`
-            )
-          );
+        res.text = jest.fn(() => Promise.resolve(dummyIFrame));
         res.json = jest.fn(() => Promise.resolve({ result: true }));
         res.blob = jest.fn(() => Promise.resolve(blob));
-        return Promise.resolve(res);
+        return res;
       });
+
+      const dataUrl = await utils.blobToDataURL(blob);
+
+      chrome.storage.local = {
+        get: jest.fn((key, cb) => {
+          cb({
+            options: {
+              recap_enabled: true,
+              ['ia_style_filenames']: true,
+              ['lawyer_style_filenames']: false,
+              ['external_pdf']: true,
+            },
+            [tabId]: {
+              ['zip_blob']: dataUrl,
+              docsToCases: { ['034031424909']: '531591' },
+            },
+          });
+        }),
+        remove: jest.fn(() => {}),
+        set: jest.fn(function () {}),
+      };
+      jest.spyOn(history, 'pushState').mockImplementation((...args) => {});
+
       window.saveAs = jest.fn((blob, filename) => Promise.resolve(true));
       jest.spyOn(window, 'addEventListener');
     });
 
     afterEach(() => {
-      window.chrome = {};
-      window.fetch = nativeFetch;
+      fetch.resetMocks();
     });
 
     describe('handleZipFilePageView', () => {
@@ -155,25 +164,19 @@ describe('The ContentDelegate class', () => {
         });
 
         it('should contain a Download Documents Button', () => {
-          const button = document.querySelector(
-            'input[value="Download Documents"]'
-          );
+          const button = document.querySelector('input[value="Download Documents"]');
           expect(button).toBeTruthy();
         });
 
         it('the Download Documents button should have an onclick attribute', () => {
-          const button = document.querySelector(
-            'input[value="Download Documents"]'
-          );
+          const button = document.querySelector('input[value="Download Documents"]');
           const onclick = button.getAttribute('onclick');
           expect(onclick).toEqual(expectedOnclick);
         });
 
         it('should remove the onclick attribute from the form and input', () => {
           cd.handleZipFilePageView();
-          const input = document.querySelector(
-            'input[value="Download Documents"]'
-          );
+          const input = document.querySelector('input[value="Download Documents"]');
           expect(input.onclick).not.toBeTruthy();
         });
 
@@ -184,43 +187,39 @@ describe('The ContentDelegate class', () => {
       });
     });
 
-    describe('onDownloadAllSubmit', function () {
+    describe('onDownloadAllSubmit', () => {
+      beforeEach(() => fetch.mockResponseOnce(pdf_data));
+      afterEach(() => fetch.resetMocks());
       const cd = zipFileContentDelegate;
-      beforeEach(async () => {
-        jest.spyOn(cd.recap, 'uploadZipFile').mockImplementation(
-          (court, pacerCaseId, callback) => {
-            callback(true);
-          }
-        );
-        jest.spyOn(history, 'pushState').mockImplementation((...args) => {});
-        jest.spyOn(cd.notifier, 'showUpload').mockImplementation((message, callback) => {
-          callback(true);
-        });
+
+      it('fetches the page html and extracts the zipFile url', async () => {
         await cd.onDownloadAllSubmit({ data: { id: eventUrl } });
+        expect(fetch.mock.calls[0][0]).toEqual(eventUrl);
       });
 
-      it('fetches the page html and extracts the zipFile url', function () {
-        expect(window.fetch).toHaveBeenCalled();
+      it('downloads the zipFile and stores it in chrome storage', async () => {
+        await cd.onDownloadAllSubmit({ data: { id: eventUrl } });
+        expect(chrome.storage.local.set).toHaveBeenCalled();
       });
 
-      it('downloads the zipFile and stores it in chrome storage', () => {
-        expect(window.chrome.storage.local.set).toHaveBeenCalled();
+      it('checks options to see if recap is enabled', async function () {
+        await cd.onDownloadAllSubmit({ data: { id: eventUrl } });
+        expect(chrome.storage.local.get).toHaveBeenCalledWith('options');
       });
 
-      it('checks options to see if recap is enabled', function () {
-        expect(window.chrome.storage.local.get).toHaveBeenCalled();
-      });
-
-      it('uploads the Zip file to RECAP', function () {
+      it('uploads the Zip file to RECAP', async function () {
+        await cd.onDownloadAllSubmit({ data: { id: eventUrl } });
         expect(cd.recap.uploadZipFile).toHaveBeenCalled();
       });
 
-      it('redirects the user to the download page and forwards the zip file', () => {
+      it('redirects the user to the download page and forwards the zip file', async () => {
+        await cd.onDownloadAllSubmit({ data: { id: eventUrl } });
         expect(history.pushState).toHaveBeenCalled();
       });
 
-      it('calls the notifier once the upload finishes', function () {
-        expect(cd.notifier.showUpload).toHaveBeenCalled();
+      it('calls the notifier once the upload finishes', async () => {
+        await cd.onDownloadAllSubmit({ data: { id: eventUrl } });
+        // expect(utils.dispatchNotifier).toHaveBeenCalled();
       });
     });
   });

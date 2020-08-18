@@ -5,7 +5,7 @@ import {
   docketDisplayContentDelegate,
 } from './mocks';
 
-export const handleAttachmentMenuPageTests = () =>
+describe('The ContentDelegate class', () => {
   describe('handleAttachmentMenuPage', () => {
     describe('option disabled', () => {
       let form;
@@ -14,16 +14,15 @@ export const handleAttachmentMenuPageTests = () =>
       beforeEach(() => {
         form = document.createElement('form');
         document.body.appendChild(form);
-        window.chrome = {
-          storage: {
-            local: {
-              get: jest.fn((_, cb) => {
-                cb({ options: { recap_enabled: false } });
-              }),
-              set: jest.fn(() => {}),
-            },
-          },
-        };
+        chrome.storage.local.get.mockImplementation((key, cb) => {
+          cb({
+            options: { recap_enabled: false },
+            1234: { file_blob: new Blob(['Lookie'], { type: 'text/html' }) },
+          });
+        });
+        chrome.storage.local.set.mockImplementation((obj, cb) =>
+          cb({ success: 'yay' })
+        );
         input = document.createElement('input');
         input.value = 'Download All';
         form.appendChild(input);
@@ -31,14 +30,14 @@ export const handleAttachmentMenuPageTests = () =>
 
       afterEach(() => {
         form.remove();
-        window.chrome = {};
+        jest.clearAllMocks();
+        fetch.resetMocks();
       });
 
-      it('has no effect recap_enabled option is not set', () => {
+      it('has no effect recap_enabled option is not set', async () => {
         const cd = singleDocContentDelegate;
-        jest.spyOn(cd.recap, 'uploadAttachmentMenu').mockImplementation(() => {});
-        cd.handleAttachmentMenuPage();
-        expect(cd.recap.uploadAttachmentMenu).not.toHaveBeenCalled();
+        await cd.handleAttachmentMenuPage();
+        expect(fetch.mock.calls.length).toBe(0);
       });
     });
 
@@ -47,21 +46,18 @@ export const handleAttachmentMenuPageTests = () =>
       beforeEach(() => {
         form = document.createElement('form');
         document.body.appendChild(form);
-        window.chrome = {
-          storage: {
-            local: {
-              get: jest.fn((_, cb) => {
-                cb({ options: { recap_enabled: true } });
-              }),
-              set: jest.fn(() => {}),
-            },
-          },
-        };
+        chrome.storage.local.get.mockImplementation((key, cb) => {
+          cb({ options: { recap_enabled: true } });
+        });
+        chrome.storage.local.set.mockImplementation((obj, cb) =>
+          cb({ success: 'yay' })
+        );
       });
 
       afterEach(() => {
+        jest.clearAllMocks();
+        fetch.resetMocks();
         form.remove();
-        window.chrome = {};
       });
 
       describe('when the history state is already set', () => {
@@ -73,27 +69,24 @@ export const handleAttachmentMenuPageTests = () =>
           history.replaceState({}, '');
         });
 
-        it('has no effect', () => {
+        it('has no effect', async () => {
           const cd = docketDisplayContentDelegate;
-          jest.spyOn(cd.recap, 'uploadAttachmentMenu').mockImplementation(() => {});
-          cd.handleAttachmentMenuPage();
-          expect(cd.recap.uploadAttachmentMenu).not.toHaveBeenCalled();
+          await cd.handleAttachmentMenuPage();
+          expect(chrome.runtime.sendMessage).not.toHaveBeenCalled();
         });
       });
 
       describe('when there is NO appropriate form', () => {
-        it('has no effect when the URL is wrong', () => {
+        it('has no effect when the URL is wrong', async () => {
           const cd = nonsenseUrlContentDelegate;
-          jest.spyOn(cd.recap, 'uploadAttachmentMenu').mockImplementation(() => {});
-          cd.handleAttachmentMenuPage();
-          expect(cd.recap.uploadAttachmentMenu).not.toHaveBeenCalled();
+          await cd.handleAttachmentMenuPage();
+          expect(chrome.runtime.sendMessage).not.toHaveBeenCalled();
         });
 
-        it('has no effect with a proper URL', () => {
+        it('has no effect with a proper URL', async () => {
           const cd = singleDocContentDelegate;
-          jest.spyOn(cd.recap, 'uploadAttachmentMenu').mockImplementation(() => {});
-          cd.handleAttachmentMenuPage();
-          expect(cd.recap.uploadAttachmentMenu).not.toHaveBeenCalled();
+          await cd.handleAttachmentMenuPage();
+          expect(chrome.runtime.sendMessage).not.toHaveBeenCalled();
         });
       });
 
@@ -105,52 +98,72 @@ export const handleAttachmentMenuPageTests = () =>
           form.appendChild(input);
         });
 
-        it('has no effect when the URL is wrong', () => {
+        afterEach(() => {
+          form.remove();
+        });
+
+        it('has no effect when the URL is wrong', async () => {
           const cd = nonsenseUrlContentDelegate;
-          jest.spyOn(cd.recap, 'uploadAttachmentMenu').mockImplementation(() => {});
-          cd.handleAttachmentMenuPage();
-          expect(cd.recap.uploadAttachmentMenu).not.toHaveBeenCalled();
+          await cd.handleAttachmentMenuPage();
+          expect(chrome.runtime.sendMessage).not.toHaveBeenCalled();
         });
 
-        it('uploads the page when the URL is right', () => {
+        it('uploads the page when the URL is right', async () => {
           const cd = singleDocContentDelegate;
-          jest.spyOn(cd.recap, 'uploadAttachmentMenu').mockImplementation(() => {});
-          cd.handleAttachmentMenuPage();
-          expect(cd.recap.uploadAttachmentMenu).toHaveBeenCalled();
-        });
-
-        it('calls the upload method and responds to positive result', () => {
-          const cd = singleDocContentDelegate;
-          const uploadFake = (pc, pci, h, callback) => {
-            callback(true);
-          };
-          jest.spyOn(cd.recap, 'uploadAttachmentMenu').mockImplementation(uploadFake);
-          jest.spyOn(cd.notifier, 'showUpload').mockImplementation(() => {});
-          jest.spyOn(history, 'replaceState').mockImplementation(() => {});
-
-          cd.handleAttachmentMenuPage();
-          expect(cd.recap.uploadAttachmentMenu).toHaveBeenCalled();
-          expect(cd.notifier.showUpload).toHaveBeenCalled();
-          expect(history.replaceState).toHaveBeenCalledWith(
-            { uploaded: true },
-            ''
+          chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb(true));
+          fetch.mockResponseOnce({ success: 'msg' });
+          await cd.handleAttachmentMenuPage();
+          // tests that the script sends a message to background fetch worker
+          expect(chrome.runtime.sendMessage).toHaveBeenCalledWith(
+            {
+              fetch: {
+                url: 'https://www.courtlistener.com/api/rest/v3/recap/',
+                options: {
+                  method: 'POST',
+                  headers: expect.anything(),
+                  body: expect.anything(),
+                },
+              },
+            },
+            expect.anything()
           );
         });
 
-        it('calls the upload method and responds to negative result', () => {
+        it('calls the upload method and responds to positive result', async () => {
           const cd = singleDocContentDelegate;
-          const uploadFake = (pc, pci, h, callback) => {
-            callback(false);
-          };
-          jest.spyOn(cd.recap, 'uploadAttachmentMenu').mockImplementation(uploadFake);
-          jest.spyOn(cd.notifier, 'showUpload').mockImplementation(() => {});
+          jest.spyOn(history, 'replaceState').mockImplementation(() => true);
+          fetch.mockResponseOnce(true);
+          await cd.handleAttachmentMenuPage();
+          expect(history.replaceState).toHaveBeenCalledWith({ uploaded: true }, '');
+          expect(chrome.runtime.sendMessage).toHaveBeenCalledWith(
+            {
+              notifier: {
+                title: 'attachment_page_upload_notification',
+                message: expect.anything(),
+                action: 'showUpload',
+              },
+            },
+            expect.anything()
+          );
+        });
+
+        it('calls the upload method and responds to negative result', async () => {
+          const cd = singleDocContentDelegate;
+          chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb(false));
+          fetch.mockResponseOnce(false);
+
           jest.spyOn(history, 'replaceState').mockImplementation(() => {});
 
-          cd.handleAttachmentMenuPage();
-          expect(cd.recap.uploadAttachmentMenu).toHaveBeenCalled();
-          expect(cd.notifier.showUpload).not.toHaveBeenCalled();
+          await cd.handleAttachmentMenuPage();
+          expect(chrome.runtime.sendMessage).not.toHaveBeenCalledWith(
+            {
+              notifier: expect.anything(),
+            },
+            expect.anything()
+          );
           expect(history.replaceState).not.toHaveBeenCalled();
         });
       });
     });
   });
+});

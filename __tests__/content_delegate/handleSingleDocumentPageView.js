@@ -5,8 +5,7 @@ import {
   appellateContentDelegate,
   nonsenseUrlContentDelegate,
 } from './mocks';
-
-export const handleSingleDocumentPageViewTests = () =>
+describe('The ContentDelegate class', () => {
   describe('handleSingleDocumentPageView', () => {
     let form;
     beforeEach(() => {
@@ -41,7 +40,9 @@ export const handleSingleDocumentPageViewTests = () =>
 
       it('has no effect with a proper URL', () => {
         const cd = singleDocContentDelegate;
-        jest.spyOn(cd.recap, 'getAvailabilityForDocuments').mockImplementation(() => {});
+        jest
+          .spyOn(cd.recap, 'getAvailabilityForDocuments')
+          .mockImplementation(() => {});
         cd.handleSingleDocumentPageView();
         expect(cd.recap.getAvailabilityForDocuments).not.toHaveBeenCalled();
       });
@@ -101,3 +102,4 @@ export const handleSingleDocumentPageViewTests = () =>
       });
     });
   });
+});

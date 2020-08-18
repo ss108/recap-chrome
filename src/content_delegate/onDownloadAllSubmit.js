@@ -8,6 +8,7 @@ import {
   authHeader,
   uploadType,
   debug,
+  saveZipFileInStorage,
   setPreviousPageinHistory,
   toggleLoadingCursor,
   dispatchNotifier,

@@ -1,0 +1,14 @@
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "loose": true,
+        "targets": {
+          "chrome": "58"
+        }
+      }
+    ]
+  ],
+  "plugins": ["babel-plugin-transform-es2015-modules-commonjs"]
+}

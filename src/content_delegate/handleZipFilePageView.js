@@ -1,5 +1,10 @@
 import PACER from '../pacer';
-import { debug, extractUrlFromZipFileDownloadPage, isAppendixPage } from '../utils';
+import {
+  debug,
+  disableDownloadButtonsAndInsertClickListeners,
+  isAppendixPage,
+  getUrlInZipFilePageView,
+} from '../utils';
 // Same as handleSingleDocumentPageView, but for zip files
 export function handleZipFilePageView() {
   // return if not the download all page
@@ -12,7 +17,7 @@ export function handleZipFilePageView() {
     return debug(4, 'No interposition for appellate downloads yet');
   }
 
-  const url = extractUrlFromZipFileDownloadPage();
+  const url = getUrlInZipFilePageView();
 
   // return if on an appendix page
   if (isAppendixPage(url)) {

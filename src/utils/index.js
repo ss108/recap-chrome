@@ -16,10 +16,10 @@ export * from './toolbarButton';
 //   3   Developer debugging
 global.DEBUGLEVEL = 1;
 
-export function debug(level, varargs) {
+export const debug = (level, varargs) => {
   if (DEBUGLEVEL >= level) {
     var args = Array.prototype.slice.call(arguments, 1);
     args[0] = `RECAP debug [${level}]: ` + args[0];
     return console.log.apply(this, args);
   }
-}
+};
