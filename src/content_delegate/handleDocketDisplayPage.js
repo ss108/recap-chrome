@@ -113,7 +113,7 @@ export async function handleDocketDisplayPage() {
 
   const notified = await dispatchNotifier({
     action: 'showUpload',
-    title: 'Successful Docket Upload',
+    title: 'recap_successful_docket_display_upload',
     message: msg.success,
   });
 

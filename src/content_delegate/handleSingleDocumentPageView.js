@@ -13,7 +13,7 @@ export function handleSingleDocumentPageView() {
   // Monkey-patch the <form> prototype so that its submit() method sends a
   // message to this content script instead of submitting the form.  To do this
   // in the page context instead of this script's, we inject a <script> element.
-  let script = document.createElement('script');
+  const script = document.createElement('script');
   script.innerText =
     'document.createElement("form").__proto__.submit = function () {' +
     '  this.id = "form" + new Date().getTime();' +

@@ -8,7 +8,7 @@ import {
 } from '../utils';
 
 // If this page offers a single document, ask RECAP whether it has the document.
-export function handleSingleDocumentPageCheck() {
+export async function handleSingleDocumentPageCheck() {
   // if not a singleDocument page, punt
   if (!PACER.isSingleDocumentPage(this.url, document)) return;
 
@@ -18,7 +18,7 @@ export function handleSingleDocumentPageCheck() {
 
   const clCourt = PACER.convertToCourtListenerCourt(this.court);
 
-  const recapDocumentCheck = dispatchBackgroundFetch({
+  const recapDocumentCheck = await dispatchBackgroundFetch({
     url: searchParamsURL({
       base: courtListenerURL('recap-query'),
       params: {
@@ -31,6 +31,7 @@ export function handleSingleDocumentPageCheck() {
       headers: authHeader,
     },
   });
+
   console.info(successMsg);
 
   if (!recapDocumentCheck.result) {

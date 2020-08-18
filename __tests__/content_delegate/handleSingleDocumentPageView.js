@@ -8,19 +8,21 @@ import {
 describe('The ContentDelegate class', () => {
   describe('handleSingleDocumentPageView', () => {
     let form;
+    const script = document.createElement('script');
+
     beforeEach(() => {
       form = document.createElement('form');
       document.body.appendChild(form);
     });
 
     afterEach(() => {
-      form.remove();
+      jest.clearAllMocks();
+      fetch.resetMocks();
     });
 
     it('handles appellate check', () => {
       const cd = appellateContentDelegate;
       jest.spyOn(console, 'log').mockImplementation(() => {});
-      jest.spyOn(PACER, 'isSingleDocumentPage').mockReturnValue(true);
       let restore = DEBUGLEVEL;
       DEBUGLEVEL = 4;
       cd.handleSingleDocumentPageView();
@@ -33,18 +35,17 @@ describe('The ContentDelegate class', () => {
     describe('when there is NO appropriate form', () => {
       it('has no effect when the URL is wrong', () => {
         const cd = nonsenseUrlContentDelegate;
-        jest.spyOn(document, 'createElement').mockImplementation(() => {});
+        document.createElement = jest.fn(() => script);
         cd.handleSingleDocumentPageView();
         expect(document.createElement).not.toHaveBeenCalled();
       });
 
       it('has no effect with a proper URL', () => {
         const cd = singleDocContentDelegate;
-        jest
-          .spyOn(cd.recap, 'getAvailabilityForDocuments')
-          .mockImplementation(() => {});
+        document.createElement = jest.fn(() => script);
         cd.handleSingleDocumentPageView();
-        expect(cd.recap.getAvailabilityForDocuments).not.toHaveBeenCalled();
+        expect(document.createElement).not.toHaveBeenCalled();
+        expect(chrome.runtime.sendMessage).not.toBeCalled();
       });
     });
 
@@ -53,9 +54,10 @@ describe('The ContentDelegate class', () => {
       let table;
 
       beforeEach(() => {
+        const newForm = document.querySelector('form');
         input = document.createElement('input');
         input.value = 'View Document';
-        form.appendChild(input);
+        newForm.appendChild(input);
 
         table = document.createElement('table');
         const table_tr = document.createElement('tr');
@@ -64,30 +66,15 @@ describe('The ContentDelegate class', () => {
         table_tr.appendChild(table_td);
         table.appendChild(table_tr);
         document.body.appendChild(table);
-        jest.spyOn(window, 'addEventListener');
-      });
-
-      afterEach(() => {
-        table.remove();
-        const scripts = [...document.querySelectorAll('script')];
-        const lastScript = scripts.find((script) =>
-          script.innerText.match(/^document\.createElement/)
-        );
-        if (lastScript) {
-          lastScript.remove();
-        }
       });
 
       it('creates a non-empty script element', () => {
         const cd = singleDocContentDelegate;
-        const scriptSpy = {};
-        jest.spyOn(document, 'createElement').mockReturnValue(scriptSpy);
-        jest.spyOn(document.body, 'appendChild').mockImplementation(() => {});
         cd.handleSingleDocumentPageView();
 
-        expect(document.createElement).toHaveBeenCalledWith('script');
-        expect(scriptSpy.innerText).toEqual(expect.any(String));
-        expect(document.body.appendChild).toHaveBeenCalledWith(scriptSpy);
+        const scripts = [...document.querySelectorAll('script')];
+        console.warn(scripts[0].innerText);
+        expect(scripts).toBeNull();
       });
 
       it('adds an event listener for the message in the script', () => {

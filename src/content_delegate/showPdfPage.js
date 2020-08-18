@@ -1,6 +1,7 @@
 import PACER from '../pacer';
 import {
   blobToDataURL,
+  generateFileName,
   getItemsFromStorage,
   showPdfHtml,
   updateTabStorage,

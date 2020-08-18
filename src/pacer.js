@@ -219,8 +219,9 @@ function isSingleDocumentPage(url, document) {
   let hasImageReceipt = !!$('td:contains(Image)').length;
 
   let pageCheck =
-    (isDocumentUrl(url) && hasImageReceipt && lastInput === 'View Document') ||
-    lastInput === 'Accept Charges and Retrieve';
+    isDocumentUrl(url) &&
+    hasImageReceipt &&
+    (lastInput === 'View Document' || lastInput === 'Accept Charges and Retrieve');
   debug(4, ` lastInput ${lastInput}`);
   return !!pageCheck;
 }

@@ -5,37 +5,37 @@ import {
   setupChromeSpy,
   removeChromeSpy,
 } from './mocks';
+
 describe('The ContentDelegate class', () => {
   describe('handleSingleDocumentPageCheck', () => {
     let form;
     beforeEach(() => {
+      chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb(msg));
+      chrome.storage.local.get.mockImplementation((key, cb) =>
+        cb({ options: {}, 1234: {} })
+      );
+      chrome.storage.local.set.mockImplementation((key, cb) => cb(true));
       form = document.createElement('form');
       document.body.appendChild(form);
-      setupChromeSpy();
     });
 
     afterEach(() => {
-      removeChromeSpy();
       form.remove();
+      jest.clearAllMocks();
+      fetch.resetMocks();
     });
 
     describe('when there is NO appropriate form', () => {
-      it('has no effect when the URL is wrong', () => {
+      it('has no effect when the URL is wrong', async () => {
         const cd = nonsenseUrlContentDelegate;
-        jest
-          .spyOn(cd.recap, 'getAvailabilityForDocuments')
-          .mockImplementation(() => {});
-        cd.handleSingleDocumentPageCheck();
-        expect(cd.recap.getAvailabilityForDocuments).not.toHaveBeenCalled();
+        await cd.handleSingleDocumentPageCheck();
+        expect(chrome.runtime.sendMessage).not.toHaveBeenCalled();
       });
 
-      it('has no effect with a proper URL', () => {
+      it('has no effect with a proper URL', async () => {
         const cd = singleDocContentDelegate;
-        jest
-          .spyOn(cd.recap, 'getAvailabilityForDocuments')
-          .mockImplementation(() => {});
-        cd.handleSingleDocumentPageCheck();
-        expect(cd.recap.getAvailabilityForDocuments).not.toHaveBeenCalled();
+        await cd.handleSingleDocumentPageCheck();
+        expect(chrome.runtime.sendMessage).not.toHaveBeenCalled();
       });
     });
 
@@ -63,54 +63,54 @@ describe('The ContentDelegate class', () => {
         table.remove();
       });
 
-      it('has no effect when the URL is wrong', () => {
+      it('has no effect when the URL is wrong', async () => {
         const cd = nonsenseUrlContentDelegate;
-        jest
-          .spyOn(cd.recap, 'getAvailabilityForDocuments')
-          .mockImplementation(() => {});
-        cd.handleSingleDocumentPageCheck();
-        expect(cd.recap.getAvailabilityForDocuments).not.toHaveBeenCalled();
+        await cd.handleSingleDocumentPageCheck();
+        expect(chrome.runtime.sendMessage).not.toHaveBeenCalled();
       });
 
-      it('checks availability for the page when the URL is right', () => {
+      it('checks availability for the page when the URL is right', async () => {
         const cd = singleDocContentDelegate;
-        jest
-          .spyOn(cd.recap, 'getAvailabilityForDocuments')
-          .mockImplementation(() => {});
-        cd.handleSingleDocumentPageCheck();
-        expect(cd.recap.getAvailabilityForDocuments).toHaveBeenCalled();
+        await cd.handleSingleDocumentPageCheck();
+        expect(chrome.runtime.sendMessage).toHaveBeenCalledWith(
+          {
+            fetch: {
+              url: expect.anything(),
+              options: { method: 'GET', headers: expect.anything() },
+            },
+          },
+          expect.anything()
+        );
       });
 
       describe('for pacer doc id 531591', () => {
-        afterEach(() => {
-          const banner = document.querySelector('.recap-banner');
-          if (banner) {
-            banner.remove();
-          }
-        });
-
-        it('responds to a positive result', () => {
+        it('responds to a positive result', async () => {
           const fakePacerDocId = 531591;
           const cd = singleDocContentDelegate;
           cd.pacer_doc_id = fakePacerDocId;
-          const fake = function (pc, pci, callback) {
-            const response = {
-              results: [
-                {
-                  pacer_doc_id: fakePacerDocId,
-                  filepath_local: 'download/1234',
-                },
-              ],
-            };
-            callback(response);
+          const response = {
+            results: [
+              {
+                pacer_doc_id: fakePacerDocId,
+                filepath_local: 'download/1234',
+              },
+            ],
           };
-          jest
-            .spyOn(cd.recap, 'getAvailabilityForDocuments')
-            .mockImplementation(fake);
+          fetch.mockResponseOnce(response);
+          chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb(response));
 
-          cd.handleSingleDocumentPageCheck();
+          await cd.handleSingleDocumentPageCheck();
 
-          expect(cd.recap.getAvailabilityForDocuments).toHaveBeenCalled();
+          expect(chrome.runtime.sendMessage).toHaveBeenCalledWith(
+            {
+              fetch: {
+                url: expect.anything(),
+                options: { method: 'GET', headers: expect.anything() },
+              },
+            },
+            expect.anything()
+          );
+
           const banner = document.querySelector('.recap-banner');
           expect(banner).not.toBeNull();
           const link = banner.querySelector('a');
@@ -118,19 +118,22 @@ describe('The ContentDelegate class', () => {
           expect(link.href).toBe('https://www.courtlistener.com/download/1234');
         });
 
-        it('responds to a negative result', () => {
+        it('responds to a negative result', async () => {
           const cd = singleDocContentDelegate;
-          const fake = (pc, pci, callback) => {
-            const response = { results: [{}] };
-            callback(response);
-          };
-          jest
-            .spyOn(cd.recap, 'getAvailabilityForDocuments')
-            .mockImplementation(fake);
+          const response = { results: [{}] };
+          fetch.mockResponseOnce(response);
+          chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb(response));
 
-          cd.handleSingleDocumentPageCheck();
-
-          expect(cd.recap.getAvailabilityForDocuments).toHaveBeenCalled();
+          await cd.handleSingleDocumentPageCheck();
+          expect(chrome.runtime.sendMessage).toHaveBeenCalledWith(
+            {
+              fetch: {
+                url: expect.anything(),
+                options: { method: 'GET', headers: expect.anything() },
+              },
+            },
+            expect.anything()
+          );
           const banner = document.querySelector('.recap-banner');
           expect(banner).toBeNull();
         });

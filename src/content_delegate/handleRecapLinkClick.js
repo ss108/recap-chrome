@@ -1,3 +1,4 @@
+import $ from 'jquery';
 // Pop up a dialog offering the link to the free cached copy of the document,
 // or just go directly to the free document if popups are turned off.
 export function handleRecapLinkClick(window_obj, url) {

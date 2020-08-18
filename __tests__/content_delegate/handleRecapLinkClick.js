@@ -1,5 +1,6 @@
 import { ContentDelegate } from '../../src/content_delegate';
 import { docketDisplayContentDelegate, singleDocUrl } from './mocks';
+import $ from 'jquery';
 describe('The ContentDelegate class', () => {
   describe('handleRecapLinkClick', () => {
     const cd = docketDisplayContentDelegate;
