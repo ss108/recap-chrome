@@ -3,23 +3,20 @@ import { docketDisplayContentDelegate, singleDocUrl } from './mocks';
 import $ from 'jquery';
 describe('The ContentDelegate class', () => {
   describe('handleRecapLinkClick', () => {
+    beforeEach(() => {
+      document.body.innerHTML = '';
+    });
+
     const cd = docketDisplayContentDelegate;
     const linkUrl = singleDocUrl;
-
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
     describe('when the popup option is not set', () => {
-      beforeEach(() => {
-        window.chrome = {
-          storage: {
-            local: {
-              get: jest.fn((_, cb) => {
-                cb({ options: {} });
-              }),
-            },
-          },
-        };
-      });
-
       it('redirects to the link url immediately', () => {
+        chrome.storage.local.get.mockImplementation((msg, cb) =>
+          cb({ options: {} })
+        );
         const window_obj = {};
         cd.handleRecapLinkClick(window_obj, linkUrl);
         expect(window_obj.location).toBe(linkUrl);
@@ -28,16 +25,9 @@ describe('The ContentDelegate class', () => {
 
     describe('when the popup option is set', () => {
       beforeEach(() => {
-        window.chrome = {
-          storage: {
-            local: {
-              get: jest.fn((_, cb) => {
-                cb({ options: { recap_link_popups: true } });
-              }),
-              set: jest.fn(() => {}),
-            },
-          },
-        };
+        chrome.storage.local.get.mockImplementation((msg, cb) =>
+          cb({ options: { recap_link_popups: true } })
+        );
       });
 
       it('attaches the RECAP popup', () => {

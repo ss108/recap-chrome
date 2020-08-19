@@ -7,6 +7,14 @@ import {
 
 describe('The ContentDelegate class', () => {
   describe('handleAttachmentMenuPage', () => {
+    beforeEach(() => {
+      document.body.innerHTML = '';
+    });
+
+    afterEach(() => {
+      jest.clearAllMocks();
+      fetchMock.mockClear();
+    });
     describe('option disabled', () => {
       let form;
       let input;
@@ -30,14 +38,12 @@ describe('The ContentDelegate class', () => {
 
       afterEach(() => {
         form.remove();
-        jest.clearAllMocks();
-        fetch.resetMocks();
       });
 
       it('has no effect recap_enabled option is not set', async () => {
         const cd = singleDocContentDelegate;
         await cd.handleAttachmentMenuPage();
-        expect(fetch.mock.calls.length).toBe(0);
+        expect(fetchMock.calls.length).toBe(0);
       });
     });
 
@@ -55,8 +61,6 @@ describe('The ContentDelegate class', () => {
       });
 
       afterEach(() => {
-        jest.clearAllMocks();
-        fetch.resetMocks();
         form.remove();
       });
 
@@ -111,7 +115,7 @@ describe('The ContentDelegate class', () => {
         it('uploads the page when the URL is right', async () => {
           const cd = singleDocContentDelegate;
           chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb(true));
-          fetch.mockResponseOnce({ success: 'msg' });
+          fetchMock.postOnce(/courtlistener/, { success: 'msg' });
           await cd.handleAttachmentMenuPage();
           // tests that the script sends a message to background fetch worker
           expect(chrome.runtime.sendMessage).toHaveBeenCalledWith(
@@ -131,8 +135,11 @@ describe('The ContentDelegate class', () => {
 
         it('calls the upload method and responds to positive result', async () => {
           const cd = singleDocContentDelegate;
+          fetchMock.postOnce(/courtlistener/, { res: 200 });
+          chrome.runtime.sendMessage.mockImplementation((msg, cb) =>
+            cb({ res: 200 })
+          );
           jest.spyOn(history, 'replaceState').mockImplementation(() => true);
-          fetch.mockResponseOnce(true);
           await cd.handleAttachmentMenuPage();
           expect(history.replaceState).toHaveBeenCalledWith({ uploaded: true }, '');
           expect(chrome.runtime.sendMessage).toHaveBeenCalledWith(
@@ -150,7 +157,7 @@ describe('The ContentDelegate class', () => {
         it('calls the upload method and responds to negative result', async () => {
           const cd = singleDocContentDelegate;
           chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb(false));
-          fetch.mockResponseOnce(false);
+          fetchMock.postOnce(/courtlistener/, false);
 
           jest.spyOn(history, 'replaceState').mockImplementation(() => {});
 

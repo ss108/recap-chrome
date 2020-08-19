@@ -9,47 +9,48 @@ import {
 
 describe('The ContentDelegate class', () => {
   describe('handleDocketDisplayPage', () => {
+    beforeEach(() => {
+      document.body.innerHTML = '';
+    });
+
+    afterEach(() => {
+      jest.clearAllMocks();
+      fetchMock.mockClear();
+    });
+
     describe('option disabled', () => {
-      beforeEach(() => {
-        chrome.extension.getURL.mockImplementation(() => 'icon.png');
-        chrome.runtime.sendMessage.mockImplementation((msg, cb) =>
-          cb({
-            ['1234']: { caseId: '531591' },
-            options: { recap_enabled: false },
-          })
-        );
+      it('has no effect when recap_enabled option is false', async () => {
+        const cd = docketDisplayContentDelegate;
         chrome.storage.local.get.mockImplementation((key, cb) => {
           cb({
             ['1234']: { caseId: '531591' },
             options: { recap_enabled: false },
           });
         });
-        chrome.storage.local.set.mockImplementation((obj, cb) => cb());
-      });
-
-      afterEach(() => {
-        jest.clearAllMocks();
-        fetch.resetMocks();
-      });
-
-      it('has no effect when recap_enabled option is false', async () => {
-        const cd = docketDisplayContentDelegate;
+        chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb({}));
         await cd.handleDocketDisplayPage();
-        expect(chrome.runtime.sendMessage).not.toHaveBeenCalled();
+        expect(chrome.runtime.sendMessage).not.toHaveBeenCalledWith({
+          fetch: {
+            options: {
+              method: 'POST',
+              headers: expect.anything(),
+              body: expect.anything(),
+            },
+            url: expect.stringMatching(/courtlistener/),
+          },
+        });
       });
     });
 
     describe('option enabled', () => {
       beforeEach(() => {
         chrome.extension.getURL.mockImplementation(() => 'icon.png');
-        chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb(msg));
         chrome.storage.local.get.mockImplementation((key, cb) => {
           cb({
             ['1234']: { caseId: '531591' },
             options: { recap_enabled: true },
           });
         });
-        chrome.storage.local.set.mockImplementation((obj, cb) => cb());
 
         const table = document.createElement('table');
         const tbody = document.createElement('tbody');
@@ -60,18 +61,18 @@ describe('The ContentDelegate class', () => {
       });
 
       afterEach(() => {
-        jest.clearAllMocks();
-        fetch.resetMocks();
         document.querySelector('table').remove();
       });
 
       it('has no effect when not on a docket display url', async () => {
+        chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb());
         const cd = nonsenseUrlContentDelegate;
         await cd.handleDocketDisplayPage();
         expect(chrome.runtime.sendMessage).not.toHaveBeenCalled();
       });
 
       it('has no effect when there is no casenum', async () => {
+        chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb({}));
         const cd = new ContentDelegate(
           tabId,
           docketDisplayUrl,
@@ -95,6 +96,7 @@ describe('The ContentDelegate class', () => {
         });
 
         it('has no effect', async () => {
+          chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb({}));
           const cd = docketDisplayContentDelegate;
           await cd.handleDocketDisplayPage();
           expect(chrome.runtime.sendMessage).not.toHaveBeenCalled();
@@ -114,12 +116,8 @@ describe('The ContentDelegate class', () => {
           document.body.appendChild(input2);
         });
 
-        afterEach(() => {
-          document.getElementById('input1').remove();
-          document.getElementById('input2').remove();
-        });
-
         it('does not call uploadDocket', async () => {
+          chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb({}));
           const cd = docketDisplayContentDelegate;
           await cd.handleDocketDisplayPage();
           expect(chrome.runtime.sendMessage).not.toHaveBeenCalled();
@@ -129,49 +127,67 @@ describe('The ContentDelegate class', () => {
       describe('when the docket page is not an interstitial page', () => {
         it('adds a button linking to a create alert page on CL', async () => {
           const cd = docketDisplayContentDelegate;
-          fetch.mockResponseOnce({ count: 1, results: [{ stuff: 'text' }] });
+          fetchMock.getOnce(/courtlistener/, {
+            count: 1,
+            results: [{ stuff: 'text' }],
+          });
           await cd.handleDocketDisplayPage();
           const button = document.getElementById('recap-alert-button');
           expect(button).not.toBeNull();
         });
 
         it('calls uploadDocket and responds to a positive result', async () => {
+          chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb({}));
           const cd = docketDisplayContentDelegate;
-          fetch.mockResponseOnce({ count: 1, results: [{ stuff: 'text' }] });
-          jest.spyOn(history, 'replaceState').mockImplementation(() => {});
-
-          await cd.handleDocketDisplayPage();
-          expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({
-            fetch: {
-              url: expect.anything(),
-              options: {
-                method: 'GET',
-                headers: expect.anything(),
-              },
-            },
+          fetchMock.getOnce(/courtlistener/, {
+            count: 1,
+            results: [{ stuff: 'text' }],
           });
-          expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({
-            fetch: {
-              url: expect.anything(),
-              options: {
-                method: 'POST',
-                headers: expect.anything(),
-                body: {
-                  court: expect.anything(),
-                  pacer_case_id: expect.anything(),
-                  filepath_local: true,
-                  upload_type: expect.anything(),
+          jest.spyOn(history, 'replaceState').mockImplementation(() => {});
+          await cd.handleDocketDisplayPage();
+          expect(chrome.runtime.sendMessage).toHaveBeenNthCalledWith(
+            1,
+            {
+              fetch: {
+                url: expect.anything(),
+                options: {
+                  method: 'GET',
+                  headers: expect.anything(),
                 },
               },
             },
-          });
-          expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({
-            notifier: {
-              title: 'recap_successful_docket_display_upload',
-              message: expect.anything(),
-              action: 'showUpload',
+            expect.any(Function)
+          );
+          expect(chrome.runtime.sendMessage).toHaveBeenNthCalledWith(
+            2,
+            {
+              fetch: {
+                url: expect.anything(),
+                options: {
+                  method: 'POST',
+                  headers: expect.anything(),
+                  body: {
+                    court: expect.anything(),
+                    pacer_case_id: expect.anything(),
+                    filepath_local: true,
+                    upload_type: expect.anything(),
+                  },
+                },
+              },
             },
-          });
+            expect.any(Function)
+          );
+          expect(chrome.runtime.sendMessage).toHaveBeenNthCalledWith(
+            3,
+            {
+              notifier: {
+                title: 'recap_successful_docket_display_upload',
+                message: expect.anything(),
+                action: 'showUpload',
+              },
+            },
+            expect.any(Function)
+          );
           expect(history.replaceState).toHaveBeenCalledWith({ uploaded: true }, '');
           const button = document.getElementById('recap-alert-button');
           expect(button.className.includes('disabled')).not.toBe(true);
@@ -179,47 +195,59 @@ describe('The ContentDelegate class', () => {
         });
 
         it('calls uploadDocket and responds to a positive historical result', async () => {
+          chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb({}));
           const cd = historyDocketDisplayContentDelegate;
-          chrome.runtime.sendMessage.mockImplementation((msg, cb) => ({
+          fetchMock.getOnce(/courtlistener/, {
             count: 1,
             results: [{ stuff: 'text' }],
-          }));
-          fetch.mockResponseOnce({ count: 1, results: [{ stuff: 'text' }] });
+          });
           jest.spyOn(history, 'replaceState').mockImplementation(() => {});
 
           await cd.handleDocketDisplayPage();
 
-          expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({
-            fetch: {
-              url: expect.anything(),
-              options: {
-                method: 'GET',
-                headers: expect.anything(),
-              },
-            },
-          });
-          expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({
-            fetch: {
-              url: expect.anything(),
-              options: {
-                method: 'POST',
-                headers: expect.anything(),
-                body: {
-                  court: expect.anything(),
-                  pacer_case_id: expect.anything(),
-                  filepath_local: true,
-                  upload_type: expect.anything(),
+          expect(chrome.runtime.sendMessage).toHaveBeenNthCalledWith(
+            1,
+            {
+              fetch: {
+                url: expect.anything(),
+                options: {
+                  method: 'GET',
+                  headers: expect.anything(),
                 },
               },
             },
-          });
-          expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({
-            notifier: {
-              title: 'recap_successful_docket_display_upload',
-              message: expect.anything(),
-              action: 'showUpload',
+            expect.any(Function)
+          );
+          expect(chrome.runtime.sendMessage).toHaveBeenNthCalledWith(
+            2,
+            {
+              fetch: {
+                url: expect.anything(),
+                options: {
+                  method: 'POST',
+                  headers: expect.anything(),
+                  body: {
+                    court: expect.anything(),
+                    pacer_case_id: expect.anything(),
+                    filepath_local: true,
+                    upload_type: expect.anything(),
+                  },
+                },
+              },
             },
-          });
+            expect.any(Function)
+          );
+          expect(chrome.runtime.sendMessage).toHaveBeenNthCalledWith(
+            3,
+            {
+              notifier: {
+                title: 'recap_successful_docket_display_upload',
+                message: expect.anything(),
+                action: 'showUpload',
+              },
+            },
+            expect.any(Function)
+          );
           expect(history.replaceState).toHaveBeenCalledWith({ uploaded: true }, '');
           const button = document.getElementById('recap-alert-button');
           expect(button.className.includes('disabled')).not.toBe(true);
@@ -227,44 +255,62 @@ describe('The ContentDelegate class', () => {
         });
 
         it('calls uploadDocket and responds to a negative result', async () => {
+          chrome.runtime.sendMessage.mockImplementation((msg, cb) =>
+            cb({ error: true })
+          );
           const cd = docketDisplayContentDelegate;
 
-          fetch.mockResponseOnce({ count: 1, results: [{ stuff: 'text' }] });
+          fetchMock.getOnce(/courtlistener/, {
+            count: 1,
+            results: [{ stuff: 'text' }],
+          });
+          fetchMock.postOnce(/courtlistener/, {});
           jest.spyOn(history, 'replaceState').mockImplementation(() => {});
 
           await cd.handleDocketDisplayPage();
 
-          expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({
-            fetch: {
-              url: expect.anything(),
-              options: {
-                method: 'GET',
-                headers: expect.anything(),
-              },
-            },
-          });
-          expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({
-            fetch: {
-              url: expect.anything(),
-              options: {
-                method: 'POST',
-                headers: expect.anything(),
-                body: {
-                  court: expect.anything(),
-                  pacer_case_id: expect.anything(),
-                  filepath_local: true,
-                  upload_type: expect.anything(),
+          expect(chrome.runtime.sendMessage).toHaveBeenNthCalledWith(
+            1,
+            {
+              fetch: {
+                url: expect.anything(),
+                options: {
+                  method: 'GET',
+                  headers: expect.anything(),
                 },
               },
             },
-          });
-          expect(chrome.runtime.sendMessage).not.toHaveBeenCalledWith({
-            notifier: {
-              title: 'recap_successful_docket_display_upload',
-              message: expect.anything(),
-              action: 'showUpload',
+            expect.any(Function)
+          );
+          expect(chrome.runtime.sendMessage).toHaveBeenNthCalledWith(
+            2,
+            {
+              fetch: {
+                url: expect.anything(),
+                options: {
+                  method: 'POST',
+                  headers: expect.anything(),
+                  body: {
+                    court: expect.anything(),
+                    pacer_case_id: expect.anything(),
+                    filepath_local: true,
+                    upload_type: expect.anything(),
+                  },
+                },
+              },
             },
-          });
+            expect.any(Function)
+          );
+          expect(chrome.runtime.sendMessage).not.toHaveBeenCalledWith(
+            {
+              notifier: {
+                title: 'recap_successful_docket_display_upload',
+                message: expect.anything(),
+                action: 'showUpload',
+              },
+            },
+            expect.any(Function)
+          );
           expect(history.replaceState).not.toHaveBeenCalled();
         });
       });

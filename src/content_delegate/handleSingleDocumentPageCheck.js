@@ -34,7 +34,7 @@ export async function handleSingleDocumentPageCheck() {
 
   console.info(successMsg);
 
-  if (!recapDocumentCheck.result) {
+  if (!recapDocumentCheck.results) {
     return console.warn('Recap: No documents found');
   }
 

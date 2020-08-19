@@ -2,89 +2,70 @@ import { ContentDelegate } from '../src/content_delegate';
 import * as utils from '../src/utils';
 import { pdf_data } from './content_delegate/mocks';
 
-jest.mock('../src/utils', () => ({
-  ...jest.requireActual('../src/utils'),
-  debug: jest.fn(),
-  getBrowserFetch: jest.fn(),
-  updateTabStorage: jest.fn(),
-}));
+const tabId = 1234;
+const districtCourtURI = 'https://ecf.dcd.uscourts.gov';
+const zipPreDownloadPath =
+  '/cgi-bin/show_multidocs.pl?caseid=178502&arr_de_seq_nums=5&magic_num=&pdf_header=&hdr=&pdf_toggle_possible=&zipit=1';
+const zipPreDownloadUrl = districtCourtURI.concat(zipPreDownloadPath);
+const expectedOnclick =
+  "parent.location='/cgi-bin/show_multidocs.pl?caseid=178502&arr_de_seq_nums=5&magic_num=&pdf_header=&hdr=&pdf_toggle_possible=&zipit=1&caseid=178502&zipit=1&magic_num=&arr_de_seq_nums=5&got_warning=&create_roa=&create_appendix=&bates_format=&dkt=&got_receipt=1'";
+const appendixOnClickUrl =
+  "parent.location='/cgi-bin/show_multidocs.pl?caseid=44812&pdf_header=1&pdf_toggle_possible=1&caseid=44812&zipit=2&magic_num=&arr_de_seq_nums=13&got_warning=&create_roa=1&create_appendix=1&bates_format=_lt_pagenum_gt_&restricted_entries=on&sealed_entries=on&dkt=a3771446998&got_receipt=1'";
+const eventUrl =
+  '/cgi-bin/show_multidocs.pl?caseid=178502&arr_de_seq_nums=5&magic_num=&pdf_header=&hdr=&pdf_toggle_possible=&zipit=1&caseid=178502&zipit=1&magic_num=&arr_de_seq_nums=5&got_warning=&create_roa=&create_appendix=&bates_format=&dkt=&got_receipt=1';
+
+const blob = new Blob([pdf_data], { type: 'application/pdf' });
+
+const dummyIFrame = `<html><iframe src="http://dummylink.com"></iframe></html>`;
+
+const zipFileContentDelegate = new ContentDelegate(
+  1234,
+  zipPreDownloadUrl,
+  zipPreDownloadPath,
+  'canb',
+  undefined, // caseId
+  undefined, // docId
+  [] // links
+);
+
+const pageWithZipUrl = () => {
+  const html = document.createElement('html');
+  const body = document.createElement('body');
+  const iframe = document.createElement('iframe');
+  iframe.setAttribute('src', 'https://dummyplace.com');
+  body.appendChild(iframe);
+  html.appendChild(body);
+  return html;
+};
+
+const res = {};
+res.status = jest.fn(() => Promise.resolve('200'));
+res.text = jest.fn(() => Promise.resolve(dummyIFrame));
+res.json = jest.fn(() => Promise.resolve({ result: true }));
+res.blob = jest.fn(() => Promise.resolve(blob));
 
 describe('The ContentDelegate class', () => {
-  const tabId = 1234;
-  const districtCourtURI = 'https://ecf.dcd.uscourts.gov';
-  const zipPreDownloadPath =
-    '/cgi-bin/show_multidocs.pl?caseid=178502&arr_de_seq_nums=5&magic_num=&pdf_header=&hdr=&pdf_toggle_possible=&zipit=1';
-  const zipPreDownloadUrl = districtCourtURI.concat(zipPreDownloadPath);
-  const expectedOnclick =
-    "parent.location='/cgi-bin/show_multidocs.pl?caseid=178502&arr_de_seq_nums=5&magic_num=&pdf_header=&hdr=&pdf_toggle_possible=&zipit=1&caseid=178502&zipit=1&magic_num=&arr_de_seq_nums=5&got_warning=&create_roa=&create_appendix=&bates_format=&dkt=&got_receipt=1'";
-  const appendixOnClickUrl =
-    "parent.location='/cgi-bin/show_multidocs.pl?caseid=44812&pdf_header=1&pdf_toggle_possible=1&caseid=44812&zipit=2&magic_num=&arr_de_seq_nums=13&got_warning=&create_roa=1&create_appendix=1&bates_format=_lt_pagenum_gt_&restricted_entries=on&sealed_entries=on&dkt=a3771446998&got_receipt=1'";
-  const eventUrl =
-    '/cgi-bin/show_multidocs.pl?caseid=178502&arr_de_seq_nums=5&magic_num=&pdf_header=&hdr=&pdf_toggle_possible=&zipit=1&caseid=178502&zipit=1&magic_num=&arr_de_seq_nums=5&got_warning=&create_roa=&create_appendix=&bates_format=&dkt=&got_receipt=1';
-
-  const blob = new Blob([pdf_data], { type: 'application/pdf' });
-
-  const dummyIFrame = `<html><iframe src="http://dummylink.com"></iframe></html>`;
-
-  const zipFileContentDelegate = new ContentDelegate(
-    1234,
-    zipPreDownloadUrl,
-    zipPreDownloadPath,
-    'canb',
-    undefined, // caseId
-    undefined, // docId
-    [] // links
-  );
-
-  const pageWithZipUrl = () => {
-    const html = document.createElement('html');
-    const body = document.createElement('body');
-    const iframe = document.createElement('iframe');
-    iframe.setAttribute('src', 'https://dummyplace.com');
-    body.appendChild(iframe);
-    html.appendChild(body);
-    return html;
-  };
-
   describe('attempts to download a zip file', () => {
     beforeEach(async () => {
       // mock the firefox content.fetch function
-      window.content = {
-        fetch: jest.fn(() => {
-          const res = {};
-          res.text = () => Promise.resolve(dummyIFrame);
-          return Promise.resolve(res);
-        }),
-      };
-      fetch.mockResponse(() => {
-        const res = {};
-        res.status = jest.fn(() => Promise.resolve('200'));
-        res.text = jest.fn(() => Promise.resolve(dummyIFrame));
-        res.json = jest.fn(() => Promise.resolve({ result: true }));
-        res.blob = jest.fn(() => Promise.resolve(blob));
-        return res;
-      });
 
       const dataUrl = await utils.blobToDataURL(blob);
 
-      chrome.storage.local = {
-        get: jest.fn((key, cb) => {
-          cb({
-            options: {
-              recap_enabled: true,
-              ['ia_style_filenames']: true,
-              ['lawyer_style_filenames']: false,
-              ['external_pdf']: true,
-            },
-            [tabId]: {
-              ['zip_blob']: dataUrl,
-              docsToCases: { ['034031424909']: '531591' },
-            },
-          });
-        }),
-        remove: jest.fn(() => {}),
-        set: jest.fn(function () {}),
-      };
+      chrome.storage.local.get.mockImplementation((key, cb) => {
+        cb({
+          options: {
+            recap_enabled: true,
+            ['ia_style_filenames']: true,
+            ['lawyer_style_filenames']: false,
+            ['external_pdf']: true,
+          },
+          [tabId]: {
+            ['zip_blob']: dataUrl,
+            docsToCases: { ['034031424909']: '531591' },
+          },
+        });
+      });
+
       jest.spyOn(history, 'pushState').mockImplementation((...args) => {});
 
       window.saveAs = jest.fn((blob, filename) => Promise.resolve(true));
@@ -92,7 +73,8 @@ describe('The ContentDelegate class', () => {
     });
 
     afterEach(() => {
-      fetch.resetMocks();
+      jest.clearAllMocks();
+      fetchMock.mockClear();
     });
 
     describe('handleZipFilePageView', () => {
@@ -188,38 +170,45 @@ describe('The ContentDelegate class', () => {
     });
 
     describe('onDownloadAllSubmit', () => {
-      beforeEach(() => fetch.mockResponseOnce(pdf_data));
-      afterEach(() => fetch.resetMocks());
-      const cd = zipFileContentDelegate;
+      beforeEach(() => fetchMock.getOnce('*', pdf_data));
 
       it('fetches the page html and extracts the zipFile url', async () => {
+        const cd = zipFileContentDelegate;
         await cd.onDownloadAllSubmit({ data: { id: eventUrl } });
-        expect(fetch.mock.calls[0][0]).toEqual(eventUrl);
+        expect(fetchMock.calls[0][0]).toEqual(eventUrl);
       });
 
       it('downloads the zipFile and stores it in chrome storage', async () => {
+        const cd = zipFileContentDelegate;
         await cd.onDownloadAllSubmit({ data: { id: eventUrl } });
         expect(chrome.storage.local.set).toHaveBeenCalled();
       });
 
       it('checks options to see if recap is enabled', async function () {
+        const cd = zipFileContentDelegate;
         await cd.onDownloadAllSubmit({ data: { id: eventUrl } });
         expect(chrome.storage.local.get).toHaveBeenCalledWith('options');
       });
 
       it('uploads the Zip file to RECAP', async function () {
+        fetchMock.post(/courtlistener/, { res: 'success' });
+        const cd = zipFileContentDelegate;
         await cd.onDownloadAllSubmit({ data: { id: eventUrl } });
-        expect(cd.recap.uploadZipFile).toHaveBeenCalled();
+        expect(fetchMock.calls.length).toBe(1);
       });
 
       it('redirects the user to the download page and forwards the zip file', async () => {
+        const cd = zipFileContentDelegate;
         await cd.onDownloadAllSubmit({ data: { id: eventUrl } });
         expect(history.pushState).toHaveBeenCalled();
       });
 
       it('calls the notifier once the upload finishes', async () => {
+        const cd = zipFileContentDelegate;
         await cd.onDownloadAllSubmit({ data: { id: eventUrl } });
-        // expect(utils.dispatchNotifier).toHaveBeenCalled();
+        expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({
+          notifier: expect.anything(),
+        });
       });
     });
   });

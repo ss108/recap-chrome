@@ -6,20 +6,26 @@ export * from './background';
 export * from './backgroundFetch';
 export * from './backgroundNotifier';
 export * from './toolbarButton';
-// Debug logging function.
-// First argument is a debug level, remainder are variable args for console.log
-// If the global debug level matches the first arg, calls console.log().
-// Example usage:
-//    debug(5, "This message is only seen when debug is %d or higher.", 5);
-// Debug levels:
-//   1   General informational
-//   3   Developer debugging
+
+// debugging no longer needed to be run through set levels in the code
+// you can enable vscode debugging by running the launch.json script
+// through vscode which runs the test suite, allowing you to view items
+// in real time
+// https://jestjs.io/docs/en/troubleshooting#debugging-in-vs-code
+
+// for production or development logging, you can insert console commands
+// where necessary, which should get removed prior to push
+
 global.DEBUGLEVEL = 1;
 
 export const debug = (level, varargs) => {
   if (DEBUGLEVEL >= level) {
-    var args = Array.prototype.slice.call(arguments, 1);
-    args[0] = `RECAP debug [${level}]: ` + args[0];
-    return console.log.apply(this, args);
+    // we no longer need the below script, especially since the
+    // 'this' binding is different in es6
+    // however, rather than ripping it out, we stub it to console.debug
+    // var args = Array.prototype.slice.call(arguments, 1);
+    // args[0] = `RECAP debug [${level}]: ` + args[0];
+    // return console.log.apply(this, args);
+    return console.debug(`RECAP debug [${level}]: ${varargs}`);
   }
 };

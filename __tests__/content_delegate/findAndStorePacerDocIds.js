@@ -12,12 +12,6 @@ import {
 } from './mocks';
 import * as utils from '../../src/utils/';
 
-jest.mock('../../src/utils', () => ({
-  ...jest.requireActual('../../src/utils'),
-  debug: jest.fn(),
-  getBrowserFetch: jest.fn(),
-}));
-
 describe('The ContentDelegate class', () => {
   const link_2 = document.createElement('a');
   link_2.href = 'https://ecf.canb.uscourts.gov/notacase/034031424909';
@@ -47,6 +41,7 @@ describe('The ContentDelegate class', () => {
   );
   describe('findAndStorePacerDocIds', () => {
     beforeEach(() => {
+      document.body.innerHTML = '';
       chrome.storage.local.get.mockImplementation((msg, cb) =>
         cb({ options: {}, 1234: { docsToCases: {} } })
       );
@@ -58,7 +53,7 @@ describe('The ContentDelegate class', () => {
     // clear all mocks after each test
     afterEach(() => {
       jest.clearAllMocks();
-      fetch.resetMocks();
+      fetchMock.mockClear();
     });
 
     it('should handle no cookie', async () => {

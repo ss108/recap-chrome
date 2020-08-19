@@ -6,6 +6,7 @@ describe('The ContentDelegate class', () => {
   describe('handleDocketQueryUrl', () => {
     let form;
     beforeEach(function () {
+      document.body.innerHTML = '';
       form = document.createElement('form');
       document.body.appendChild(form);
       chrome.extension.getURL.mockImplementation(() => './iconimageurl.png');
@@ -13,9 +14,8 @@ describe('The ContentDelegate class', () => {
     });
 
     afterEach(() => {
-      form.remove();
       jest.clearAllMocks();
-      fetch.resetMocks();
+      fetchMock.mockClear();
     });
 
     it('has no effect when not on a docket query url', async () => {
@@ -30,11 +30,10 @@ describe('The ContentDelegate class', () => {
     // but does exercise all existing branches
     it('checks for a Pacer cookie', async () => {
       const cd = nonsenseUrlContentDelegate;
-      fetch.mockResponseOnce({});
       jest.spyOn(PACER, 'hasPacerCookie').mockReturnValue(false);
       jest.spyOn(PACER, 'isDocketQueryUrl').mockReturnValue(true);
       await cd.handleDocketQueryUrl();
-      expect(fetch.mock.calls.length).toBe(0);
+      expect(fetchMock.calls.length).toBe(0);
     });
 
     it('handles zero results from getAvailabilityForDocket', async () => {
@@ -42,10 +41,10 @@ describe('The ContentDelegate class', () => {
         count: 0,
         results: [],
       };
+      fetchMock.getOnce(/courtlistener/, results);
       const cd = docketQueryContentDelegate;
       jest.spyOn(PACER, 'hasPacerCookie').mockReturnValue(true);
       chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb(results));
-      fetch.mockResponseOnce(results);
       await cd.handleDocketQueryUrl();
       expect(form.innerHTML).toBe('');
     });
@@ -62,9 +61,9 @@ describe('The ContentDelegate class', () => {
           },
         ],
       };
+      fetchMock.getOnce(/courtlistener/, results);
       const cd = docketQueryContentDelegate;
       jest.spyOn(PACER, 'hasPacerCookie').mockReturnValue(true);
-      fetch.mockResponseOnce(results);
       chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb(results));
 
       await cd.handleDocketQueryUrl();
@@ -85,7 +84,7 @@ describe('The ContentDelegate class', () => {
         results: [],
       };
       const cd = docketQueryContentDelegate;
-      fetch.mockResponseOnce(results);
+      fetchMock.getOnce('*', results);
       chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb(results));
       jest.spyOn(PACER, 'hasPacerCookie').mockReturnValue(true);
       await cd.handleDocketQueryUrl();

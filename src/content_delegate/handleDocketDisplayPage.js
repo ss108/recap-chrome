@@ -106,11 +106,17 @@ export async function handleDocketDisplayPage() {
       },
     },
   });
-  if (!docketUploaded) return console.error(msg.error);
+  console.log(docketUploaded);
+  // if docketUploaded returns falsy or has no keys, return
+  if (!docketUploaded.success) return console.error(msg.error);
 
   // if upload successful, set the upload flag to true, and
   // change the create alert button state to active
 
+  history.replaceState({ uploaded: true }, '');
+  changeAlertButtonStateToActive({ el: alertBtn() });
+
+  // send the toast notification
   const notified = await dispatchNotifier({
     action: 'showUpload',
     title: 'recap_successful_docket_display_upload',
@@ -119,8 +125,4 @@ export async function handleDocketDisplayPage() {
 
   if (notified.success)
     return console.info('RECAP: User notified of succesful upload');
-
-  history.replaceState({ uploaded: true }, '');
-
-  changeAlertButtonStateToActive({ el: alertBtn() });
 }

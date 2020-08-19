@@ -3,8 +3,13 @@ import { tabId, setupChromeSpy, removeChromeSpy } from './mocks';
 
 describe('The ContentDelegate class', () => {
   describe('ContentDelegate constructor', () => {
-    beforeEach(() => setupChromeSpy());
-    afterEach(() => removeChromeSpy());
+    beforeEach(() => {
+      document.body.innerHTML = '';
+    });
+    afterEach(() => {
+      jest.clearAllMocks();
+      fetchMock.mockClear();
+    });
 
     const expected_url = 'https://ecf.canb.uscourts.gov/cgi-bin/DktRpt.pl?531591';
     const restricted_url = 'https://ecf.canb.uscourts.gov/doc1/04503837920';

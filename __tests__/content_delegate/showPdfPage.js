@@ -35,22 +35,19 @@ describe('The ContentDelegate class', () => {
       return res;
     };
     beforeEach(() => {
+      document.body.innerHTML = '';
       documentElement = document.createElement('html');
 
       chrome.storage.local.get.mockImplementation((msg, cb) => cb(mockStorage));
       chrome.storage.local.set.mockImplementation((obj, cb) => cb(true));
-      chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb(msg));
+      chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb({}));
       window.saveAs = jest.fn((blob, file) => Promise.resolve(true));
-
-      window.content = {
-        fetch: jest.fn(response),
-      };
     });
 
     afterEach(() => {
       documentElement = '';
       jest.clearAllMocks();
-      fetch.resetMocks();
+      fetchMock.mockClear();
     });
 
     it('handles no iframe', async () => {
@@ -62,7 +59,7 @@ describe('The ContentDelegate class', () => {
 
     it('correctly extracts the data before and after the iframe', async () => {
       const cd = singleDocContentDelegate;
-      fetch.mockResponseOnce(true);
+      fetchMock.getOnce('*', true);
       await cd.showPdfPage(documentElement, html);
       // removed waiting check because the content_delegate
       // removes the paragraph if successful which seems to occur prior
@@ -121,6 +118,7 @@ describe('The ContentDelegate class', () => {
 
       it('uploads the PDF to RECAP', async () => {
         const cd = singleDocContentDelegate;
+        fetchMock.postOnce(/courtlistener/, { res: 'success' });
         await cd.showPdfPage(documentElement, html);
         // check to see if the script sent a message to the background listener
         // with the appropriate fetch call
@@ -132,6 +130,7 @@ describe('The ContentDelegate class', () => {
 
       it('calls the notifier once the upload finishes', async () => {
         const cd = singleDocContentDelegate;
+        fetchMock.postOnce(/courtlistener/, { res: 'success' });
         await cd.showPdfPage(documentElement, html);
         // check to see if the script sent a message to the background listener
         // with the appropriate fetch call

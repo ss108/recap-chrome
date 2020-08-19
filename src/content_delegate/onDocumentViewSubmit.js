@@ -2,6 +2,7 @@ import $ from 'jquery';
 import PACER from '../pacer';
 import {
   debug,
+  getBrowserFetch,
   httpRequest,
   iFrameForPdf,
   toggleLoadingCursor,
@@ -71,7 +72,7 @@ export async function onDocumentViewSubmit(event) {
 
   // else read the blob as text and submit this.showPdfPage
   // dcd (and presumably others) trigger this code path.
-  let html = blobToText(blob);
+  const html = await blobToText(blob);
 
   // check if we have an HTML page which redirects the user to the PDF
   // this was first display by the Northern District of Georgia

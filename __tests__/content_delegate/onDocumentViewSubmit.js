@@ -15,6 +15,8 @@ describe('The ContentDelegate class', () => {
     const blob = new Blob([pdf_data], { type: 'application/pdf' });
 
     beforeEach(() => {
+      document.body.innerHTML = '';
+
       chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb(msg));
       chrome.storage.local.get.mockImplementation((key, cb) => cb({ options: {} }));
       chrome.storage.local.set.mockImplementation((key, cb) => cb());
@@ -25,6 +27,7 @@ describe('The ContentDelegate class', () => {
 
       table = document.createElement('table');
       let tr_image = document.createElement('tr');
+      tr_image.textContent = 'Case Number';
       let td_image = document.createElement('td');
       td_image.innerHTML = 'Image 1234-9876';
       tr_image.appendChild(td_image);
@@ -34,19 +37,17 @@ describe('The ContentDelegate class', () => {
     });
 
     afterEach(() => {
-      form.remove();
-      table.remove();
       jest.clearAllMocks();
-      fetch.resetMocks();
+      fetchMock.mockClear();
     });
 
     it('handles appellate check', async () => {
       const cd = appellateContentDelegate;
-      jest.spyOn(console, 'log').mockImplementation(() => {});
+      jest.spyOn(console, 'debug').mockImplementation(() => {});
       let restore = DEBUGLEVEL;
       DEBUGLEVEL = 4;
       await cd.onDocumentViewSubmit(event);
-      expect(console.log).toHaveBeenCalledWith(
+      expect(console.debug).toHaveBeenCalledWith(
         'RECAP debug [4]: Appellate parsing not yet implemented'
       );
       DEBUGLEVEL = restore;
@@ -58,11 +59,16 @@ describe('The ContentDelegate class', () => {
       jest.spyOn(form, 'setAttribute').mockImplementation(() => {});
       await singleDocContentDelegate.onDocumentViewSubmit(event);
 
-      expect(form.setAttribute).toHaveBeenCalledWith(
+      expect(form.setAttribute).toHaveBeenNthCalledWith(
+        1,
         'onsubmit',
         'history.forward(); return false;'
       );
-      expect(form.setAttribute).toHaveBeenCalledWith('onsubmit', expected_on_submit);
+      expect(form.setAttribute).toHaveBeenNthCalledWith(
+        2,
+        'onsubmit',
+        expected_on_submit
+      );
     });
 
     it('calls showPdfPage when the response is a PDF', async () => {
@@ -71,7 +77,7 @@ describe('The ContentDelegate class', () => {
       res.type = 'application/pdf';
       res.ok = true;
       res.blob = jest.fn(() => blob);
-      fetch.mockResponseOnce(res);
+      fetchMock.getOnce('*', res);
       jest.spyOn(cd, 'showPdfPage').mockImplementation(() => {});
 
       await cd.onDocumentViewSubmit(event);
@@ -81,14 +87,13 @@ describe('The ContentDelegate class', () => {
 
     it('calls showPdfPage when the response is HTML', async () => {
       const cd = singleDocContentDelegate;
-      jest.spyOn(window, 'fetch').mockImplementation((url, options) => {
-        const res = {};
-        res.ok = true;
-        res.blob = jest.fn(() =>
-          Promise.resolve(new Blob(['htmlString'], { type: 'text/html' }))
-        );
-        return Promise.resolve(res);
-      });
+      const res = {};
+      res.ok = true;
+      res.blob = jest.fn(() =>
+        Promise.resolve(new Blob(['htmlString'], { type: 'text/html' }))
+      );
+      return Promise.resolve(res);
+      fetchMock.getOnce('*', res);
       // can't use arrow functions because mock has 'this'
       jest.spyOn(window, 'FileReader').mockImplementation(function () {
         return {

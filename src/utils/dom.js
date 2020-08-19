@@ -13,7 +13,7 @@ export const getPreviousPageHtmlFromPdfDownloadPage = () => {
   const onSubmit = form.getAttribute('onsubmit');
 
   // set the onsubmit element to the new one
-  form.setAttribute('onsumbit', 'history.forward(); return false;');
+  form.setAttribute('onsubmit', 'history.forward(); return false;');
 
   // build the new pageHTML
   const previousPageHtml = document.documentElement.innerHTML;
@@ -92,7 +92,7 @@ export const getZipFileUrlFromDownloadedPage = async (url) => {
   const contentFetch = getBrowserFetch();
   const res = await contentFetch(url);
   const html = await res.text();
-  console.log('RECAP: Successfully submitted zip file request', html);
+  console.log('RECAP: Successfully submitted zip file request');
   return extractUrl(html);
 };
 

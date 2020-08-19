@@ -8,21 +8,20 @@ import {
 
 describe('The ContentDelegate class', () => {
   describe('handleSingleDocumentPageCheck', () => {
-    let form;
     beforeEach(() => {
+      document.body.innerHTML = '';
       chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb(msg));
       chrome.storage.local.get.mockImplementation((key, cb) =>
         cb({ options: {}, 1234: {} })
       );
       chrome.storage.local.set.mockImplementation((key, cb) => cb(true));
-      form = document.createElement('form');
+      const form = document.createElement('form');
       document.body.appendChild(form);
     });
 
     afterEach(() => {
-      form.remove();
       jest.clearAllMocks();
-      fetch.resetMocks();
+      fetchMock.mockClear();
     });
 
     describe('when there is NO appropriate form', () => {
@@ -44,6 +43,7 @@ describe('The ContentDelegate class', () => {
       let table;
 
       beforeEach(() => {
+        const form = document.querySelector('form');
         input = document.createElement('input');
         input.value = 'View Document';
         form.appendChild(input);
@@ -55,12 +55,6 @@ describe('The ContentDelegate class', () => {
         table_tr.appendChild(table_td);
         table.appendChild(table_tr);
         document.body.appendChild(table);
-      });
-
-      afterEach(() => {
-        // no need to remove input because it is added to
-        // the form and removed in the outer scope
-        table.remove();
       });
 
       it('has no effect when the URL is wrong', async () => {
@@ -96,7 +90,7 @@ describe('The ContentDelegate class', () => {
               },
             ],
           };
-          fetch.mockResponseOnce(response);
+          fetchMock.getOnce(/courtlistener/, response);
           chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb(response));
 
           await cd.handleSingleDocumentPageCheck();
@@ -105,10 +99,15 @@ describe('The ContentDelegate class', () => {
             {
               fetch: {
                 url: expect.anything(),
-                options: { method: 'GET', headers: expect.anything() },
+                options: {
+                  method: 'GET',
+                  headers: {
+                    Authorization: expect.stringContaining('Token'),
+                  },
+                },
               },
             },
-            expect.anything()
+            expect.any(Function)
           );
 
           const banner = document.querySelector('.recap-banner');
@@ -121,7 +120,7 @@ describe('The ContentDelegate class', () => {
         it('responds to a negative result', async () => {
           const cd = singleDocContentDelegate;
           const response = { results: [{}] };
-          fetch.mockResponseOnce(response);
+          fetchMock.getOnce(/courtlistener/, response);
           chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb(response));
 
           await cd.handleSingleDocumentPageCheck();

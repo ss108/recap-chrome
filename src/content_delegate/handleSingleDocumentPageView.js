@@ -4,11 +4,10 @@ import { debug } from '../utils';
 // view page.  The "View Document" button calls the goDLS() function, which
 // creates a <form> element and calls submit() on it, so we hook into submit().
 export function handleSingleDocumentPageView() {
-  if (!PACER.isSingleDocumentPage(this.url, document)) return;
-
   if (PACER.isAppellateCourt(this.court)) {
     return debug(4, 'No interposition for appellate downloads yet');
   }
+  if (!PACER.isSingleDocumentPage(this.url, document)) return;
 
   // Monkey-patch the <form> prototype so that its submit() method sends a
   // message to this content script instead of submitting the form.  To do this

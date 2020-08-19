@@ -61,7 +61,7 @@ export const destroyTabStorage = (tab) => {
 export const dispatchNotifier = async ({ action, title, message }) =>
   new Promise((resolve, reject) =>
     chrome.runtime.sendMessage({ notifier: { action, title, message } }, (res) => {
-      if (res.error) reject(res.error);
+      if (res == null) reject('Response cannot be null');
       resolve(res);
     })
   );

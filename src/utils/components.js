@@ -123,7 +123,7 @@ export const inlineDocumentBanner = ({ path }) => {
   banner.title = 'Available for free from the RECAP Archive.';
   banner.href = `https://www.courtlistener.com/${path}`;
   const img = document.createElement('img');
-  img.src = chrome.extension.getURL('icon-16.png');
+  img.src = getImage('icon-16.png');
   banner.appendChild(img);
   return banner;
 };
