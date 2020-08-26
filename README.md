@@ -7,24 +7,23 @@ This build includes:
 - ES6 module support and code-splitting with Webpack!
 - Webpack-Dev-Server with Hot-Module Reloading!
 - Built-in Prettier formatting and support!
-- Webpack bundling and preprocessing for karma jasmine tests!
+- Faster tests by switching from Karma/Jasmine to Jest!
 - No more vendor copy or importing the entire jquery library!
 - Use of the more modern and leaner Date-FNS over Moment
 - Ability to inline env secrets during build!
+- Removal of messageListener middleware! Dispatch fetch and notifier directly from the content script.
 - Reduced Dependencies!
 
 **Development Status**
 
-_Update 08/13/20_
+_Update 08/25/20_
 
-- Content Delegate and its correspnding tests are modularized with all tests passing
+- Two tests failing since Karma for Jest swapover.
+- Started typing functions in the comments for eventual TS swapover.
 
 **Upcoming Features**
 
 - Final removal of jQuery
-- Refactored and simplified PACER functions and specs
-- Refactored and simplified RECAP functions and specs
-- Removal of confusing and unsafe import instance functions
 - Appellate Support
 - Typescript?
 
@@ -39,6 +38,10 @@ _Update 08/13/20_
 7. npm i
 8. npm run dev
 9. Load the unpacked extension from the /build sub folder.
+
+## Build for development
+1. npm run build
+2. submit package from the build directory!
 
 ---
 
