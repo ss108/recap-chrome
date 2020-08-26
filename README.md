@@ -11,7 +11,8 @@ This build includes:
 - No more vendor copy or importing the entire jquery library!
 - Use of the more modern and leaner Date-FNS over Moment
 - Ability to inline env secrets during build!
-- Removal of messageListener middleware! Dispatch fetch and notifier directly from the content script.
+- Removal of exportInstance middleware! 
+  - Fetch and notifier calls through background script are now virtually identical to direct invocations!
 - Reduced Dependencies!
 
 **Development Status**
