@@ -40,7 +40,7 @@ _Update 08/25/20_
 8. npm run dev
 9. Load the unpacked extension from the /build sub folder.
 
-## Build for development
+## Build for production
 1. npm run build
 2. submit package from the build directory!
 
