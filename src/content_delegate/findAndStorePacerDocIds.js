@@ -47,7 +47,6 @@ export async function findAndStorePacerDocIds() {
 
     // if you have a goDLS Id, associate it in object
     const goDLS = PACER.parseGoDLSFunction(link.getAttribute('onclick'));
-    console.log(goDLS && goDLS.de_caseid);
     if (goDLS && goDLS.de_caseid) {
       debug(3, `Y doc ${pacer_doc_id} to ${goDLS.de_caseid}`);
       return (docsToCases[pacer_doc_id] = goDLS.de_caseid);

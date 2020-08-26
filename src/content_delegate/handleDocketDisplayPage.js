@@ -80,7 +80,7 @@ export async function handleDocketDisplayPage() {
   });
 
   // if the docket exists, change the alert button to active
-  if (hasDocket) toggleAlertButton(hasDocket.count);
+  if (hasDocket.count) toggleAlertButton(hasDocket.count);
 
   // do nothing else if recap is not enabled
   const options = await getItemsFromStorage('options');
@@ -90,7 +90,10 @@ export async function handleDocketDisplayPage() {
   const dataUrl = await blobToDataURL(
     new Blob([document.documentElement.innerHTML], { type: 'text/html' })
   );
-  await saveItemToStorage({ [this.tabId]: { ['file_blob']: dataUrl } });
+
+  await saveItemToStorage({
+    [this.tabId]: { ['file_blob']: dataUrl },
+  });
 
   // and then upload the docket to recap
   const docketUploaded = await dispatchBackgroundFetch({
@@ -106,9 +109,8 @@ export async function handleDocketDisplayPage() {
       },
     },
   });
-  console.log(docketUploaded);
-  // if docketUploaded returns falsy or has no keys, return
-  if (!docketUploaded.success) return console.error(msg.error);
+  // if docketUploaded does not resolve with success
+  if (!docketUploaded) return console.error(msg.error);
 
   // if upload successful, set the upload flag to true, and
   // change the create alert button state to active

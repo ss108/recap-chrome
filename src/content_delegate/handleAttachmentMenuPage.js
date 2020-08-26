@@ -5,6 +5,7 @@ import {
   dispatchBackgroundFetch,
   courtListenerURL,
   authHeader,
+  jsonHeader,
   uploadType,
   dispatchNotifier,
   saveItemToStorage,
@@ -29,7 +30,7 @@ export async function handleAttachmentMenuPage() {
   const dataUrl = await blobToDataURL(
     new Blob([document.documentElement.innerHTML], { type: 'text/html' })
   );
-  await saveItemToStorage({ [this.tabId]: dataUrl });
+  await saveItemToStorage({ [this.tabId]: { ['file_blob']: dataUrl } });
 
   const uploaded = await dispatchBackgroundFetch({
     url: courtListenerURL('recap'),

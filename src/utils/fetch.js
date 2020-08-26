@@ -20,12 +20,12 @@ export const recapLinkURL = (filepath) => {
 // (2) the accepted arguments are { url: string, options: Object } instead of (string, Object)
 // (3) if the options object has key filepath_local, it is replaced with blob in storage
 export const dispatchBackgroundFetch = ({ url, options }) =>
-  new Promise((resolve, reject) =>
+  new Promise((resolve, reject) => {
     chrome.runtime.sendMessage({ fetch: { url, options } }, (res) => {
       if (res.error) reject(res.error);
       resolve(res);
-    })
-  );
+    });
+  });
 
 // encodes the search params for use in a GET request
 // https://fetch.spec.whatwg.org/#fetch-api

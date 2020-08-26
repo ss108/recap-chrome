@@ -68,6 +68,7 @@ export async function attachRecapLinkToEligibleDocs() {
 
     const recapLink = inlineDocumentBanner({ path: result.filepath_local });
 
+    console.log(recapLink);
     // attach event listener
     recapLink.addEventListener('click', (ev) => {
       // stop the native clickhandler from firing;

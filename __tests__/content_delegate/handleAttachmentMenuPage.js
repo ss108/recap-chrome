@@ -107,6 +107,7 @@ describe('The ContentDelegate class', () => {
         });
 
         it('has no effect when the URL is wrong', async () => {
+          chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb(true));
           const cd = nonsenseUrlContentDelegate;
           await cd.handleAttachmentMenuPage();
           expect(chrome.runtime.sendMessage).not.toHaveBeenCalled();
@@ -137,7 +138,7 @@ describe('The ContentDelegate class', () => {
           const cd = singleDocContentDelegate;
           fetchMock.postOnce(/courtlistener/, { res: 200 });
           chrome.runtime.sendMessage.mockImplementation((msg, cb) =>
-            cb({ res: 200 })
+            cb({ success: true })
           );
           jest.spyOn(history, 'replaceState').mockImplementation(() => true);
           await cd.handleAttachmentMenuPage();

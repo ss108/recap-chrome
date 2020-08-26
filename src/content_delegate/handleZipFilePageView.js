@@ -24,7 +24,7 @@ export function handleZipFilePageView() {
     return debug(4, 'No interposition for appendix page downloads yet');
   }
 
-  disableDownloadButtonsAndInsertClickListeners();
+  disableDownloadButtonsAndInsertClickListeners({ url });
 
   // When we receive the message from the new buttons, submit the form
   // via fetch so we can get the document before the browser does.

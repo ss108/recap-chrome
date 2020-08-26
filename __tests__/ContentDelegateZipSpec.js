@@ -70,6 +70,7 @@ describe('The ContentDelegate class', () => {
 
       window.saveAs = jest.fn((blob, filename) => Promise.resolve(true));
       jest.spyOn(window, 'addEventListener');
+      window.URL.createObjectURL = jest.fn((blob) => 'https://fakeblobobjecturl');
     });
 
     afterEach(() => {
@@ -170,12 +171,56 @@ describe('The ContentDelegate class', () => {
     });
 
     describe('onDownloadAllSubmit', () => {
-      beforeEach(() => fetchMock.getOnce('*', pdf_data));
+      beforeEach(async () => {
+        const dataUrl = await utils.blobToDataURL(blob);
+
+        window.FileReader = jest.fn(function () {
+          return {
+            readAsDataURL: function () {
+              this.result = dataUrl;
+              this.onload();
+            },
+          };
+        });
+
+        chrome.storage.local.get.mockImplementation((key, cb) => {
+          cb({
+            options: {
+              recap_enabled: true,
+              ['ia_style_filenames']: true,
+              ['lawyer_style_filenames']: false,
+              ['external_pdf']: true,
+            },
+            [tabId]: {
+              ['zip_blob']: dataUrl,
+              docsToCases: { ['034031424909']: '531591' },
+            },
+          });
+        });
+
+        chrome.runtime.sendMessage.mockImplementation((msg, cb) =>
+          cb({ success: true })
+        );
+        chrome.storage.local.set.mockImplementation((obj, cb) =>
+          cb({ success: true })
+        );
+        content.fetch = jest.fn((url, options) => {
+          const res = {};
+          res.text = () => Promise.resolve(dummyIFrame);
+          res.json = () => Promise.resolve({ json: true });
+          return Promise.resolve(res);
+        });
+        fetchMock.get(/dummylink/, blob).post(/courtlistener/, { success: true });
+      });
+      afterEach(() => {
+        jest.clearAllMocks();
+        fetchMock.mockClear();
+      });
 
       it('fetches the page html and extracts the zipFile url', async () => {
         const cd = zipFileContentDelegate;
         await cd.onDownloadAllSubmit({ data: { id: eventUrl } });
-        expect(fetchMock.calls[0][0]).toEqual(eventUrl);
+        expect(fetchMock).toHaveBeenCalledWith('http://dummylink.com/');
       });
 
       it('downloads the zipFile and stores it in chrome storage', async () => {
@@ -187,14 +232,37 @@ describe('The ContentDelegate class', () => {
       it('checks options to see if recap is enabled', async function () {
         const cd = zipFileContentDelegate;
         await cd.onDownloadAllSubmit({ data: { id: eventUrl } });
-        expect(chrome.storage.local.get).toHaveBeenCalledWith('options');
+        expect(chrome.storage.local.get).toHaveBeenCalledWith(
+          ['options'],
+          expect.any(Function)
+        );
       });
 
-      it('uploads the Zip file to RECAP', async function () {
-        fetchMock.post(/courtlistener/, { res: 'success' });
+      it('uploads the Zip file to RECAP', async () => {
         const cd = zipFileContentDelegate;
         await cd.onDownloadAllSubmit({ data: { id: eventUrl } });
-        expect(fetchMock.calls.length).toBe(1);
+        expect(chrome.runtime.sendMessage).toHaveBeenNthCalledWith(
+          1,
+          {
+            fetch: {
+              url: 'https://www.courtlistener.com/api/rest/v3/recap/',
+              options: {
+                method: 'POST',
+                headers: expect.anything(),
+                body: expect.anything(),
+              },
+            },
+          },
+          expect.any(Function)
+        );
+        console.log(fetchMock.calls());
+        expect(fetchMock).toHaveBeenNthCalledWith(
+          2,
+          'https://www.courtlistener.com/api/rest/v3/recap/',
+          {
+            method: 'POST',
+          }
+        );
       });
 
       it('redirects the user to the download page and forwards the zip file', async () => {
@@ -206,9 +274,12 @@ describe('The ContentDelegate class', () => {
       it('calls the notifier once the upload finishes', async () => {
         const cd = zipFileContentDelegate;
         await cd.onDownloadAllSubmit({ data: { id: eventUrl } });
-        expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({
-          notifier: expect.anything(),
-        });
+        expect(chrome.runtime.sendMessage).toHaveBeenCalledWith(
+          {
+            notifier: expect.anything(),
+          },
+          expect.any(Function)
+        );
       });
     });
   });

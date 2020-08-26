@@ -12,8 +12,10 @@ import {
   setPreviousPageinHistory,
   toggleLoadingCursor,
   dispatchNotifier,
+  getDocAndDocketNumbersForZipDownload,
   stringToDocBody,
   blobDownloadLink,
+  generateFileName,
 } from '../utils';
 
 // PROTOTYPE FUNCTION START //
@@ -27,12 +29,12 @@ export async function onDownloadAllSubmit(event) {
 
   toggleLoadingCursor(); // tell the user to wait
 
-  const fetchAndStoreBlob = await saveZipFileInStorage({
+  const { success: blobFetchSuccess, htmlPage, blob } = await saveZipFileInStorage({
     url: event.data.id,
     tabId: this.tabId,
   });
 
-  if (!fetchAndStoreBlob) return console.error('Could not extract blob from page');
+  if (!blobFetchSuccess) return console.error('Could not extract blob from page');
 
   // do nothing further if the page is restricted
   if (this.restricted) return console.warn('Page is restricted.');
@@ -55,7 +57,7 @@ export async function onDownloadAllSubmit(event) {
       body: {
         court: PACER.convertToCourtListenerCourt(this.court),
         pacer_doc_id: docId,
-        pacer_case_id: pacerCaseId,
+        pacer_case_id: this.pacer_case_id,
         upload_type: uploadType('ZIP'),
         debug: false,
         filepath_local: true,
@@ -93,6 +95,7 @@ export async function onDownloadAllSubmit(event) {
       filename: generateFileName({
         docket_number,
         document_number,
+        suffix: 'zip',
         court: this.court,
         style: options.lawyer_style_filenames ? 'lawyer' : 'ia',
         pacerCaseId: event.data.id.match(/caseid\=(\d*)/)[1],

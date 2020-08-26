@@ -19,15 +19,18 @@ describe('The ContentDelegate class', () => {
     });
 
     describe('option disabled', () => {
-      it('has no effect when recap_enabled option is false', async () => {
-        const cd = docketDisplayContentDelegate;
+      beforeEach(() => {
+        chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb({}));
         chrome.storage.local.get.mockImplementation((key, cb) => {
           cb({
             ['1234']: { caseId: '531591' },
             options: { recap_enabled: false },
           });
         });
-        chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb({}));
+      });
+
+      it('has no effect when recap_enabled option is false', async () => {
+        const cd = docketDisplayContentDelegate;
         await cd.handleDocketDisplayPage();
         expect(chrome.runtime.sendMessage).not.toHaveBeenCalledWith({
           fetch: {
@@ -57,15 +60,11 @@ describe('The ContentDelegate class', () => {
         const tr = document.createElement('tr');
         tbody.appendChild(tr);
         table.appendChild(tbody);
-        document.querySelector('body').appendChild(table);
-      });
-
-      afterEach(() => {
-        document.querySelector('table').remove();
+        document.body.appendChild(table);
       });
 
       it('has no effect when not on a docket display url', async () => {
-        chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb());
+        chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb({}));
         const cd = nonsenseUrlContentDelegate;
         await cd.handleDocketDisplayPage();
         expect(chrome.runtime.sendMessage).not.toHaveBeenCalled();
@@ -88,6 +87,7 @@ describe('The ContentDelegate class', () => {
 
       describe('when the history state is already set', () => {
         beforeEach(() => {
+          chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb({}));
           history.replaceState({ uploaded: true }, '');
         });
 
@@ -96,7 +96,6 @@ describe('The ContentDelegate class', () => {
         });
 
         it('has no effect', async () => {
-          chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb({}));
           const cd = docketDisplayContentDelegate;
           await cd.handleDocketDisplayPage();
           expect(chrome.runtime.sendMessage).not.toHaveBeenCalled();
@@ -106,6 +105,7 @@ describe('The ContentDelegate class', () => {
       // interstitial check is > 1 input with name 'date_from' and type 'radio'
       describe('when the docket page is an interstitial page', () => {
         beforeEach(() => {
+          chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb({}));
           const input = document.createElement('input');
           input.id = 'input1';
           input.name = 'date_from';
@@ -117,7 +117,6 @@ describe('The ContentDelegate class', () => {
         });
 
         it('does not call uploadDocket', async () => {
-          chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb({}));
           const cd = docketDisplayContentDelegate;
           await cd.handleDocketDisplayPage();
           expect(chrome.runtime.sendMessage).not.toHaveBeenCalled();
@@ -125,24 +124,35 @@ describe('The ContentDelegate class', () => {
       });
 
       describe('when the docket page is not an interstitial page', () => {
+        beforeEach(() => {
+          chrome.storage.local.set.mockImplementation((obj, cb) =>
+            cb({ success: 'msg' })
+          );
+        });
         it('adds a button linking to a create alert page on CL', async () => {
           const cd = docketDisplayContentDelegate;
-          fetchMock.getOnce(/courtlistener/, {
-            count: 1,
-            results: [{ stuff: 'text' }],
-          });
+          fetchMock
+            .getOnce(/courtlistener/, {
+              count: 1,
+              results: [{ stuff: 'text' }],
+            })
+            .postOnce(/courtlistener/, { success: true });
           await cd.handleDocketDisplayPage();
           const button = document.getElementById('recap-alert-button');
           expect(button).not.toBeNull();
         });
 
         it('calls uploadDocket and responds to a positive result', async () => {
-          chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb({}));
+          chrome.runtime.sendMessage.mockImplementation((msg, cb) =>
+            cb({ success: true })
+          );
+          fetchMock
+            .getOnce(/courtlistener/, {
+              count: 1,
+              results: [{ stuff: 'text' }],
+            })
+            .postOnce(/courtlistener/, { success: true });
           const cd = docketDisplayContentDelegate;
-          fetchMock.getOnce(/courtlistener/, {
-            count: 1,
-            results: [{ stuff: 'text' }],
-          });
           jest.spyOn(history, 'replaceState').mockImplementation(() => {});
           await cd.handleDocketDisplayPage();
           expect(chrome.runtime.sendMessage).toHaveBeenNthCalledWith(
@@ -195,12 +205,19 @@ describe('The ContentDelegate class', () => {
         });
 
         it('calls uploadDocket and responds to a positive historical result', async () => {
-          chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb({}));
-          const cd = historyDocketDisplayContentDelegate;
-          fetchMock.getOnce(/courtlistener/, {
+          const results = {
             count: 1,
             results: [{ stuff: 'text' }],
+          };
+          chrome.runtime.sendMessage.mockImplementation((msg, cb) => {
+            if (msg.fetch && msg.fetch.options.method === 'GET') {
+              return cb(results);
+            }
+            return cb({ success: true });
           });
+          const cd = historyDocketDisplayContentDelegate;
+          fetchMock.getOnce(/courtlistener/, results);
+          fetchMock.postOnce(/courtlistener/, { success: true });
           jest.spyOn(history, 'replaceState').mockImplementation(() => {});
 
           await cd.handleDocketDisplayPage();
@@ -255,9 +272,7 @@ describe('The ContentDelegate class', () => {
         });
 
         it('calls uploadDocket and responds to a negative result', async () => {
-          chrome.runtime.sendMessage.mockImplementation((msg, cb) =>
-            cb({ error: true })
-          );
+          chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb({}));
           const cd = docketDisplayContentDelegate;
 
           fetchMock.getOnce(/courtlistener/, {

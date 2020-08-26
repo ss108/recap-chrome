@@ -62,6 +62,7 @@ export const getRecapDataFromPdfDownloadPage = () => {
 // ts: () => { document_number: String, docket_number: String }
 export const getDocAndDocketNumbersForZipDownload = () => {
   const firstTable = document.getElementsByTagName('table')[0];
+  if (!firstTable) return { docket_number: undefined, document_number: undefined };
   const firstTableRows = firstTable.querySelectorAll('tr');
   // 4th from bottom
   const matchedRow = firstTableRows[firstTableRows.length - 4];
@@ -83,17 +84,6 @@ export const getUrlInZipFilePageView = () => {
   // url is parent.location='/cgi-bin/show_multidocs.pl?...got_receipt=1'
   // we extract from show to end excluding the final quotation mark
   return url.match(/show[^\'\s]*/)[0];
-};
-
-// if on a zip file page, fetch the html page from the url in the event.data.id
-// and then extract the zip file url from the retrieved html and return it
-// ts: (url: String) => String;
-export const getZipFileUrlFromDownloadedPage = async (url) => {
-  const contentFetch = getBrowserFetch();
-  const res = await contentFetch(url);
-  const html = await res.text();
-  console.log('RECAP: Successfully submitted zip file request');
-  return extractUrl(html);
 };
 
 // extracts the hostname from a url by injecting it into an anchor
@@ -158,14 +148,14 @@ export const generateFileName = ({
     if (suffix === 'pdf') {
       pieces.push(attachment_number || '0');
     }
-    return pieces.join('_').concat(suffix);
+    return pieces.join('_') + '.' + suffix;
   } else {
     const pieces = ['gov', 'uscourts', court, pacerCaseId || 'unknown-case-id'];
     if (suffix === 'pdf') {
       pieces.push(document_number || '0');
       pieces.push(attachment_number || '0');
     }
-    return pieces.join('.').concat(suffix);
+    return pieces.join('.') + '.' + suffix;
   }
 };
 
@@ -223,10 +213,21 @@ export const extractUrl = (html) => {
   return frames[0].src;
 };
 
+// if on a zip file page, fetch the html page from the url in the event.data.id
+// and then extract the zip file url from the retrieved html and return it
+// ts: (url: String) => String;
+export const getZipFileUrlFromDownloadedPage = async (url) => {
+  const contentFetch = getBrowserFetch();
+  const res = await contentFetch(url);
+  const html = await res.text();
+  console.log('RECAP: Successfully submitted zip file request');
+  return { zipUrl: extractUrl(html), htmlPage: html };
+};
+
 // ts: (p: {url: string, tabId: string}) => Promise<void>;
 export const saveZipFileInStorage = async ({ url, tabId }) => {
   // get the file from the extracted url
-  const zipUrl = await getZipFileUrlFromDownloadedPage(url);
+  const { zipUrl, htmlPage } = await getZipFileUrlFromDownloadedPage(url);
 
   // the the user we've downloaded the file
   const res = await fetch(zipUrl);
@@ -241,6 +242,7 @@ export const saveZipFileInStorage = async ({ url, tabId }) => {
   // store the dataUrl in the tabStorage
   const updated = await updateTabStorage({ [tabId]: { file_blob: dataUrl } });
   if (!updated.success) return console.error(`Could not save zip file: ${err}`);
+  return { success: true, htmlPage, blob };
 };
 
 // helper function - convert string to html document
@@ -257,7 +259,7 @@ export const stringToDocBody = (str) => {
 // if on a download documents page or a download zip file page
 // find the download buttons, hide them, and replace with listeners
 // for onDownload scripts
-export const disableDownloadButtonsAndInsertClickListeners = () => {
+export const disableDownloadButtonsAndInsertClickListeners = ({ url }) => {
   const forms = [...document.getElementsByTagName('form')];
 
   forms.map((form) => {
