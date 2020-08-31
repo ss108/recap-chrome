@@ -44,9 +44,7 @@ export async function onDownloadAllSubmit(event) {
   if (!options.recap_enabled) return console.error('Recap not enabled.');
 
   // get the docId from storage if we don't have one.
-  const docId = this.pacer_doc_id
-    ? this.pacer_doc_id
-    : await getItemsFromStorage(this.tabId).docId;
+  const docId = this.pacer_doc_id ? this.pacer_doc_id : await getItemsFromStorage(this.tabId).docId;
 
   // dispatch the fetch request
   const uploadZipFile = await dispatchBackgroundFetch({

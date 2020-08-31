@@ -9,27 +9,17 @@ import {
 } from '../utils';
 import PACER from '../pacer';
 
-const msg = {
-  noLinks: 'RECAP: No eligible documents found',
-  yesLinks: (count) =>
-    `RECAP: Attaching links to all eligible documents (${count} found)`,
-  error: 'RECAP: Failed getting availability for dockets.',
-  success:
-    'RECAP: Got results from API. Running callback on API results to ' +
-    'attach links and icons where appropriate.',
-};
-
 // Check every link in the document to see if there is a free RECAP document
 // available. If there is, put a link with a RECAP icon.
 export async function attachRecapLinkToEligibleDocs() {
   // check if links exist and return if none eligible
-  if (this.pacer_doc_ids.length === 0) return console.info(msg.noLinks);
+  const count = this.pacer_doc_ids.length;
+  if (count === 0) return console.info('RECAP: No eligible documents found');
 
   // tell the user we've got links
-  console.info(msg.yesLinks(this.pacer_doc_ids.length));
+  console.info(`RECAP: Attaching links to all eligible documents: ${count} found`);
 
   // Ask the server whether any of these documents are available from RECAP.
-
   const clCourt = PACER.convertToCourtListenerCourt(this.court);
 
   // submit fetch request through background worker
@@ -48,10 +38,14 @@ export async function attachRecapLinkToEligibleDocs() {
   });
 
   // return if there are no results
-  if (!recapLinks) return console.error(msg.error);
+  if (!recapLinks)
+    return console.error('RECAP: Failed getting availability for dockets.');
 
   // tell the user we've got results from the API
-  console.info(msg.success);
+  console.info(
+    'RECAP: Got results from API. Running callback on API results to ' +
+      'attach links and icons where appropriate.'
+  );
 
   [...this.links].map((link) => {
     // get data-attr from link
@@ -68,7 +62,6 @@ export async function attachRecapLinkToEligibleDocs() {
 
     const recapLink = inlineDocumentBanner({ path: result.filepath_local });
 
-    console.log(recapLink);
     // attach event listener
     recapLink.addEventListener('click', (ev) => {
       // stop the native clickhandler from firing;

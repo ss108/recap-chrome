@@ -13,8 +13,7 @@ export async function handleSingleDocumentPageCheck() {
   if (!PACER.isSingleDocumentPage(this.url, document)) return;
 
   const successMsg =
-    'RECAP: Got results from API. ' +
-    'Running callback on API results to insert link';
+    'RECAP: Got results from API. ' + 'Running callback on API results to insert link';
 
   const clCourt = PACER.convertToCourtListenerCourt(this.court);
 
@@ -39,15 +38,11 @@ export async function handleSingleDocumentPageCheck() {
   }
 
   // narrow results to links on the page
-  const result = recapDocumentCheck.results.find(
-    (r) => r.pacer_doc_id === this.pacer_doc_id
-  );
+  const result = recapDocumentCheck.results.find((r) => r.pacer_doc_id === this.pacer_doc_id);
 
   // don't do anything if there are no filtered results
   if (!result) return;
 
   // else append a recap banner at the end of the form
-  document
-    .querySelector('form')
-    .appendChild(documentBanner({ path: result.filepath_local }));
+  document.querySelector('form').appendChild(documentBanner({ path: result.filepath_local }));
 }

@@ -19,8 +19,7 @@ export async function handleDocketQueryUrl() {
   const msg = {
     warn: 'RECAP: Zero results found for docket lookup.',
     error: 'RECAP: Upload failed. Check the logs for more information.',
-    tooMany: (count) =>
-      'Recap: More than one result found for docket lookup. ' + `Found ${count}`,
+    tooMany: (count) => 'Recap: More than one result found for docket lookup. ' + `Found ${count}`,
   };
 
   // fetch using new fetchHandler
@@ -42,9 +41,10 @@ export async function handleDocketQueryUrl() {
     },
   });
 
-  if (result.count < 1) return console.warn(msg.warn);
-  if (result.count > 1) return console.error(msg.tooMany(result.count));
-  if (!result.results) return console.error(msg.error);
+  if (result.count < 1 || !result.results)
+    return console.warn('RECAP: Zero results found for docket lookup.');
+  if (result.count > 1)
+    return console.warn(`RECAP: Found ${result.count} results for docket lookup.`);
 
   const form = document.querySelector('form');
   const div = document.createElement('div');
@@ -58,4 +58,5 @@ export async function handleDocketQueryUrl() {
   );
   form.appendChild(recapBanner(result.results[0]));
   form.appendChild(div);
+  return;
 }

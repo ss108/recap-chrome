@@ -134,6 +134,5 @@ export async function showPdfPage(
     message: 'PDF uploaded to the public RECAP Archive',
   });
 
-  if (notified.success)
-    return console.info('RECAP: User notified of succesful upload');
+  if (notified.success) return console.info('RECAP: User notified of succesful upload');
 }

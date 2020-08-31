@@ -108,9 +108,7 @@ describe('The ContentDelegate class', () => {
       });
 
       it('adds a button linking to a create alert page on CL', async () => {
-        chrome.storage.local.set.mockImplementation((obj, cb) =>
-          cb({ success: 'msg' })
-        );
+        chrome.storage.local.set.mockImplementation((obj, cb) => cb({ success: 'msg' }));
         chrome.runtime.sendMessage.mockImplementation((msg, cb) => {
           cb({ count: 1, results: [{ some: 'result' }] });
         });
@@ -127,9 +125,7 @@ describe('The ContentDelegate class', () => {
       });
 
       it('calls uploadDocket and responds to a positive result', async () => {
-        chrome.storage.local.set.mockImplementation((obj, cb) =>
-          cb({ success: 'msg' })
-        );
+        chrome.storage.local.set.mockImplementation((obj, cb) => cb({ success: 'msg' }));
         chrome.runtime.sendMessage.mockImplementation((msg, cb) => {
           if (msg.fetch && msg.fetch.options.method === 'POST') {
             cb({ success: true });
@@ -183,7 +179,7 @@ describe('The ContentDelegate class', () => {
           3,
           {
             notifier: {
-              title: 'recap_successful_docket_display_upload',
+              title: expect.any(String),
               message: expect.anything(),
               action: 'showUpload',
             },
@@ -251,7 +247,7 @@ describe('The ContentDelegate class', () => {
           3,
           {
             notifier: {
-              title: 'recap_successful_docket_display_upload',
+              title: expect.any(String),
               message: expect.anything(),
               action: 'showUpload',
             },

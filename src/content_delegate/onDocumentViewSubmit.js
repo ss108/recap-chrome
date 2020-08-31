@@ -20,8 +20,7 @@ export async function onDocumentViewSubmit(event) {
 
   let form = document.getElementById(event.data.id);
 
-  if (PACER.isAppellateCourt(this.court))
-    return debug(4, 'Appellate parsing not yet implemented');
+  if (PACER.isAppellateCourt(this.court)) return debug(4, 'Appellate parsing not yet implemented');
 
   // attempt to extract the document_number, attachment_number, and docket_number
   const data = getRecapDataFromPdfDownloadPage();
@@ -77,9 +76,7 @@ export async function onDocumentViewSubmit(event) {
   // check if we have an HTML page which redirects the user to the PDF
   // this was first display by the Northern District of Georgia
   // https://github.com/freelawproject/recap/issues/277
-  const redirectResult = [
-    ...html.matchAll(/window\.location\s*=\s*["']([^"']+)["'];?/g),
-  ];
+  const redirectResult = [...html.matchAll(/window\.location\s*=\s*["']([^"']+)["'];?/g)];
 
   if (redirectResult.length > 0) {
     const newHtml = document.documentElement;

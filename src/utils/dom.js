@@ -23,7 +23,16 @@ export const getPreviousPageHtmlFromPdfDownloadPage = () => {
 
   return previousPageHtml;
 };
-
+export const changeAlertButtonStateToActive = () => {
+  const el = document.getElementById('recap-alert-button');
+  if (!el) return;
+  el.setAttribute('aria-disabled', 'false');
+  el.classList.remove('disabled');
+  const img = document.createElement('img');
+  img.src = chrome.extension.getURL('icon-16.png');
+  el.innerText = 'Create an Alert for This Case on RECAP';
+  el.insertBefore(img, el.childNodes[0]);
+};
 // returns extracted data from the Pdf Download Page or
 // false if no matches to the regex are found
 export const getRecapDataFromPdfDownloadPage = () => {

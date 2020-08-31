@@ -19,8 +19,7 @@ export const showPdfHtml = ({ blobUrl, filename, match }) => {
   const link = document.createElement('div');
   link.id = 'recap-download';
   link.classList += 'initial';
-  link.innerHTML =
-    `<a href="${blobUrl}" download="${filename}">` + `Save as ${filename}</a>`;
+  link.innerHTML = `<a href="${blobUrl}" download="${filename}">` + `Save as ${filename}</a>`;
   return match[1] + link.outerHTML + iframe + match[3];
 };
 
@@ -61,20 +60,10 @@ export const waitingPageHtml = ({ match }) => {
   );
 };
 
-export const alertButtonTr = ({ court, caseId, isActive }) => {
+export const createAlertButtonTr = ({ court, caseId, isActive }) => {
   const tr = document.createElement('tr');
   tr.appendChild(recapAlertButton({ court, caseId, isActive }));
   return tr;
-};
-
-export const changeAlertButtonStateToActive = ({ el }) => {
-  if (!el) return;
-  el.setAttribute('aria-disabled', 'false');
-  el.classList.remove('disabled');
-  const img = document.createElement('img');
-  img.src = chrome.extension.getURL('icon-16.png');
-  el.innerText = 'Create an Alert for This Case on RECAP';
-  el.insertBefore(img, el.childNodes[0]);
 };
 
 // inject a "follow this case on RECAP" button
