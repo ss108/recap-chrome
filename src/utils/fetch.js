@@ -22,7 +22,6 @@ export const recapLinkURL = (filepath) => {
 export const dispatchBackgroundFetch = ({ url, options }) =>
   new Promise((resolve, reject) => {
     chrome.runtime.sendMessage({ fetch: { url, options } }, (res) => {
-      if (res.error) reject(res.error);
       resolve(res);
     });
   });
@@ -49,3 +48,10 @@ export const uploadType = (str) => {
   };
   return UPLOAD_TYPES[str];
 };
+
+// in Firefox, use content.fetch for content-specific fetch requests
+// https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_scripts#XHR_and_Fetch
+// ts: () => Fetch;
+// github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/node-fetch/index.d.ts
+export const getBrowserFetch = () =>
+  navigator.userAgent.indexOf('Chrome') < 0 ? content.fetch : window.fetch;

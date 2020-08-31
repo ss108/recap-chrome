@@ -403,6 +403,36 @@ function hasPacerCookie(cookieString) {
 function isAppellateCourt(court) {
   return APPELLATE_COURTS.includes(court);
 }
+
+function getCaseIdFromAppellateDocketPage(anchors) {
+  const anchor = anchors.find((anchor) => anchor.title === 'Open Document');
+  // check the anchors for the title "Open Document" - present on short and full dockets
+  // and caseId which will be the second argument in the onclick function
+  // for example <a onclick="return doDocPostURL('00107526453','45856') " title="Open Document"></a>
+  if (anchor) {
+    const onclickString = anchor.attributes.onclick.value;
+    // find single quote five digits single quote followed by closing paren
+    const caseId = onclickString.match(/\'\d{4,6}\'/)[0];
+    return caseId.replace(/\'/g, '');
+  }
+}
+
+function getCaseIdFromAppellateCaseQueryPage(inputs) {
+  // check the inputs for a value named caseid - present on case query page
+  const input = inputs.find((input) => input.name === 'caseid' && !!input.value);
+  if (input) {
+    return input.value;
+  }
+}
+
+function getCaseIdFromAppellateSearchResults(anchors) {
+  // only return caseid if between 4 and 6 non-broken digits (can modify)
+  const anchor = anchors.find((anchor) => anchor.href.match(/caseid=\d{4,6}/));
+  if (!!anchor) {
+    const match = anchor.href.match(/caseid=\d{4,6}/)[0];
+    return match.replace('caseid=', '');
+  }
+}
 // These are all the supported PACER court identifiers, together with their
 // West-style court name abbreviations.
 export const COURT_ABBREVS = {
@@ -644,6 +674,9 @@ const PACER = {
   isClaimsRegisterPage,
   getDocumentIdFromUrl,
   getDocumentIdFromForm,
+  getCaseIdFromAppellateCaseQueryPage,
+  getCaseIdFromAppellateDocketPage,
+  getCaseIdFromAppellateSearchResults,
   getCaseNumberFromUrls,
   getCaseNumberFromInputs,
   getBaseNameFromUrl,

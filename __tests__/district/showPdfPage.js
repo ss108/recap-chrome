@@ -24,7 +24,7 @@ describe('The ContentDelegate class', () => {
         external_pdf: true,
       },
       [tabId]: {
-        ['pdf_blob']: dataUrl,
+        ['file_blob']: dataUrl,
         docsToCases: { ['034031424909']: '531591' },
       },
     };

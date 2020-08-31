@@ -15,6 +15,9 @@ export const getPacerCaseIdFromStore = async ({ tabId, pacer_doc_id }) => {
   return caseId;
 };
 
+export const isChromeBrowserAndPdfViewerDisabled = () =>
+  navigator.userAgent.indexOf('Chrome') >= 0 &&
+  !navigator.plugins.namedItem('Chrome PDF Viewer');
 // ts: (k: number | string) => string;
 export const stringIfNumber = (k) => (typeof k === 'number' ? k.toString() : k);
 
@@ -83,5 +86,39 @@ export const updateTabStorage = async (obj) => {
   // keep store immutable
   const saved = await saveItemToStorage({ [tabId]: { ...store, ...newData } });
   if (saved.success) return { success: true };
-  return { error: true };
+  return;
+};
+
+export const checkForOpenerTabId = () =>
+  new Promise((resolve) => {
+    chrome.runtime.sendMessage({ message: 'requestOpenerTabId' }, (msg) =>
+      resolve(msg)
+    );
+  });
+
+export const searchAllTabsForCaseId = async (docId) => {
+  // pass null key to get all storage
+  // do sparingly as full storage calls are more expensive
+  const storage = await getItemsFromStorage(null);
+
+  // iterate over storage and return if a caseId is found
+  const map = storage.map((tabStorage) => {
+    // punt if the storage key is not a numerical tabId
+    if (!tabStorage.match(/^\d+$/)) {
+      return;
+    }
+
+    // destructure the store
+    const { docId, caseId, docsToCases } = tabStorage;
+
+    // return the caseId if docsToCases has the docId
+
+    if (docsToCases.keys().includes(docId)) {
+      return caseId;
+    }
+  });
+
+  if (map.length > 0) {
+    return map[0];
+  }
 };

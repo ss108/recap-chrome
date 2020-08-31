@@ -1,10 +1,27 @@
+import PACER from '../pacer';
+
+import { dispatchTargetHandler } from './dispatchTargetHandler';
+import { handleDocketPage } from './handleDocketPage';
+import { handleDownloadConfirmationPage } from './handleDownloadConfirmationPage';
+import { handleAttachmentMenuPage } from './handleAttachmentMenuPage';
+import { onDocumentDownload } from './onDocumentDownload';
+import { checkForAndUploadOpinion } from './checkForAndUploadOpinion';
+import { handleCaseQueryPage } from './handleCaseQueryPage';
+
+import {
+  getBrowserFetch as contentScriptFetch,
+  dispatchBackgroundFetch,
+  courtListenerURL,
+  authHeader,
+  dispatchNotifier,
+  updateTabStorage,
+} from '../utils';
+
 export function AppellateDelegate({ tabId, court, links, pacerDocId }) {
   this.tabId = tabId;
   this.court = court;
   this.targetPage = this.setTargetPage();
 
-  this.notifier = importInstance(Notifier);
-  this.recap = importInstance(Recap);
   this.links = links || [];
 }
 
@@ -46,9 +63,16 @@ AppellateDelegate.prototype.setTargetPage = function () {
     }
   }
 };
+AppellateDelegate.prototype.dispatchTargetHandler = dispatchTargetHandler;
+AppellateDelegate.prototype.handleDocketPage = handleDocketPage;
+AppellateDelegate.prototype.handleDownloadConfirmationPage = handleDownloadConfirmationPage;
+AppellateDelegate.prototype.handleAttachmentMenuPage = handleAttachmentMenuPage;
+AppellateDelegate.prototype.onDocumentDownload = onDocumentDownload;
+AppellateDelegate.prototype.handleCaseQueryPage = handleCaseQueryPage;
+AppellateDelegate.prototype.checkForAndUploadOpinion = checkForAndUploadOpinion;
 
 // unclear if needed
-AppellateDelegate.prototype.handleCaseSearchpage = function () {
+AppellateDelegate.prototype.handleCaseSearchPage = function () {
   console.log('handleCaseSearchPage');
 };
 // unclear if needed
@@ -74,57 +98,4 @@ AppellateDelegate.prototype.buildSearchParamsUrl = function ({ url, params }) {
   const newUrl = new URL(url);
   Object.keys(params).forEach((key) => newUrl.searchParams.append(key, params[key]));
   return newUrl;
-};
-
-// check if the opinion is free to download and if so
-// fetch it and upload it to recap in the background
-AppellateDelegate.prototype.checkForAndUploadOpinion = async function ({
-  pacerCaseId,
-}) {
-  const trs = [...document.querySelectorAll('tr')];
-  const opinionTr = trs.find((tr) => {
-    if ([...tr.children].length > 0) {
-      const match = [...tr.children].find(
-        (td) => td.textContent.match(/OPINION/) && td.width === '90%'
-      );
-      if (match) {
-        return true;
-      }
-    }
-  });
-  const link = opinionTr && opinionTr.querySelector('a');
-  if (link) {
-    const params = {
-      caseId: pacerCaseId,
-      dls_id: link.href.match(/docs1\/(\d+)/)[1],
-      servlet: 'ShowDoc',
-      dktType: 'dktPublic',
-    };
-    // encode the params as URL params
-    const url = new URL(document.URL.replace(/\?.*$/, ''));
-    Object.keys(params).forEach((key) => url.searchParams.append(key, params[key]));
-
-    const blob = await contentScriptFetch(url).then((res) => {
-      return res.blob();
-    });
-
-    const fetchParams = {
-      court: this.court,
-      pacerCaseId: pacerCaseId,
-      pacerDocId: params.dls_id,
-    };
-
-    if (blob.type.includes('pdf')) {
-      // upload it to recap
-      const dataUrl = await blobToDataURL(blob);
-      await updateTabStorage({ [this.tabId]: { pdfBlob: dataUrl } });
-      this.recap.uploadAppellateDocument(fetchParams, (response) => {
-        this.notifier.showUpload(
-          'Case Opinion automatically uploaded to the public RECAP Archive',
-          () => {}
-        );
-        // insert available for free tag on item
-      });
-    }
-  }
 };

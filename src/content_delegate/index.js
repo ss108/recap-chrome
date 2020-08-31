@@ -1,5 +1,4 @@
 //  Abstraction of content scripts to make them modular and testable.
-import { importInstance } from '../utils';
 import { checkRestrictions } from './checkRestrictions';
 import { findAndStorePacerDocIds } from './findAndStorePacerDocIds';
 import { handleDocketQuery } from './handleDocketQueryUrl';

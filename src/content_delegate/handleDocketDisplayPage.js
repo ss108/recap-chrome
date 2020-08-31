@@ -18,17 +18,18 @@ import {
 
 // LOCAL HELPERS //
 
-const alertBtn = () => document.getElementById('recap-alert-button');
-const alreadyUploaded = (history) => history && history.uploaded;
+const alreadyUploaded = (history) => (history.uploaded ? history.uploaded : false);
 
 const insertIntoTableStart = (el) => {
-  const table = document.querySelector('body');
+  const table = document.querySelector('tbody');
   table.insertBefore(el, table.childNodes[0]);
 };
 const toggleAlertButton = (resultCount) => {
   if (resultCount === 0) return console.warn(msg.warn);
   if (resultCount > 1) return console.error(msg.tooMany(resultCount));
-  changeAlertButtonStateToActive({ el: alertBtn() });
+  changeAlertButtonStateToActive({
+    el: document.getElementById('recap-alert-button'),
+  });
 };
 
 const msg = {
@@ -116,7 +117,9 @@ export async function handleDocketDisplayPage() {
   // change the create alert button state to active
 
   history.replaceState({ uploaded: true }, '');
-  changeAlertButtonStateToActive({ el: alertBtn() });
+  changeAlertButtonStateToActive({
+    el: document.getElementById('recap-alert-button'),
+  });
 
   // send the toast notification
   const notified = await dispatchNotifier({

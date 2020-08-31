@@ -5,22 +5,20 @@ import {
   docketDisplayContentDelegate,
 } from './mocks';
 
+const resetHistory = () => window.history.replaceState({}, '');
+
 describe('The ContentDelegate class', () => {
+  afterEach(() => {
+    document.body.innerHTML = '';
+    jest.clearAllMocks();
+    fetchMock.mockClear();
+    resetHistory();
+  });
+
   describe('handleAttachmentMenuPage', () => {
-    beforeEach(() => {
-      document.body.innerHTML = '';
-    });
-
-    afterEach(() => {
-      jest.clearAllMocks();
-      fetchMock.mockClear();
-    });
     describe('option disabled', () => {
-      let form;
-      let input;
-
       beforeEach(() => {
-        form = document.createElement('form');
+        const form = document.createElement('form');
         document.body.appendChild(form);
         chrome.storage.local.get.mockImplementation((key, cb) => {
           cb({
@@ -31,13 +29,9 @@ describe('The ContentDelegate class', () => {
         chrome.storage.local.set.mockImplementation((obj, cb) =>
           cb({ success: 'yay' })
         );
-        input = document.createElement('input');
+        const input = document.createElement('input');
         input.value = 'Download All';
         form.appendChild(input);
-      });
-
-      afterEach(() => {
-        form.remove();
       });
 
       it('has no effect recap_enabled option is not set', async () => {
@@ -48,9 +42,8 @@ describe('The ContentDelegate class', () => {
     });
 
     describe('option enabled', () => {
-      let form;
       beforeEach(() => {
-        form = document.createElement('form');
+        const form = document.createElement('form');
         document.body.appendChild(form);
         chrome.storage.local.get.mockImplementation((key, cb) => {
           cb({ options: { recap_enabled: true } });
@@ -60,17 +53,9 @@ describe('The ContentDelegate class', () => {
         );
       });
 
-      afterEach(() => {
-        form.remove();
-      });
-
       describe('when the history state is already set', () => {
         beforeEach(() => {
           history.replaceState({ uploaded: true }, '');
-        });
-
-        afterEach(() => {
-          history.replaceState({}, '');
         });
 
         it('has no effect', async () => {
@@ -95,19 +80,13 @@ describe('The ContentDelegate class', () => {
       });
 
       describe('when there IS an appropriate form', () => {
-        let input;
         beforeEach(() => {
-          input = document.createElement('input');
+          const input = document.createElement('input');
           input.value = 'Download All';
-          form.appendChild(input);
-        });
-
-        afterEach(() => {
-          form.remove();
+          document.querySelector('form').appendChild(input);
         });
 
         it('has no effect when the URL is wrong', async () => {
-          chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb(true));
           const cd = nonsenseUrlContentDelegate;
           await cd.handleAttachmentMenuPage();
           expect(chrome.runtime.sendMessage).not.toHaveBeenCalled();
@@ -130,7 +109,7 @@ describe('The ContentDelegate class', () => {
                 },
               },
             },
-            expect.anything()
+            expect.any(Function)
           );
         });
 
@@ -140,9 +119,7 @@ describe('The ContentDelegate class', () => {
           chrome.runtime.sendMessage.mockImplementation((msg, cb) =>
             cb({ success: true })
           );
-          jest.spyOn(history, 'replaceState').mockImplementation(() => true);
           await cd.handleAttachmentMenuPage();
-          expect(history.replaceState).toHaveBeenCalledWith({ uploaded: true }, '');
           expect(chrome.runtime.sendMessage).toHaveBeenCalledWith(
             {
               notifier: {

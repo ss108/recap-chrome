@@ -1,5 +1,5 @@
 // dispatch associated handler
-function dispatchTargetHandler() {
+export function dispatchTargetHandler() {
   if (this.targetPage === 'caseQuery') {
     this.handleCaseQueryPage();
   } else if (this.targetPage === 'caseSearchResults') {

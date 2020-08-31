@@ -1,5 +1,5 @@
 // dom helpers
-
+import { getBrowserFetch } from './fetch';
 import { updateTabStorage } from './chrome';
 import PACER from '../pacer';
 
@@ -170,6 +170,9 @@ export const blobToDataURL = async (blob) => {
   });
 };
 
+// given a blob, return a promise that resolve into
+// text of the blob's contents
+// ts: (blob: Blob) => Promise<string | void>
 export const blobToText = async (blob) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -197,13 +200,6 @@ export const setPreviousPageinHistory = (e) => {
 export const toggleLoadingCursor = () =>
   (document.querySelector('body').classList += 'cursor wait');
 
-// in Firefox, use content.fetch for content-specific fetch requests
-// https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_scripts#XHR_and_Fetch
-// ts: () => Fetch;
-// github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/node-fetch/index.d.ts
-export const getBrowserFetch = () =>
-  navigator.userAgent.indexOf('Chrome') < 0 ? content.fetch : window.fetch;
-
 // helper function - extract the zip by creating html and querying the frame
 // ts: (html: String) => String
 export const extractUrl = (html) => {
@@ -230,10 +226,8 @@ export const saveZipFileInStorage = async ({ url, tabId }) => {
   const { zipUrl, htmlPage } = await getZipFileUrlFromDownloadedPage(url);
 
   // the the user we've downloaded the file
-  const res = await fetch(zipUrl);
-  if (!res.ok) return console.error('Could not fetch blob');
-
-  const blob = await res.blob();
+  const blob = await fetch(zipUrl).then((res) => res.blob());
+  if (!blob) return console.error('Could not fetch blob');
 
   // convert the zip file to a dataUrl blob
   console.info('RECAP: Downloaded zip file');
@@ -241,7 +235,7 @@ export const saveZipFileInStorage = async ({ url, tabId }) => {
 
   // store the dataUrl in the tabStorage
   const updated = await updateTabStorage({ [tabId]: { file_blob: dataUrl } });
-  if (!updated.success) return console.error(`Could not save zip file: ${err}`);
+  if (!updated) return console.error(`RECAP: Could not stash blob in store.`);
   return { success: true, htmlPage, blob };
 };
 

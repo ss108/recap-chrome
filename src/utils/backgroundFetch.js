@@ -5,6 +5,7 @@ import { buildFormData } from './dom';
 export const handleBackgroundFetchRequest = (req, sender, sendResponse) => {
   // create a callback to dispatch the background fetch request
   const dispatchCallback = (_url, _options) => {
+    console.debug(_url, _options);
     console.info(`RECAP: Dispatching ${_options.method} for ${_url}`);
     // dispatch fetch and return the response
     fetch(_url, _options)

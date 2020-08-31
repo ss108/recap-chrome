@@ -7,16 +7,19 @@ export async function handleDownloadConfirmationPage() {
   const input = inputs.find(
     (input) => input.type === 'button' && input.value.includes('Accept')
   );
+  if (!input) return console.warn('RECAP: no input button present. Disabling.');
   input.setAttribute('type', 'hidden');
+  const baseURI = input.attributes.onclick.baseURI;
   // build the dummy input and insert it next to the original button
   const newInput = document.createElement('input');
   newInput.setAttribute('type', 'button');
   newInput.setAttribute('value', input.value);
-  newInput.addEventListener('click', () =>
-    window.postMessage(input.attributes.onclick.baseURI)
-  );
   input.insertAdjacentElement('beforebegin', newInput);
+  newInput.addEventListener('click', (ev) => {
+    console.log(baseURI);
+    this.onDocumentDownload({ baseURI });
+  });
 
   // bind the eventListener to the downloadDocumentHandler
-  window.addEventListener('message', this.onDocumentDownload.bind(this), false);
+  // window.addEventListener('message', (ev) => console.log(ev));
 }

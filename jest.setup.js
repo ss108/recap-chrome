@@ -14,3 +14,12 @@ global.content = {
     })
   ),
 };
+
+// only allow console.debug through
+global.console = {
+  debug: console.debug,
+  log: jest.fn(),
+  error: jest.fn(),
+  warn: jest.fn(),
+  info: jest.fn(),
+};

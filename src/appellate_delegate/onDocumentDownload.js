@@ -1,7 +1,25 @@
-export async function onDocumentDownload(event) {
+import PACER from '../pacer';
+import {
+  generateFileName,
+  getItemsFromStorage,
+  dispatchBackgroundFetch,
+  searchParamsURL,
+  isChromeBrowserAndPdfViewerDisabled,
+  courtListenerURL,
+  authHeader,
+  dispatchNotifier,
+  blobDownloadLink,
+  getBrowserFetch,
+  blobToDataURL,
+  updateTabStorage,
+  toggleLoadingCursor,
+} from '../utils';
+
+export async function onDocumentDownload({ baseURI }) {
   // 0. initialize the function and fetch async data
   console.log('onDocumentDownload');
-  document.querySelector('body').className += ' cursor wait';
+
+  toggleLoadingCursor();
 
   // 1.  make the back button display the previous page //
   window.onpopstate = ({ state }) => {
@@ -24,33 +42,40 @@ export async function onDocumentDownload(event) {
   const formData = { ...inputData, recp: new Date().getTime() };
 
   // 3. encode the params as URL search params to match the pacer request
-  const url = this.buildSearchParamsUrl({ url: event.data, params: formData });
+  const url = searchParamsURL({ base: baseURI, params: formData });
 
   // 4. get the blob and store it
+  const contentScriptFetch = getBrowserFetch();
   const blob = await contentScriptFetch(url).then((res) => res.blob());
   const dataUrl = await blobToDataURL(blob);
-  await updateTabStorage({ [this.tabId]: { pdfBlob: dataUrl } });
+  const stashed = await updateTabStorage({ [this.tabId]: { file_blob: dataUrl } });
+
+  if (!stashed)
+    return console.warn('RECAP: Blob not stashed in store. Cancelling upload.');
 
   // 5. build the innerHtml to show the user
-
-  // set the params before you set the new innerHTML
-  const params = {
-    pacerCaseId: formData.caseId,
-    pacerDocId: formData.dls_id,
-    court: this.court,
-  };
 
   // get needed info to build the filename
   const options = await getItemsFromStorage('options');
   const td = [...document.querySelectorAll('td')].find((td) =>
     td.textContent.match(/Case\: \d{2}-\d{4}/)
   );
-  const filename = await generateFileName({
-    iaStyle: options.ia_style_filenames,
-    docketNumber: td.textContent.match(/\d{2}\-\d{4}/)[0],
-    attachmentNumber: '', // no relevant number found
+
+  const pacerDocId = formData.dls_id;
+  const docketNumber = td.textContent.match(/\d{2}\-\d{4}/)[0];
+
+  const court = PACER.convertToCourtListenerCourt(this.court);
+
+  const pacerCaseId = formData.caseId;
+
+  const filename = generateFileName({
+    style: options.lawyer_style_filenames ? 'laywer' : 'ia',
     suffix: 'pdf', // for future zip support?
-    ...params,
+    pacerCaseId,
+    court,
+    docketNumber,
+    pacerDocId,
+    attachmentNumber: '', // no relevant number found
   });
 
   const externalPdfEnabled = isChromeBrowserAndPdfViewerDisabled()
@@ -83,12 +108,33 @@ export async function onDocumentDownload(event) {
     history.pushState({ content: html.innerHTML }, '');
   }
 
-  // 6. upload it to recap
-  this.recap.uploadAppellateDocument(params, (response) => {
-    history.replaceState({ uploaded: true }, '');
-    this.notifier.showUpload(
-      'PDF page uploaded to the public RECAP Archive',
-      () => {}
-    );
+  const uploaded = dispatchBackgroundFetch({
+    url: courtListenerURL('recap'),
+    options: {
+      method: 'POST',
+      headers: { ...authHeader },
+      body: {
+        pacerCaseId,
+        pacerDocId,
+        court,
+        upload_type: 'APPELLATE_DOCUMENT',
+        filepath_local: true,
+      },
+    },
   });
+
+  if (!uploaded) return console.error('RECAP: Upload failed.');
+
+  history.replaceState({ uploaded: true }, '');
+
+  const notified = dispatchNotifier({
+    title: 'notify_successful_appellate_document_upload',
+    message: 'Document uploaded to the public RECAP Archive',
+    action: 'showUpload',
+  });
+
+  if (notified)
+    return console.info(
+      'User notified of a successful appellate docket page upload'
+    );
 }

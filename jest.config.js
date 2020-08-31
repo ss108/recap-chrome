@@ -7,7 +7,8 @@ module.exports = {
   setupFilesAfterEnv: ['./jest.setup.js'],
   testPathIgnorePatterns: [
     '<rootDir>/src/assets/',
-    '<rootDir>/__tests__/content_delegate/mocks',
+    '<rootDir>/__tests__/appellate/mocks',
+    '<rootDir>/__tests__/district/mocks',
     '<rootDir>/__tests__/RecapSpec.js',
   ],
 };

@@ -1,7 +1,11 @@
+import PACER from '../pacer';
+import { getItemsFromStorage } from '../utils';
+
 export async function handleCaseQueryPage() {
   console.log('handleCaseQuery');
   const inputs = [...document.querySelectorAll('input')];
   const pacerCaseId = PACER.getCaseIdFromAppellateCaseQueryPage(inputs);
+
   if (pacerCaseId) {
     await updateTabStorage({ [this.tabId]: { caseId: pacerCaseId } });
   }
@@ -17,23 +21,37 @@ export async function handleCaseQueryPage() {
     return;
   }
 
-  // set params for upload
-  const params = {
-    pacerCaseId: pacerCaseId,
-    htmlPage: document.documentElement.outerHTML,
-    uploadType: 'CASE_QUERY',
-    pacerCourt: this.court,
-  };
-
-  this.recap.uploadAppellatePage(
-    params,
-    // send a callback for now to mimic contentDelegate
-    (response) => {
-      history.replaceState({ uploaded: true }, '');
-      this.notifier.showUpload(
-        'Case query page uploaded to the public RECAP Archive',
-        () => {}
-      );
-    }
+  const dataUrl = await blobToDataURL(
+    new Blob([document.documentElement.outerHTML], { type: 'text/html' })
   );
+  const stashed = await updateTabStorage({
+    [this.tabId]: { file_blob: dataUrl },
+  });
+
+  if (!stashed)
+    return console.error('RECAP: Unable to stash blob in store. Not Uploading.');
+  // set params for upload
+
+  const uploaded = dispatchBackgroundFetch({
+    url: courtListenerURL('recap'),
+    options: {
+      method: 'POST',
+      pacerCourt: PACER.convertToCourtListenerCourt(this.court),
+      pacerCaseId: pacerCaseId,
+      filepath_local: true,
+      uploadType: 'CASE_QUERY',
+      debug: false,
+    },
+  });
+
+  if (!uploaded)
+    return console.error('RECAP: File not uploaded. Something went wrong.');
+
+  const notified = dispatchNotifier({
+    title: 'appellate_case_query_page_uploaded',
+    message: 'Case query page uploaded to the public RECAP Archive',
+    action: 'showUpload',
+  });
+
+  if (notified) return console.info('RECAP: Notified user of successful upload');
 }

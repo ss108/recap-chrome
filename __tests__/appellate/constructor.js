@@ -1,220 +1,203 @@
-describe('AppellateDelegate constructor', () => {
-  it('gets created with the necessary arguments', () => {
-    const ad = newAppDel();
-    expect(ad.tabId).toBe(tabId);
-    expect(ad.court).toBe(court);
-    expect(ad.links).toEqual([]);
-    expect(ad.pacerDocId).toBe(undefined);
+import { AppellateDelegate } from '../../src/appellate_delegate';
+import {
+  tabId,
+  court,
+  newAppDel,
+  setTitle,
+  advancedCaseSearchTitle,
+  attachmentMenuTitle,
+  caseQueryTitle,
+  caseSearchTitle,
+  caseSearchResultsTitle,
+  downloadConfirmationTitle,
+  fullDocketSearchTitle,
+  shortDocketTitle,
+  longDocketTitle,
+} from './mocks';
+
+describe('The Appellate Delegate Class', () => {
+  beforeEach(() => {
+    Object.defineProperty(window.document, 'URL', { value: '' });
+    document.body.innerHTML = '';
   });
 
-  describe('it is not on any identified appellate page', () => {
-    beforeEach(() => setTitle(''));
+  afterEach(() => {
+    jest.clearAllMocks();
+    fetchMock.mockClear();
+  });
 
-    it('has no targetPage set', () => {
+  describe('AppellateDelegate constructor', () => {
+    it('gets created with the necessary arguments', () => {
       const ad = newAppDel();
-      expect(ad.targetPage).not.toBeTruthy();
+      expect(ad.tabId).toBe(tabId);
+      expect(ad.court).toBe(court);
+      expect(ad.links).toEqual([]);
+      expect(ad.pacerDocId).toBe(undefined);
     });
-  });
 
-  describe('it is on a caseSearchPage', () => {
-    let ad;
-    beforeEach(() => {
-      setTitle(caseSearchTitle);
-      ad = new AppellateDelegate({
-        tabId: tabId,
-        court: court,
-        links: [],
-        pacerDocId: undefined,
+    describe('it is not on any identified appellate page', () => {
+      beforeEach(() => setTitle(''));
+
+      it('has no targetPage set', () => {
+        const ad = newAppDel();
+        expect(ad.targetPage).not.toBeTruthy();
       });
-      spyOn(ad, 'handleCaseSearchPage').and.callFake(() => {});
     });
 
-    it('sets the targetPage to "caseSearch"', () => {
-      expect(ad.targetPage).toBe('caseSearch');
-    });
-
-    it('calls handleCaseSearchPage', () => {
-      ad.dispatchTargetHandler();
-      expect(ad.handleCaseSearchPage).toHaveBeenCalled();
-    });
-  });
-
-  describe('it is on an advancedCaseSearchPage', () => {
-    let ad;
-    beforeEach(() => {
-      setTitle(advancedCaseSearchTitle);
-      ad = new AppellateDelegate({
-        tabId: tabId,
-        court: court,
-        links: [],
-        pacerDocId: undefined,
+    describe('it is on a caseSearchPage', () => {
+      beforeEach(() => {
+        setTitle(caseSearchTitle);
       });
-      spyOn(ad, 'handleCaseSearchPage').and.callFake(() => {});
-    });
 
-    it('sets the targetPage to "advancedCaseSearch"', () => {
-      expect(ad.targetPage).toBe('advancedCaseSearch');
-    });
-
-    it('calls handleCaseSearchPage', () => {
-      ad.dispatchTargetHandler();
-      expect(ad.handleCaseSearchPage).toHaveBeenCalled();
-    });
-  });
-
-  describe('it is on a caseSearchResultsPage', () => {
-    let ad;
-    beforeEach(() => {
-      setTitle(caseSearchResultsTitle);
-      ad = new AppellateDelegate({
-        tabId: tabId,
-        court: court,
-        links: [],
-        pacerDocId: undefined,
+      it('sets the targetPage to "caseSearch"', () => {
+        const ad = newAppDel();
+        expect(ad.targetPage).toBe('caseSearch');
       });
-      spyOn(ad, 'handleCaseSearchResultsPage').and.callFake(() => {});
-    });
 
-    it('sets the targetPage to "caseSearchResults"', () => {
-      expect(ad.targetPage).toBe('caseSearchResults');
-    });
-
-    it('calls handleCaseSearchResultsPage', () => {
-      ad.dispatchTargetHandler();
-      expect(ad.handleCaseSearchResultsPage).toHaveBeenCalled();
-    });
-  });
-
-  describe('it is on a caseQueryPage', () => {
-    let ad;
-    beforeEach(() => {
-      setTitle(caseQueryTitle);
-      ad = new AppellateDelegate({
-        tabId: tabId,
-        court: court,
-        links: [],
-        pacerDocId: undefined,
+      it('calls handleCaseSearchPage', () => {
+        const ad = newAppDel();
+        jest.spyOn(ad, 'handleCaseSearchPage');
+        ad.dispatchTargetHandler();
+        expect(ad.handleCaseSearchPage).toHaveBeenCalled();
       });
-      spyOn(ad, 'handleCaseQueryPage').and.callFake(() => {});
     });
 
-    it('sets the targetPage to "caseQuery"', () => {
-      expect(ad.targetPage).toBe('caseQuery');
-    });
-
-    it('calls handleCaseQueryPage', () => {
-      ad.dispatchTargetHandler();
-      expect(ad.handleCaseQueryPage).toHaveBeenCalled();
-    });
-  });
-
-  describe('it is on a downloadConfirmationPage', () => {
-    let ad;
-    beforeEach(() => {
-      setTitle(downloadConfirmationTitle);
-      ad = new AppellateDelegate({
-        tabId: tabId,
-        court: court,
-        links: [],
-        pacerDocId: undefined,
+    describe('it is on an advancedCaseSearchPage', () => {
+      beforeEach(() => {
+        setTitle(advancedCaseSearchTitle);
       });
-      spyOn(ad, 'handleDownloadConfirmationPage').and.callFake(() => {});
+
+      it('sets the targetPage to "advancedCaseSearch"', () => {
+        const ad = newAppDel();
+        expect(ad.targetPage).toBe('advancedCaseSearch');
+      });
+
+      it('calls handleCaseSearchPage', () => {
+        const ad = newAppDel();
+        jest.spyOn(ad, 'handleCaseSearchPage');
+        ad.dispatchTargetHandler();
+        expect(ad.handleCaseSearchPage).toHaveBeenCalled();
+      });
     });
 
-    it('sets the targetPage to "downloadConfirmation"', () => {
-      expect(ad.targetPage).toBe('downloadConfirmation');
+    describe('it is on a caseSearchResultsPage', () => {
+      beforeEach(() => {
+        setTitle(caseSearchResultsTitle);
+      });
+
+      it('sets the targetPage to "caseSearchResults"', () => {
+        const ad = newAppDel();
+        expect(ad.targetPage).toBe('caseSearchResults');
+      });
+
+      it('calls handleCaseSearchResultsPage', () => {
+        const ad = newAppDel();
+        jest.spyOn(ad, 'handleCaseSearchResultsPage');
+        ad.dispatchTargetHandler();
+        expect(ad.handleCaseSearchResultsPage).toHaveBeenCalled();
+      });
     });
 
-    it('calls handleDownloadConfirmationPage', () => {
-      ad.dispatchTargetHandler();
-      expect(ad.handleDownloadConfirmationPage).toHaveBeenCalled();
+    describe('it is on a caseQueryPage', () => {
+      beforeEach(() => {
+        setTitle(caseQueryTitle);
+      });
+
+      it('sets the targetPage to "caseQuery"', () => {
+        const ad = newAppDel();
+        expect(ad.targetPage).toBe('caseQuery');
+      });
+
+      it('calls handleCaseQueryPage', () => {
+        const ad = newAppDel();
+        jest.spyOn(ad, 'handleCaseQueryPage');
+        ad.dispatchTargetHandler();
+        expect(ad.handleCaseQueryPage).toHaveBeenCalled();
+      });
     });
 
+    describe('it is on a downloadConfirmationPage', () => {
+      beforeEach(() => {
+        setTitle(downloadConfirmationTitle);
+      });
+
+      it('sets the targetPage to "downloadConfirmation"', () => {
+        const ad = newAppDel();
+        expect(ad.targetPage).toBe('downloadConfirmation');
+      });
+
+      it('calls handleDownloadConfirmationPage', () => {
+        const ad = newAppDel();
+        jest.spyOn(ad, 'handleDownloadConfirmationPage');
+        ad.dispatchTargetHandler();
+        expect(ad.handleDownloadConfirmationPage).toHaveBeenCalled();
+      });
+    });
     describe('it is on an attachmentMenuPage', () => {
-      let ad;
       beforeEach(() => {
         setTitle(attachmentMenuTitle);
-        ad = new AppellateDelegate({
-          tabId: tabId,
-          court: court,
-          links: [],
-          pacerDocId: undefined,
-        });
-        spyOn(ad, 'handleAttachmentMenuPage').and.callFake(() => {});
       });
 
       it('sets the targetPage to "attachmentMenu"', () => {
+        const ad = newAppDel();
         expect(ad.targetPage).toBe('attachmentMenu');
       });
 
       it('calls handleAttachmentMenuPage', () => {
+        const ad = newAppDel();
+        jest.spyOn(ad, 'handleAttachmentMenuPage');
         ad.dispatchTargetHandler();
         expect(ad.handleAttachmentMenuPage).toHaveBeenCalled();
       });
     });
     describe('it is on a fullDocketSearchPage', () => {
-      let ad;
       beforeEach(() => {
         setTitle(fullDocketSearchTitle);
-        ad = new AppellateDelegate({
-          tabId: tabId,
-          court: court,
-          links: [],
-          pacerDocId: undefined,
-        });
-        spyOn(ad, 'handleFullDocketSearchPage').and.callFake(() => {});
       });
 
       it('sets the targetPage to "fullDocketSearch"', () => {
+        const ad = newAppDel();
         expect(ad.targetPage).toBe('fullDocketSearch');
       });
 
       it('calls handleAttachmentMenuPage', () => {
+        const ad = newAppDel();
+        jest.spyOn(ad, 'handleFullDocketSearchPage');
         ad.dispatchTargetHandler();
         expect(ad.handleFullDocketSearchPage).toHaveBeenCalled();
       });
     });
 
     describe('it is on a shortDocketPage', () => {
-      let ad;
       beforeEach(() => {
         setTitle(shortDocketTitle);
-        ad = new AppellateDelegate({
-          tabId: tabId,
-          court: court,
-          links: [],
-          pacerDocId: undefined,
-        });
-        spyOn(ad, 'handleDocketPage').and.callFake(() => {});
       });
 
       it('sets the targetPage to "shortDocket"', () => {
+        const ad = newAppDel();
         expect(ad.targetPage).toBe('shortDocket');
       });
 
       it('calls handleAttachmentMenuPage', () => {
+        const ad = newAppDel();
+        jest.spyOn(ad, 'handleDocketPage');
         ad.dispatchTargetHandler();
         expect(ad.handleDocketPage).toHaveBeenCalled();
       });
     });
     describe('it is on a fullDocketPage', () => {
-      let ad;
       beforeEach(() => {
         setTitle(longDocketTitle);
-        ad = new AppellateDelegate({
-          tabId: tabId,
-          court: court,
-          links: [],
-          pacerDocId: undefined,
-        });
-        spyOn(ad, 'handleDocketPage').and.callFake(() => {});
       });
 
       it('sets the targetPage to "fullDocket"', () => {
+        const ad = newAppDel();
         expect(ad.targetPage).toBe('fullDocket');
       });
 
       it('calls handleAttachmentMenuPage', () => {
+        const ad = newAppDel();
+        jest.spyOn(ad, 'handleDocketPage');
         ad.dispatchTargetHandler();
         expect(ad.handleDocketPage).toHaveBeenCalled();
       });

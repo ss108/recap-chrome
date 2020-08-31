@@ -5,10 +5,10 @@ import {
   pdf_data,
 } from './mocks';
 
+const getForm = () => document.querySelector('form');
+
 describe('The ContentDelegate class', () => {
   describe('onDocumentViewSubmit', () => {
-    let form;
-    let table;
     const form_id = '1234';
     const event = { data: { id: form_id } };
 
@@ -21,11 +21,11 @@ describe('The ContentDelegate class', () => {
       chrome.storage.local.get.mockImplementation((key, cb) => cb({ options: {} }));
       chrome.storage.local.set.mockImplementation((key, cb) => cb());
 
-      form = document.createElement('form');
+      const form = document.createElement('form');
       form.id = form_id;
       document.body.appendChild(form);
 
-      table = document.createElement('table');
+      const table = document.createElement('table');
       let tr_image = document.createElement('tr');
       tr_image.textContent = 'Case Number';
       let td_image = document.createElement('td');
@@ -55,6 +55,7 @@ describe('The ContentDelegate class', () => {
 
     it('sets the onsubmit attribute of the page form', async () => {
       const expected_on_submit = 'expectedOnSubmit();';
+      const form = getForm();
       form.setAttribute('onsubmit', expected_on_submit);
       jest.spyOn(form, 'setAttribute').mockImplementation(() => {});
       await singleDocContentDelegate.onDocumentViewSubmit(event);
