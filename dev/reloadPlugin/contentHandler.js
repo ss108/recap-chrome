@@ -10,17 +10,13 @@ class ContentScriptHandler {
     compiler.hooks.compile.tap('ReloadPlugin', () => {
       let needReloadServer = false;
       for (const content of this.contentScripts) {
-        for (const [index, entry] of []
-          .concat(compiler.options.entry[content])
-          .entries()) {
+        for (const [index, entry] of [].concat(compiler.options.entry[content]).entries()) {
           if (entry === require.resolve('webpack/hot/dev-server')) {
             // For hot updates that are unaccepted or failed, use our own
             // dev-server script that 1) sends a message to the background
             // script to reload the extension and 2) reloads the page
 
-            compiler.options.entry[content][index] = require.resolve(
-              './content-dev-server'
-            );
+            compiler.options.entry[content][index] = require.resolve('./content-dev-server');
             needReloadServer = true;
           }
         }
@@ -36,10 +32,7 @@ class ContentScriptHandler {
           compiler.options.entry['background'] = reloaderPath;
         }
 
-        compiler.hooks.entryOption.call(
-          compiler.options.context,
-          compiler.options.entry
-        );
+        compiler.hooks.entryOption.call(compiler.options.context, compiler.options.entry);
       }
     });
 

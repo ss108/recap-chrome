@@ -23,9 +23,7 @@ describe('The Appellate Delegate Class', () => {
 
   describe('when handleDocketPage has been called', () => {
     beforeEach(() => {
-      chrome.storage.local.set.mockImplementation((obj, cb) =>
-        cb({ success: true })
-      );
+      chrome.storage.local.set.mockImplementation((obj, cb) => cb({ success: true }));
       chrome.runtime.sendMessage.mockImplementation((msg, cb) => {
         cb({ success: true });
       });

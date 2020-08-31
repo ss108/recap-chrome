@@ -44,9 +44,7 @@ module.exports = function () {
         if (request.readyState !== 4) return;
         if (request.status === 0) {
           // timeout
-          reject(
-            new Error('Manifest request to ' + requestPath + ' timed out.')
-          );
+          reject(new Error('Manifest request to ' + requestPath + ' timed out.'));
         } else if (request.status === 404) {
           // no update available
           resolve();

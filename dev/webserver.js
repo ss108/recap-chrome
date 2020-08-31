@@ -15,9 +15,7 @@ config.output.publicPath = `https://localhost:${env.PORT}/`;
 // Replace the manifest transformer so the new content security policy allows
 // the public path.
 
-var copyPluginIndex = config.plugins.findIndex(
-  (plugin) => plugin instanceof CopyWebpackPlugin
-);
+var copyPluginIndex = config.plugins.findIndex((plugin) => plugin instanceof CopyWebpackPlugin);
 if (copyPluginIndex !== -1) {
   config.plugins[copyPluginIndex] = new CopyWebpackPlugin({
     patterns: [
@@ -26,9 +24,7 @@ if (copyPluginIndex !== -1) {
         transform: function (content) {
           var manifest = JSON.parse(content.toString());
           var content_security_policy =
-            (manifest.content_security_policy
-              ? manifest.content_security_policy + '; '
-              : '') +
+            (manifest.content_security_policy ? manifest.content_security_policy + '; ' : '') +
             `script-src 'self' ${config.output.publicPath}; object-src 'self'`;
 
           // generates the manifest file using the package.json informations

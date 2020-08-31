@@ -6,8 +6,7 @@ describe('The Appellate Delegate Class', () => {
       // mock the download from the content.fetch method
       window.content.fetch = jest.fn(() =>
         Promise.resolve({
-          blob: () =>
-            Promise.resolve(new Blob([pdf_data], { type: 'application/pdf' })),
+          blob: () => Promise.resolve(new Blob([pdf_data], { type: 'application/pdf' })),
         })
       );
       // mock the background fetch call
@@ -18,13 +17,9 @@ describe('The Appellate Delegate Class', () => {
           [tabId]: {},
         })
       );
-      chrome.storage.local.set.mockImplementation((obj, cb) =>
-        cb({ success: true })
-      );
+      chrome.storage.local.set.mockImplementation((obj, cb) => cb({ success: true }));
 
-      chrome.runtime.sendMessage.mockImplementation((msg, cb) =>
-        cb({ success: true })
-      );
+      chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb({ success: true }));
     });
 
     describe('when an opinion is not available', () => {

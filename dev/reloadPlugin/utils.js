@@ -8,18 +8,15 @@ const { Template } = require('webpack');
 
 function generateRuntime(runtimeTemplate, mainTemplate, source, hash) {
   const globalObject = mainTemplate.outputOptions.globalObject;
-  const hotUpdateChunkFilename =
-    mainTemplate.outputOptions.hotUpdateChunkFilename;
-  const hotUpdateMainFilename =
-    mainTemplate.outputOptions.hotUpdateMainFilename;
+  const hotUpdateChunkFilename = mainTemplate.outputOptions.hotUpdateChunkFilename;
+  const hotUpdateMainFilename = mainTemplate.outputOptions.hotUpdateMainFilename;
   const crossOriginLoading = mainTemplate.outputOptions.crossOriginLoading;
   const hotUpdateFunction = mainTemplate.outputOptions.hotUpdateFunction;
   const currentHotUpdateChunkFilename = mainTemplate.getAssetPath(
     JSON.stringify(hotUpdateChunkFilename),
     {
       hash: `" + ${mainTemplate.renderCurrentHashCode(hash)} + "`,
-      hashWithLength: (length) =>
-        `" + ${mainTemplate.renderCurrentHashCode(hash, length)} + "`,
+      hashWithLength: (length) => `" + ${mainTemplate.renderCurrentHashCode(hash, length)} + "`,
       chunk: {
         id: '" + chunkId + "',
       },
@@ -29,8 +26,7 @@ function generateRuntime(runtimeTemplate, mainTemplate, source, hash) {
     JSON.stringify(hotUpdateMainFilename),
     {
       hash: `" + ${mainTemplate.renderCurrentHashCode(hash)} + "`,
-      hashWithLength: (length) =>
-        `" + ${mainTemplate.renderCurrentHashCode(hash, length)} + "`,
+      hashWithLength: (length) => `" + ${mainTemplate.renderCurrentHashCode(hash, length)} + "`,
     }
   );
   const runtimeSource = Template.getFunctionContent(runtimeTemplate)
@@ -47,9 +43,7 @@ function generateRuntime(runtimeTemplate, mainTemplate, source, hash) {
 function hotDisposeChunk(chunkId) {
 delete installedChunks[chunkId];
 }
-var parentHotUpdateCallback = ${globalObject}[${JSON.stringify(
-    hotUpdateFunction
-  )}];
+var parentHotUpdateCallback = ${globalObject}[${JSON.stringify(hotUpdateFunction)}];
 ${globalObject}[${JSON.stringify(hotUpdateFunction)}] = ${runtimeSource}`;
 }
 

@@ -22,10 +22,7 @@ class ReloadPlugin {
   }
 
   apply(compiler) {
-    const manifestPath = path.resolve(
-      compiler.options.context,
-      this.opts.manifest
-    );
+    const manifestPath = path.resolve(compiler.options.context, this.opts.manifest);
 
     this.contentScriptHandler.apply(compiler);
   }

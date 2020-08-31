@@ -21,10 +21,7 @@ if (module.hot) {
       .then(function (updatedModules) {
         if (!updatedModules) {
           log('warning', '[HMR] Cannot find update. Need to do a full reload!');
-          log(
-            'warning',
-            '[HMR] (Probably because of restarting the webpack-dev-server)'
-          );
+          log('warning', '[HMR] (Probably because of restarting the webpack-dev-server)');
           reload(true);
           return;
         }
@@ -46,10 +43,7 @@ if (module.hot) {
       .catch(function (err) {
         var status = module.hot.status();
         if (['abort', 'fail'].indexOf(status) >= 0) {
-          log(
-            'warning',
-            '[HMR] Cannot apply update. Need to do a full reload!'
-          );
+          log('warning', '[HMR] Cannot apply update. Need to do a full reload!');
           log('warning', '[HMR] ' + log.formatError(err));
           reload(true);
         } else {

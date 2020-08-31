@@ -2,8 +2,7 @@ import PACER from '../src/pacer';
 
 describe('The PACER module', function () {
   const nonsenseUrl = 'http://something.uscourts.gov/foobar/baz';
-  const docketQueryUrl =
-    'https://ecf.canb.uscourts.gov/cgi-bin/' + 'HistDocQry.pl?531316';
+  const docketQueryUrl = 'https://ecf.canb.uscourts.gov/cgi-bin/' + 'HistDocQry.pl?531316';
   const singleDocUrl = 'https://ecf.canb.uscourts.gov/doc1/034031424909';
   const appellateDocumentUrl = 'https://ecf.ca2.uscourts.gov/docs1/00205695758';
 
@@ -88,8 +87,7 @@ describe('The PACER module', function () {
 
   describe('isDocketDisplayUrl', function () {
     const docketDisplayUrl =
-      'https://ecf.canb.uscourts.gov/cgi-bin/DktRpt.pl?' +
-      '101092135737069-L_1_0-1';
+      'https://ecf.canb.uscourts.gov/cgi-bin/DktRpt.pl?' + '101092135737069-L_1_0-1';
 
     it('matches a docket display URL', function () {
       expect(PACER.isDocketDisplayUrl(docketDisplayUrl)).toBe(true);
@@ -116,16 +114,14 @@ describe('The PACER module', function () {
     });
 
     const caseDefault =
-      'https://ecf.ca1.uscourts.gov/n/beam/servlet/TransportRoom?' +
-      'servlet=Nonsense.jsp';
+      'https://ecf.ca1.uscourts.gov/n/beam/servlet/TransportRoom?' + 'servlet=Nonsense.jsp';
 
     it('returns false for other jsp pages', function () {
       expect(PACER.isDocketDisplayUrl(caseDefault)).toBe(false);
     });
 
     const caseSearch =
-      'https://ecf.ca1.uscourts.gov/n/beam/servlet/TransportRoom?' +
-      'servlet=CaseSearch.jsp';
+      'https://ecf.ca1.uscourts.gov/n/beam/servlet/TransportRoom?' + 'servlet=CaseSearch.jsp';
 
     it('returns false for other jsp pages', function () {
       expect(PACER.isDocketDisplayUrl(caseSearch)).toBe(false);
@@ -155,9 +151,7 @@ describe('The PACER module', function () {
       });
 
       it('returns false when the URL is invalid', function () {
-        expect(PACER.isAttachmentMenuPage(docketQueryUrl, document)).toBe(
-          false
-        );
+        expect(PACER.isAttachmentMenuPage(docketQueryUrl, document)).toBe(false);
       });
     });
 
@@ -207,9 +201,7 @@ describe('The PACER module', function () {
       });
 
       it('return false when the URL is invalid', function () {
-        expect(PACER.isSingleDocumentPage(docketQueryUrl, document)).toBe(
-          false
-        );
+        expect(PACER.isSingleDocumentPage(docketQueryUrl, document)).toBe(false);
       });
     });
 
@@ -240,9 +232,7 @@ describe('The PACER module', function () {
     });
 
     it('returns the correct document id for a valid appellate URL', function () {
-      expect(PACER.getDocumentIdFromUrl(appellateDocumentUrl)).toBe(
-        '00205695758'
-      );
+      expect(PACER.getDocumentIdFromUrl(appellateDocumentUrl)).toBe('00205695758');
     });
 
     it('coerces the fourth digit to zero', function () {
@@ -268,9 +258,7 @@ describe('The PACER module', function () {
     });
 
     it('should return document id', function () {
-      expect(PACER.getDocumentIdFromForm(appellateDocumentUrl, document)).toBe(
-        '09508360046'
-      );
+      expect(PACER.getDocumentIdFromForm(appellateDocumentUrl, document)).toBe('09508360046');
     });
   });
 
@@ -287,23 +275,20 @@ describe('The PACER module', function () {
       expect(PACER.getCaseNumberFromUrls([nonsenseUrl])).toBeUndefined();
     });
 
-    const cmecfUrl =
-      'https://ecf.cmecf.uscourts.gov/cgi-bin/' + 'HistDocQry.pl?0';
+    const cmecfUrl = 'https://ecf.cmecf.uscourts.gov/cgi-bin/' + 'HistDocQry.pl?0';
 
     it('returns caseNum', function () {
       expect(PACER.getCaseNumberFromUrls([cmecfUrl])).toBeUndefined();
     });
 
-    const caseNumUrl =
-      'https://ecf.canb.uscourts.gov/cgi-bin/' + 'HistDocQry.pl?caseNum=44-29';
+    const caseNumUrl = 'https://ecf.canb.uscourts.gov/cgi-bin/' + 'HistDocQry.pl?caseNum=44-29';
 
     it('returns caseNum', function () {
       expect(PACER.getCaseNumberFromUrls([caseNumUrl])).toBe('44-29');
     });
     // relies on the leading dash to test against /[?&]caseId=([-\d]+)/
     // instead of /[?&]caseid=(\d+)/i
-    const caseIdUrl =
-      'https://ecf.canb.uscourts.gov/cgi-bin/' + 'HistDocQry.pl?caseId=-6721';
+    const caseIdUrl = 'https://ecf.canb.uscourts.gov/cgi-bin/' + 'HistDocQry.pl?caseId=-6721';
 
     it('returns caseNum', function () {
       expect(PACER.getCaseNumberFromUrls([caseIdUrl])).toBe('-6721');
@@ -328,16 +313,12 @@ describe('The PACER module', function () {
     it('should return a case number for Download All', function () {
       input.value = 'Download All';
       input.setAttribute('onClick', '&caseid=44127');
-      expect(
-        PACER.getCaseNumberFromInputs(appellateDocumentUrl, document)
-      ).toBe('44127');
+      expect(PACER.getCaseNumberFromInputs(appellateDocumentUrl, document)).toBe('44127');
     });
 
     it('should return a case number for View Document', function () {
       input.value = 'View Document';
-      expect(
-        PACER.getCaseNumberFromInputs(appellateDocumentUrl, document)
-      ).toBe('153992');
+      expect(PACER.getCaseNumberFromInputs(appellateDocumentUrl, document)).toBe('153992');
     });
   });
 
@@ -354,8 +335,7 @@ describe('The PACER module', function () {
   describe('parseGoDLSFunction', function () {
     it('gets the right values for an example DLS string', function () {
       let goDLSSampleString =
-        "goDLS('/doc1/09518360046','153992','264','','','1','',''); " +
-        'return(false);';
+        "goDLS('/doc1/09518360046','153992','264','','','1','',''); " + 'return(false);';
       expect(PACER.parseGoDLSFunction(goDLSSampleString)).toEqual({
         hyperlink: '/doc1/09518360046',
         de_caseid: '153992',
@@ -370,8 +350,7 @@ describe('The PACER module', function () {
 
     it('gets the right values for a DLS string with 10 parameters', function () {
       let goDLSSampleString =
-        "goDLS('/doc1/152129714885','496493','','1','','','','','',''); " +
-        'return(false)';
+        "goDLS('/doc1/152129714885','496493','','1','','','','','',''); " + 'return(false)';
       expect(PACER.parseGoDLSFunction(goDLSSampleString)).toEqual({
         hyperlink: '/doc1/152129714885',
         de_caseid: '496493',
@@ -400,10 +379,8 @@ describe('The PACER module', function () {
   });
 
   describe('hasPacerCookie', function () {
-    const loggedInCookie =
-      'PacerSession=B7yuvmcj2F...9p5nDzEXsHE; ' + 'PacerPref=receipt=Y';
-    const altLoggedInCookie =
-      'PacerUser=B7yuvmcj2F...9p5nDzEXsHE; ' + 'PacerPref=receipt=Y';
+    const loggedInCookie = 'PacerSession=B7yuvmcj2F...9p5nDzEXsHE; ' + 'PacerPref=receipt=Y';
+    const altLoggedInCookie = 'PacerUser=B7yuvmcj2F...9p5nDzEXsHE; ' + 'PacerPref=receipt=Y';
     const nonLoggedInCookie = 'PacerSession=unvalidated; PacerPref=receipt=Y';
     const nonsenseCookie = 'Foo=barbaz; Baz=bazbar; Foobar=Foobar';
 
