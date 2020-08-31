@@ -37,8 +37,7 @@ export async function handleClaimsPageView() {
     },
   });
 
-  if (!uploaded)
-    return console.error('RECAP: Claims page not uploaded to the RECAP archive.');
+  if (!uploaded) return console.error('RECAP: Claims page not uploaded to the RECAP archive.');
 
   // dispatch notifier and log success
   const notified = await dispatchNotifier({
@@ -47,6 +46,5 @@ export async function handleClaimsPageView() {
     message: 'Claims page uploaded to the public RECAP archive.',
   });
 
-  if (notified.success)
-    return console.info('User notified of successful claims page upload');
+  if (notified.success) return console.info('User notified of successful claims page upload');
 }

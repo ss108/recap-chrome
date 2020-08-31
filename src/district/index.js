@@ -15,15 +15,7 @@ import { onDownloadAllSubmit } from './onDownloadAllSubmit';
 import { attachRecapLinkToEligibleDocs } from './attachRecapLinkToEligibleDocs';
 import { handleDocketDisplayPage } from './handleDocketDisplayPage';
 
-export function ContentDelegate(
-  tabId,
-  url,
-  path,
-  court,
-  pacer_case_id,
-  pacer_doc_id,
-  links
-) {
+export function ContentDelegate(tabId, url, path, court, pacer_case_id, pacer_doc_id, links) {
   this.tabId = tabId;
   this.url = url;
   this.path = path;

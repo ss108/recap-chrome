@@ -1,4 +1,4 @@
-import { ContentDelegate } from '../../src/content_delegate';
+import { ContentDelegate } from '../../src/district';
 import PACER from '../../src/pacer';
 import { docketQueryContentDelegate, nonsenseUrlContentDelegate } from './mocks';
 
@@ -56,8 +56,7 @@ describe('The ContentDelegate class', () => {
           {
             date_modified: '2015-12-17T03:24:00',
             absolute_url:
-              '/download/gov.uscourts.canb.531591/' +
-              'gov.uscourts.canb.531591.docket.html',
+              '/download/gov.uscourts.canb.531591/' + 'gov.uscourts.canb.531591.docket.html',
           },
         ],
       };

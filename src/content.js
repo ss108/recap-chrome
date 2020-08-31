@@ -1,8 +1,8 @@
 import images from './assets/images';
 import './assets/css/recap.css';
 import PACER from './pacer';
-import { ContentDelegate } from './content_delegate';
-import { AppellateDelegate } from './appellate_delegate';
+import { ContentDelegate } from './district';
+import { AppellateDelegate } from './appellate';
 import { getTabIdForContentScript } from './utils';
 
 // Content script to run when DOM finishes loading (run_at: "document_end").
@@ -17,8 +17,7 @@ let path = window.location.pathname;
 let pacer_case_id =
   PACER.getCaseNumberFromInputs(url, document) ||
   PACER.getCaseNumberFromUrls([url, document.referrer]);
-let pacer_doc_id =
-  PACER.getDocumentIdFromForm(url, document) || PACER.getDocumentIdFromUrl(url);
+let pacer_doc_id = PACER.getDocumentIdFromForm(url, document) || PACER.getDocumentIdFromUrl(url);
 let links = document.body.getElementsByTagName('a');
 
 // seed the content_delegate with the tabId by waiting for the

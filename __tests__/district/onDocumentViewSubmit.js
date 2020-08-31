@@ -1,9 +1,5 @@
-import { ContentDelegate } from '../../src/content_delegate';
-import {
-  appellateContentDelegate,
-  singleDocContentDelegate,
-  pdf_data,
-} from './mocks';
+import { ContentDelegate } from '../../src/district';
+import { appellateContentDelegate, singleDocContentDelegate, pdf_data } from './mocks';
 
 const getForm = () => document.querySelector('form');
 
@@ -65,11 +61,7 @@ describe('The ContentDelegate class', () => {
         'onsubmit',
         'history.forward(); return false;'
       );
-      expect(form.setAttribute).toHaveBeenNthCalledWith(
-        2,
-        'onsubmit',
-        expected_on_submit
-      );
+      expect(form.setAttribute).toHaveBeenNthCalledWith(2, 'onsubmit', expected_on_submit);
     });
 
     it('calls showPdfPage when the response is a PDF', async () => {
@@ -90,9 +82,7 @@ describe('The ContentDelegate class', () => {
       const cd = singleDocContentDelegate;
       const res = {};
       res.ok = true;
-      res.blob = jest.fn(() =>
-        Promise.resolve(new Blob(['htmlString'], { type: 'text/html' }))
-      );
+      res.blob = jest.fn(() => Promise.resolve(new Blob(['htmlString'], { type: 'text/html' })));
       return Promise.resolve(res);
       fetchMock.getOnce('*', res);
       // can't use arrow functions because mock has 'this'

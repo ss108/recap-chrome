@@ -1,4 +1,4 @@
-import { ContentDelegate } from '../../src/content_delegate';
+import { ContentDelegate } from '../../src/district';
 
 export const tabId = 1234;
 
@@ -37,11 +37,7 @@ export const pdf_data =
   '%PDF-1.\ntrailer<</Root<</Pages<</Kids' + '[<</MediaBox[0 0 3 3]>>]>>>>>>\n';
 
 // 'instances'
-export const nonsenseUrlContentDelegate = new ContentDelegate(
-  tabId,
-  nonsenseUrl,
-  []
-);
+export const nonsenseUrlContentDelegate = new ContentDelegate(tabId, nonsenseUrl, []);
 
 export const noPacerCaseIdContentDelegate = new ContentDelegate(
   tabId, // tabId

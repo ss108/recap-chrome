@@ -1,4 +1,4 @@
-import { ContentDelegate } from '../../src/content_delegate';
+import { ContentDelegate } from '../../src/district';
 import {
   singleDocContentDelegate,
   nonsenseUrlContentDelegate,
@@ -26,9 +26,7 @@ describe('The ContentDelegate class', () => {
             1234: { file_blob: new Blob(['Lookie'], { type: 'text/html' }) },
           });
         });
-        chrome.storage.local.set.mockImplementation((obj, cb) =>
-          cb({ success: 'yay' })
-        );
+        chrome.storage.local.set.mockImplementation((obj, cb) => cb({ success: 'yay' }));
         const input = document.createElement('input');
         input.value = 'Download All';
         form.appendChild(input);
@@ -48,9 +46,7 @@ describe('The ContentDelegate class', () => {
         chrome.storage.local.get.mockImplementation((key, cb) => {
           cb({ options: { recap_enabled: true } });
         });
-        chrome.storage.local.set.mockImplementation((obj, cb) =>
-          cb({ success: 'yay' })
-        );
+        chrome.storage.local.set.mockImplementation((obj, cb) => cb({ success: 'yay' }));
       });
 
       describe('when the history state is already set', () => {
@@ -116,9 +112,7 @@ describe('The ContentDelegate class', () => {
         it('calls the upload method and responds to positive result', async () => {
           const cd = singleDocContentDelegate;
           fetchMock.postOnce(/courtlistener/, { res: 200 });
-          chrome.runtime.sendMessage.mockImplementation((msg, cb) =>
-            cb({ success: true })
-          );
+          chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb({ success: true }));
           await cd.handleAttachmentMenuPage();
           expect(chrome.runtime.sendMessage).toHaveBeenCalledWith(
             {

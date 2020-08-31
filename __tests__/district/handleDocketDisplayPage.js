@@ -1,4 +1,4 @@
-import { ContentDelegate } from '../../src/content_delegate';
+import { ContentDelegate } from '../../src/district';
 import {
   docketDisplayContentDelegate,
   docketDisplayUrl,

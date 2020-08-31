@@ -1,4 +1,4 @@
-import { AppellateDelegate } from '../../src/appellate_delegate';
+import { AppellateDelegate } from '../../src/appellate';
 // 'tabId' values
 export const tabId = 1234;
 export const court = 'ca9';

@@ -38,8 +38,7 @@ export async function attachRecapLinkToEligibleDocs() {
   });
 
   // return if there are no results
-  if (!recapLinks)
-    return console.error('RECAP: Failed getting availability for dockets.');
+  if (!recapLinks) return console.error('RECAP: Failed getting availability for dockets.');
 
   // tell the user we've got results from the API
   console.info(

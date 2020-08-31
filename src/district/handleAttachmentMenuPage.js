@@ -59,6 +59,5 @@ export async function handleAttachmentMenuPage() {
     message: 'Menu page uploaded to the public RECAP Archive.',
   });
 
-  if (notified.success)
-    return console.info('User notified of successful attachment page upload');
+  if (notified.success) return console.info('User notified of successful attachment page upload');
 }

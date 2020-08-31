@@ -1,10 +1,5 @@
 import PACER from '../pacer';
-import {
-  debug,
-  getItemsFromStorage,
-  getPacerCaseIdFromStore,
-  updateTabStorage,
-} from '../utils';
+import { debug, getItemsFromStorage, getPacerCaseIdFromStore, updateTabStorage } from '../utils';
 // Use a variety of approaches to get and store pacer_doc_id to pacer_case_id
 // mappings in local storage.
 
@@ -25,11 +20,7 @@ export async function findAndStorePacerDocIds() {
   const docsToCases = {};
 
   // Try getting a mapping from a pacer_doc_id in the URL to a
-  if (
-    this.pacer_doc_id &&
-    page_pacer_case_id &&
-    typeof page_pacer_case_id === 'string'
-  ) {
+  if (this.pacer_doc_id && page_pacer_case_id && typeof page_pacer_case_id === 'string') {
     debug(3, `Z doc ${this.pacer_doc_id} to ${page_pacer_case_id}`);
     docsToCases[this.pacer_doc_id] = page_pacer_case_id;
   }

@@ -11,21 +11,25 @@ This build includes:
 - No more vendor copy or importing the entire jquery library!
 - Use of the more modern and leaner Date-FNS over Moment
 - Ability to inline env secrets during build!
-- Removal of exportInstance middleware! 
+- Removal of exportInstance middleware!
   - Fetch and notifier calls through background script are now virtually identical to direct invocations!
 - Reduced Dependencies!
 
 **Development Status**
 
-_Update 08/25/20_
+_Update 8/31/20_
 
-- Two tests failing since Karma for Jest swapover.
-- Started typing functions in the comments for eventual TS swapover.
+- All tests passing
+- Alpha Appellate Support (uploads docket and pdfs; no linkCheck)
+
+~~_Update 08/25/20_~~
+
+~~- Two tests failing since Karma for Jest swapover.~~
+~~- Started typing functions in the comments for eventual TS swapover.~~
 
 **Upcoming Features**
 
 - Final removal of jQuery
-- Appellate Support
 - Typescript?
 
 ## To get started with development
@@ -41,6 +45,7 @@ _Update 08/25/20_
 9. Load the unpacked extension from the /build sub folder.
 
 ## Build for production
+
 1. npm run build
 2. submit package from the build directory!
 

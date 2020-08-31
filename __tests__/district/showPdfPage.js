@@ -1,4 +1,4 @@
-import { ContentDelegate } from '../../src/content_delegate';
+import { ContentDelegate } from '../../src/district';
 import { blobToDataURL, singleDocContentDelegate, pdf_data, tabId } from './mocks';
 
 const pre =
@@ -74,9 +74,7 @@ describe('The ContentDelegate class', () => {
         await cd.showPdfPage(documentElement, html);
         expect(window.onpopstate).toEqual(jasmine.any(Function));
         window.onpopstate({ state: { content: 'previous' } });
-        expect(document.documentElement.innerHTML).toBe(
-          '<head></head><body>previous</body>'
-        );
+        expect(document.documentElement.innerHTML).toBe('<head></head><body>previous</body>');
       });
 
       it('displays the page with downloaded file in an iframe', async () => {

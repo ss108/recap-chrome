@@ -1,4 +1,4 @@
-import { ContentDelegate } from '../../src/content_delegate';
+import { ContentDelegate } from '../../src/district';
 import {
   singleDocContentDelegate,
   nonsenseUrlContentDelegate,
@@ -11,9 +11,7 @@ describe('The ContentDelegate class', () => {
     beforeEach(() => {
       document.body.innerHTML = '';
       chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb(msg));
-      chrome.storage.local.get.mockImplementation((key, cb) =>
-        cb({ options: {}, 1234: {} })
-      );
+      chrome.storage.local.get.mockImplementation((key, cb) => cb({ options: {}, 1234: {} }));
       chrome.storage.local.set.mockImplementation((key, cb) => cb(true));
       const form = document.createElement('form');
       document.body.appendChild(form);

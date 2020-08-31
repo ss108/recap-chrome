@@ -1,4 +1,4 @@
-import { ContentDelegate } from '../../src/content_delegate';
+import { ContentDelegate } from '../../src/district';
 import PACER from '../../src/pacer';
 import { linksFromUrls, tabId } from './mocks';
 import $ from 'jquery';
@@ -38,15 +38,7 @@ describe('The ContentDelegate class', () => {
       });
 
       it('does nothing', async () => {
-        const cd = new ContentDelegate(
-          tabId,
-          expected_url,
-          null,
-          null,
-          null,
-          null,
-          links
-        );
+        const cd = new ContentDelegate(tabId, expected_url, null, null, null, null, links);
         fetchMock.getOnce(/courtlistener/, {});
         chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb({}));
         await cd.attachRecapLinkToEligibleDocs();
@@ -61,18 +53,8 @@ describe('The ContentDelegate class', () => {
         it('does not attach any links', async () => {
           const results = [];
           fetchMock.getOnce(/courtlistener/, { results });
-          chrome.runtime.sendMessage.mockImplementation((msg, cb) =>
-            cb({ results })
-          );
-          const cd = new ContentDelegate(
-            tabId,
-            expected_url,
-            null,
-            null,
-            null,
-            null,
-            links
-          );
+          chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb({ results }));
+          const cd = new ContentDelegate(tabId, expected_url, null, null, null, null, links);
           cd.pacer_doc_ids = [1234];
           await cd.attachRecapLinkToEligibleDocs();
           const recapLinks = [...document.querySelectorAll('.recap-inline')];
@@ -83,15 +65,7 @@ describe('The ContentDelegate class', () => {
       it('attaches a single link to the one url with recap', async () => {
         const body = document.querySelector('body');
         Array.from(links).map((link) => body.appendChild(link));
-        const cd = new ContentDelegate(
-          tabId,
-          expected_url,
-          null,
-          null,
-          null,
-          null,
-          links
-        );
+        const cd = new ContentDelegate(tabId, expected_url, null, null, null, null, links);
         cd.pacer_doc_ids = [1234];
         const results = [{ pacer_doc_id: '1234', filepath_local: 'download/1234' }];
         fetchMock.getOnce(/courtlistener/, { results });

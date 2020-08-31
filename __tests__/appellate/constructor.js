@@ -1,4 +1,4 @@
-import { AppellateDelegate } from '../../src/appellate_delegate';
+import { AppellateDelegate } from '../../src/appellate';
 import {
   tabId,
   court,

@@ -37,10 +37,7 @@ export function checkRestrictions() {
   if (!PACER.isSingleDocumentPage(this.url, document)) return false;
 
   const firstTest = isRestricted('table td:first-child', /Warning!/);
-  const secondTest = isRestricted(
-    'b',
-    /document is restricted|SEALED|do not allow it to be seen/i
-  );
+  const secondTest = isRestricted('b', /document is restricted|SEALED|do not allow it to be seen/i);
 
   // if no restrictedItems found, do nothing
   if (!firstTest && !secondTest) return false;
@@ -58,8 +55,7 @@ export function checkRestrictions() {
   // we just go to the end of the final form.
   // Should we just always go the end of the final form?
   const target =
-    document.querySelector('form input') ||
-    document.forms[document.forms.length - 1].lastChild;
+    document.querySelector('form input') || document.forms[document.forms.length - 1].lastChild;
 
   // Nested div for horizontal centering.
   target.insertAdjacentHTML(

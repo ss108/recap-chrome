@@ -1,4 +1,4 @@
-import { ContentDelegate } from '../../src/content_delegate';
+import { ContentDelegate } from '../../src/district';
 import { docketDisplayContentDelegate, singleDocUrl } from './mocks';
 import $ from 'jquery';
 describe('The ContentDelegate class', () => {
@@ -14,9 +14,7 @@ describe('The ContentDelegate class', () => {
     });
     describe('when the popup option is not set', () => {
       it('redirects to the link url immediately', () => {
-        chrome.storage.local.get.mockImplementation((msg, cb) =>
-          cb({ options: {} })
-        );
+        chrome.storage.local.get.mockImplementation((msg, cb) => cb({ options: {} }));
         const window_obj = {};
         cd.handleRecapLinkClick(window_obj, linkUrl);
         expect(window_obj.location).toBe(linkUrl);

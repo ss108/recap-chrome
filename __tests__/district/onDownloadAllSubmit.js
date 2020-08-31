@@ -1,4 +1,4 @@
-import { ContentDelegate } from '../../src/content_delegate';
+import { ContentDelegate } from '../../src/district';
 import { blobToDataURL } from '../../src/utils';
 import { tabId, pdf_data } from './mocks';
 
@@ -83,12 +83,8 @@ describe('The ContentDelegate class', () => {
         });
       });
 
-      chrome.runtime.sendMessage.mockImplementation((msg, cb) =>
-        cb({ success: true })
-      );
-      chrome.storage.local.set.mockImplementation((obj, cb) =>
-        cb({ success: true })
-      );
+      chrome.runtime.sendMessage.mockImplementation((msg, cb) => cb({ success: true }));
+      chrome.storage.local.set.mockImplementation((obj, cb) => cb({ success: true }));
       fetchMock.getOnce(/dummylink/, blob);
       fetchMock.postOnce(/courtlistener/, { id: 22 });
     });
@@ -113,10 +109,7 @@ describe('The ContentDelegate class', () => {
     it('checks options to see if recap is enabled', async () => {
       const cd = zipFileContentDelegate;
       await cd.onDownloadAllSubmit({ data: { id: eventUrl } });
-      expect(chrome.storage.local.get).toHaveBeenCalledWith(
-        ['options'],
-        expect.any(Function)
-      );
+      expect(chrome.storage.local.get).toHaveBeenCalledWith(['options'], expect.any(Function));
     });
 
     it('uploads the Zip file to RECAP', async () => {
@@ -137,10 +130,7 @@ describe('The ContentDelegate class', () => {
           },
         },
       };
-      expect(chrome.runtime.sendMessage).toHaveBeenCalledWith(
-        upload,
-        expect.any(Function)
-      );
+      expect(chrome.runtime.sendMessage).toHaveBeenCalledWith(upload, expect.any(Function));
     });
 
     it('redirects the user to the download page and forwards the zip file', async () => {
