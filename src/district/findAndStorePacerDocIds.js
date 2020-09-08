@@ -7,7 +7,6 @@ export async function findAndStorePacerDocIds() {
   // no cookie, no love
   if (!PACER.hasPacerCookie(document.cookie)) return;
 
-  console.log(this.pacer_case_id);
   // Not all pages have a case ID, and there are corner-cases in merged dockets
   // where there are links to documents on another case.
   const page_pacer_case_id = this.pacer_case_id
@@ -43,7 +42,6 @@ export async function findAndStorePacerDocIds() {
       return (docsToCases[pacer_doc_id] = goDLS.de_caseid);
     }
     // else if you have a page_pacer_case_id, associate that
-    console.log(page_pacer_case_id);
     if (page_pacer_case_id) {
       debug(3, `X doc ${pacer_doc_id} to ${page_pacer_case_id}`);
       return (docsToCases[pacer_doc_id] = page_pacer_case_id);

@@ -40,9 +40,7 @@ export async function checkForAndUploadOpinion({ pacerCaseId }) {
   const blob = await contentScriptFetch(url).then((res) => res.blob());
 
   if (!blob || !blob.type.includes('pdf'))
-    return console.info(
-      'RECAP: Not uploading. No blob or incorrect blob type found.'
-    );
+    return console.info('RECAP: Not uploading. No blob or incorrect blob type found.');
 
   const dataUrl = await blobToDataURL(blob);
 
@@ -50,8 +48,7 @@ export async function checkForAndUploadOpinion({ pacerCaseId }) {
     [this.tabId]: { ['file_blob']: dataUrl },
   });
 
-  if (!stashedInStorage)
-    return console.error('RECAP: Blob not stashed in storage. Not uploading.');
+  if (!stashedInStorage) return console.error('RECAP: Blob not stashed in storage. Not uploading.');
 
   const uploaded = dispatchBackgroundFetch({
     url: courtListenerURL('recap'),
@@ -66,8 +63,7 @@ export async function checkForAndUploadOpinion({ pacerCaseId }) {
     },
   });
 
-  if (!uploaded)
-    return console.error('RECAP: Opinion not uploaded. Something went wrong.');
+  if (!uploaded) return console.error('RECAP: Opinion not uploaded. Something went wrong.');
 
   const notified = dispatchNotifier({
     title: 'successful_free_opinion_upload',

@@ -7,6 +7,7 @@ import { handleAttachmentMenuPage } from './handleAttachmentMenuPage';
 import { onDocumentDownload } from './onDocumentDownload';
 import { checkForAndUploadOpinion } from './checkForAndUploadOpinion';
 import { handleCaseQueryPage } from './handleCaseQueryPage';
+import { attachRecapLinksToEligibleDocs } from './attachRecapLinksToEligibleDocs';
 
 import {
   getBrowserFetch as contentScriptFetch,
@@ -70,6 +71,7 @@ AppellateDelegate.prototype.handleAttachmentMenuPage = handleAttachmentMenuPage;
 AppellateDelegate.prototype.onDocumentDownload = onDocumentDownload;
 AppellateDelegate.prototype.handleCaseQueryPage = handleCaseQueryPage;
 AppellateDelegate.prototype.checkForAndUploadOpinion = checkForAndUploadOpinion;
+AppellateDelegate.prototype.attachRecapLinksToEligibleDocs = attachRecapLinksToEligibleDocs;
 
 // unclear if needed
 AppellateDelegate.prototype.handleCaseSearchPage = function () {

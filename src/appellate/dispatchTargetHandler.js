@@ -10,10 +10,7 @@ export function dispatchTargetHandler() {
     this.handleAttachmentMenuPage();
   } else if (this.targetPage === 'fullDocketSearch') {
     this.handleFullDocketSearchPage();
-  } else if (
-    this.targetPage === 'caseSearch' ||
-    this.targetPage === 'advancedCaseSearch'
-  ) {
+  } else if (this.targetPage === 'caseSearch' || this.targetPage === 'advancedCaseSearch') {
     this.handleCaseSearchPage();
   } else if (this.targetPage === 'fullDocket' || this.targetPage === 'shortDocket') {
     this.handleDocketPage();

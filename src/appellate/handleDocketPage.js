@@ -14,6 +14,8 @@ import {
 export async function handleDocketPage() {
   console.log('handleDocketPage');
 
+  this.attachRecapLinksToEligibleDocs();
+
   // set pacerCaseId for pages down the line
   const anchors = [...document.querySelectorAll('a')];
   const pacerCaseId = PACER.getCaseIdFromAppellateDocketPage(anchors);
@@ -51,8 +53,7 @@ export async function handleDocketPage() {
         court: PACER.convertToCourtListenerCourt(this.court),
         pacer_case_id: pacerCaseId,
         debug: false,
-        upload_type:
-          this.targetPage === 'fullDocket' ? 'FULL_DOCKET' : 'SHORT_DOCKET',
+        upload_type: this.targetPage === 'fullDocket' ? 'FULL_DOCKET' : 'SHORT_DOCKET',
         filepath_local: true,
       },
     },
@@ -68,8 +69,5 @@ export async function handleDocketPage() {
     action: 'showUpload',
   });
 
-  if (notified)
-    return console.info(
-      'User notified of a successful appellate docket page upload'
-    );
+  if (notified) return console.info('User notified of a successful appellate docket page upload');
 }

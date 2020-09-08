@@ -28,8 +28,7 @@ export async function handleCaseQueryPage() {
     [this.tabId]: { file_blob: dataUrl },
   });
 
-  if (!stashed)
-    return console.error('RECAP: Unable to stash blob in store. Not Uploading.');
+  if (!stashed) return console.error('RECAP: Unable to stash blob in store. Not Uploading.');
   // set params for upload
 
   const uploaded = dispatchBackgroundFetch({
@@ -44,8 +43,7 @@ export async function handleCaseQueryPage() {
     },
   });
 
-  if (!uploaded)
-    return console.error('RECAP: File not uploaded. Something went wrong.');
+  if (!uploaded) return console.error('RECAP: File not uploaded. Something went wrong.');
 
   const notified = dispatchNotifier({
     title: 'appellate_case_query_page_uploaded',

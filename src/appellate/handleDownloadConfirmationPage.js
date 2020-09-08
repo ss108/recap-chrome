@@ -4,9 +4,7 @@ export async function handleDownloadConfirmationPage() {
 
   // find the download button and hide it
   const inputs = [...document.querySelectorAll('input')];
-  const input = inputs.find(
-    (input) => input.type === 'button' && input.value.includes('Accept')
-  );
+  const input = inputs.find((input) => input.type === 'button' && input.value.includes('Accept'));
   if (!input) return console.warn('RECAP: no input button present. Disabling.');
   input.setAttribute('type', 'hidden');
   const baseURI = input.attributes.onclick.baseURI;
