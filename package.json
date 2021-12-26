@@ -6,9 +6,12 @@
   "directories": {
     "test": "test"
   },
+  "source": "src/index.html",
   "scripts": {
     "test": "./node_modules/.bin/karma start --single-run --browsers Chrome_CI",
-    "postinstall": "vendor-copy"
+    "postinstall": "vendor-copy",
+    "start": "parcel",
+    "build": "parcel build"
   },
   "repository": {
     "type": "git",
@@ -28,6 +31,7 @@
     "parcel": "^2.0.1"
   },
   "devDependencies": {
+    "@parcel/config-webextension": "^2.0.1",
     "eslint": "^8.4.0",
     "jasmine": "^3.10.0",
     "karma": "^6.3.2",
