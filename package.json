@@ -10,8 +10,17 @@
   "scripts": {
     "test": "./node_modules/.bin/karma start --single-run --browsers Chrome_CI",
     "postinstall": "vendor-copy",
-    "start": "parcel",
-    "build": "parcel build"
+    "start": "parcel src/manifest.json --host localhost --target webext-dev --config @parcel/config-webextension",
+    "build": "parcel build src/manifest.json --target webext-prod --config @parcel/config-webextension"
+  },
+  "targets": {
+    "webext-dev": {
+      "sourceMap": {
+        "inline": true,
+        "inlineSources": true
+      }
+    },
+    "webext-prod": {}
   },
   "repository": {
     "type": "git",

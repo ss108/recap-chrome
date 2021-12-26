@@ -1,12 +1,15 @@
 {
-    "name": "my-project",
-    "source": "src/index.html",
-    "browserslist": "> 0.5%, last 2 versions, not dead",
-    "scripts": {
-        "start": "parcel",
-        "build": "parcel build"
+    "targets": {
+        "webext-dev": {
+            "sourceMap": {
+                "inline": true,
+                "inlineSources": true
+            }
+        },
+        "webext-prod": {}
     },
-    "devDependencies": {
-        "parcel": "latest"
+    "scripts": {
+        "start": "parcel src/manifest.json --host localhost --target webext-dev --config @parcel/config-webextension",
+        "build": "parcel build src/manifest.json --target webext-prod --config @parcel/config-webextension"
     }
 }
