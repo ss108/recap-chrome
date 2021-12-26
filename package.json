@@ -25,7 +25,7 @@
     "type": "git",
     "url": "git+https://github.com/freelawproject/recap-chrome.git"
   },
-  "author": "",
+  "author": "Free Law Project and the Center for Information Technology and Policy at Princeton",
   "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/freelawproject/recap-chrome/issues"
