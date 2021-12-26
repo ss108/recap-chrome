@@ -1,6 +1,7 @@
 // -------------------------------------------------------------------------
 // Browser-specific utilities for use in background pages and content scripts.
 
+import $ from "jquery";
 
 // In Chrome, content scripts can only communicate with background pages using
 // message passing (see http://developer.chrome.com/extensions/messaging.html).
