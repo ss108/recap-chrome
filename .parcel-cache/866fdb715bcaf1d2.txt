@@ -1,4 +1,4 @@
-19837
+19843
 95C:\Users\samie\Desktop\code\recap-chrome\node_modules\bootstrap\scss\mixins\_text-truncate.scss121436361000000000 0
 71C:\Users\samie\Desktop\code\recap-chrome\node_modules\lodash\toUpper.js121436361000000000 0
 84C:\Users\samie\Desktop\code\recap-chrome\node_modules\yaml\browser\dist\package.json121436361000000000 0
@@ -44,7 +44,7 @@
 86C:\Users\samie\Desktop\code\recap-chrome\node_modules\svgo\plugins\removeEmptyAttrs.js121436361000000000 0
 88C:\Users\samie\Desktop\code\recap-chrome\node_modules\socket.io\client-dist\socket.io.js121436361000000000 0
 96C:\Users\samie\Desktop\code\recap-chrome\node_modules\es-abstract\2019\OrdinaryGetOwnProperty.js121436361000000000 0
-59C:\Users\samie\Desktop\code\recap-chrome\dist\assets\images132850169235541429 1
+59C:\Users\samie\Desktop\code\recap-chrome\dist\assets\images132850342986689585 1
 99C:\Users\samie\Desktop\code\recap-chrome\node_modules\@parcel\core\node_modules\semver\CHANGELOG.md121436361000000000 0
 104C:\Users\samie\Desktop\code\recap-chrome\node_modules\postcss-modules\node_modules\postcss\lib\parser.js121436361000000000 0
 48C:\Users\samie\Desktop\code\recap-chrome\.github132837168654834044 1
@@ -146,7 +146,7 @@
 77C:\Users\samie\Desktop\code\recap-chrome\node_modules\diffie-hellman\index.js121436361000000000 0
 69C:\Users\samie\Desktop\code\recap-chrome\node_modules\tr46\LICENSE.md131403622080000000 0
 78C:\Users\samie\Desktop\code\recap-chrome\node_modules\weak-lru-cache\README.md121436361000000000 0
-45C:\Users\samie\Desktop\code\recap-chrome\dist132850339117614517 1
+45C:\Users\samie\Desktop\code\recap-chrome\dist132850342986756594 1
 81C:\Users\samie\Desktop\code\recap-chrome\node_modules\xmlchars\xml\1.0\ed4.js.map121436361000000000 0
 133C:\Users\samie\Desktop\code\recap-chrome\node_modules\postcss-modules-local-by-default\node_modules\postcss\docs\guidelines\plugin.md121436361000000000 0
 71C:\Users\samie\Desktop\code\recap-chrome\node_modules\nan\doc\scopes.md132319691430000000 0
@@ -186,22 +186,14 @@
 96C:\Users\samie\Desktop\code\recap-chrome\src\assets\images\webstore-exports\opera-300x188png.png132837154545264439 0
 81C:\Users\samie\Desktop\code\recap-chrome\node_modules\es-abstract\2021\ToInt32.js121436361000000000 0
 73C:\Users\samie\Desktop\code\recap-chrome\node_modules\call-bind\.eslintrc121436361000000000 0
-53C:\Users\samie\Desktop\code\recap-chrome\node_modules132850171098011441 1
+53C:\Users\samie\Desktop\code\recap-chrome\node_modules132850341373930887 1
 75C:\Users\samie\Desktop\code\recap-chrome\node_modules\terminal-link\license121436361000000000 0
 73C:\Users\samie\Desktop\code\recap-chrome\node_modules\jquery\src\queue.js121436361000000000 0
-76C:\Users\samie\Desktop\code\recap-chrome\node_modules\yaml\browser\scalar.js121436361000000000 0
-78C:\Users\samie\Desktop\code\recap-chrome\node_modules\dom-serialize\History.md130912202480000000 0
-61C:\Users\samie\Desktop\code\recap-chrome\node_modules\tmp\lib132849443946531935 1
-87C:\Users\samie\Desktop\code\recap-chrome\node_modules\highlight.js\lib\languages\cal.js121436361000000000 0
-62C:\Users\samie\Desktop\code\recap-chrome\node_modules\pn\fs.js131594838820000000 0
-90C:\Users\samie\Desktop\code\recap-chrome\node_modules\highlight.js\lib\languages\stylus.js121436361000000000 0
-122C:\Users\samie\Desktop\code\recap-chrome\node_modules\hash-base\node_modules\readable-stream\lib\internal\streams\state.js121436361000000000 0
-67C:\Users\samie\Desktop\code\recap-chrome\src\assets\js\livestamp.js132837168654963965 0
 105C:\Users\samie\Desktop\code\recap-chrome\node_modules\jsdom\lib\jsdom\living\traversal\TreeWalker-impl.js121436361000000000 0
 88C:\Users\samie\Desktop\code\recap-chrome\node_modules\lines-and-columns\build\index.d.ts121436361000000000 0
 113C:\Users\samie\Desktop\code\recap-chrome\node_modules\stream-browserify\node_modules\readable-stream\lib\internal132849563066016430 1
 65C:\Users\samie\Desktop\code\recap-chrome\node_modules\chalk\types132849443949783492 1
-58C:\Users\samie\Desktop\code\recap-chrome\package-lock.json132850159262486631 0
+58C:\Users\samie\Desktop\code\recap-chrome\package-lock.json132850341375764519 0
 61C:\Users\samie\Desktop\code\recap-chrome\node_modules\astring132849563124553850 1
 58C:\Users\samie\Desktop\code\recap-chrome\test\mock-ajax.js132837168655023511 0
 90C:\Users\samie\Desktop\code\recap-chrome\node_modules\eslint\lib\rules\no-extend-native.js121436361000000000 0
@@ -222,7 +214,7 @@
 86C:\Users\samie\Desktop\code\recap-chrome\node_modules\es-abstract\2021\IsExtensible.js121436361000000000 0
 73C:\Users\samie\Desktop\code\recap-chrome\node_modules\lodash\_getValue.js121436361000000000 0
 69C:\Users\samie\Desktop\code\recap-chrome\node_modules\mime-db\LICENSE121436361000000000 0
-53C:\Users\samie\Desktop\code\recap-chrome\package.json132850171099388582 0
+53C:\Users\samie\Desktop\code\recap-chrome\package.json132850341375223953 0
 70C:\Users\samie\Desktop\code\recap-chrome\src\assets\images\icon-16.png132837154545176387 0
 78C:\Users\samie\Desktop\code\recap-chrome\node_modules\lmdb-store\dict\dict.txt121436361000000000 0
 66C:\Users\samie\Desktop\code\recap-chrome\node_modules\ws\README.md121436361000000000 0
@@ -353,7 +345,7 @@
 94C:\Users\samie\Desktop\code\recap-chrome\node_modules\caniuse-lite\data\features\css-resize.js121436361000000000 0
 111C:\Users\samie\Desktop\code\recap-chrome\node_modules\postcss-modules-scope\node_modules\postcss\lib\at-rule.js121436361000000000 0
 107C:\Users\samie\Desktop\code\recap-chrome\node_modules\@parcel\codeframe\node_modules\color-convert\index.js121436361000000000 0
-58C:\Users\samie\Desktop\code\recap-chrome\src\manifest.json132850172262474292 0
+58C:\Users\samie\Desktop\code\recap-chrome\src\manifest.json132850342977803458 0
 78C:\Users\samie\Desktop\code\recap-chrome\node_modules\querystring\package.json132849563121015952 0
 75C:\Users\samie\Desktop\code\recap-chrome\node_modules\is-generator-function132849563123167272 1
 60C:\Users\samie\Desktop\code\recap-chrome\node_modules\globby132849563120375958 1
@@ -363,7 +355,7 @@
 72C:\Users\samie\Desktop\code\recap-chrome\node_modules\negotiator\LICENSE121436361000000000 0
 81C:\Users\samie\Desktop\code\recap-chrome\node_modules\yaml\dist\legacy-exports.js121436361000000000 0
 74C:\Users\samie\Desktop\code\recap-chrome\node_modules\object-keys\index.js121436361000000000 0
-65C:\Users\samie\Desktop\code\recap-chrome\dist\options.cccb431e.js132850169234669130 0
+65C:\Users\samie\Desktop\code\recap-chrome\dist\options.cccb431e.js132850342985547327 0
 89C:\Users\samie\Desktop\code\recap-chrome\node_modules\streamroller\node_modules\debug\src132849443949603495 1
 82C:\Users\samie\Desktop\code\recap-chrome\node_modules\posthtml-render\changelog.md121436361000000000 0
 69C:\Users\samie\Desktop\code\recap-chrome\node_modules\yargs\README.md121436361000000000 0
@@ -475,7 +467,7 @@
 75C:\Users\samie\Desktop\code\recap-chrome\node_modules\resolve-from\index.js131506335850000000 0
 87C:\Users\samie\Desktop\code\recap-chrome\node_modules\es-abstract\2018\UTF16Encoding.js121436361000000000 0
 89C:\Users\samie\Desktop\code\recap-chrome\node_modules\karma-jquery\jquery\jquery-2.1.2.js121436361000000000 0
-54C:\Users\samie\Desktop\code\recap-chrome\src\assets\js132850172122097484 1
+54C:\Users\samie\Desktop\code\recap-chrome\src\assets\js132850342808850136 1
 67C:\Users\samie\Desktop\code\recap-chrome\src\assets\js\FileSaver.js132849443970122655 0
 82C:\Users\samie\Desktop\code\recap-chrome\node_modules\es-abstract\2019\ToUint16.js121436361000000000 0
 118C:\Users\samie\Desktop\code\recap-chrome\node_modules\uncss\node_modules\postcss-selector-parser\dist\sortAscending.js121436361000000000 0
@@ -509,7 +501,7 @@
 95C:\Users\samie\Desktop\code\recap-chrome\node_modules\streamroller\node_modules\debug\README.md121436361000000000 0
 110C:\Users\samie\Desktop\code\recap-chrome\node_modules\jsdom\lib\jsdom\living\generated\HTMLDirectoryElement.js121436361000000000 0
 83C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\stable\string\link.js121436361000000000 0
-65C:\Users\samie\Desktop\code\recap-chrome\dist\options.20e0044f.js132850169235434263 0
+65C:\Users\samie\Desktop\code\recap-chrome\dist\options.20e0044f.js132850342986108836 0
 58C:\Users\samie\Desktop\code\recap-chrome\node_modules\tr46132849563119727754 1
 70C:\Users\samie\Desktop\code\recap-chrome\src\assets\images\grey-19.png132837154545163767 0
 63C:\Users\samie\Desktop\code\recap-chrome\node_modules\fastparse132849563123778408 1
@@ -957,11 +949,11 @@
 74C:\Users\samie\Desktop\code\recap-chrome\node_modules\lodash\fp\mapKeys.js121436361000000000 0
 88C:\Users\samie\Desktop\code\recap-chrome\node_modules\socket.io\node_modules\ms\index.js121436361000000000 0
 85C:\Users\samie\Desktop\code\recap-chrome\node_modules\log4js\node_modules\ms\index.js121436361000000000 0
-88C:\Users\samie\Desktop\code\recap-chrome\node_modules\http-proxy\lib\http-proxy\index.js121436361000000000 0
-81C:\Users\samie\Desktop\code\recap-chrome\node_modules\moment\dist\locale\de-ch.js121436361000000000 0
-94C:\Users\samie\Desktop\code\recap-chrome\node_modules\yaml\browser\dist\resolveSeq-492ab440.js121436361000000000 0
 79C:\Users\samie\Desktop\code\recap-chrome\node_modules\@parcel\codeframe\LICENSE121436361000000000 0
 77C:\Users\samie\Desktop\code\recap-chrome\node_modules\karma\node_modules\glob132849443966023920 1
+81C:\Users\samie\Desktop\code\recap-chrome\node_modules\moment\dist\locale\de-ch.js121436361000000000 0
+94C:\Users\samie\Desktop\code\recap-chrome\node_modules\yaml\browser\dist\resolveSeq-492ab440.js121436361000000000 0
+88C:\Users\samie\Desktop\code\recap-chrome\node_modules\http-proxy\lib\http-proxy\index.js121436361000000000 0
 67C:\Users\samie\Desktop\code\recap-chrome\node_modules\yaml\index.js121436361000000000 0
 71C:\Users\samie\Desktop\code\recap-chrome\node_modules\open\package.json132849563121801950 0
 65C:\Users\samie\Desktop\code\recap-chrome\node_modules\ansi-styles132849443965333267 1
@@ -1697,6 +1689,8 @@
 79C:\Users\samie\Desktop\code\recap-chrome\node_modules\node-addon-api\napi-inl.h121436361000000000 0
 88C:\Users\samie\Desktop\code\recap-chrome\node_modules\postcss-minify-font-values\LICENSE121436361000000000 0
 65C:\Users\samie\Desktop\code\recap-chrome\node_modules\detect-libc132849563123908409 1
+89C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\es\reflect\is-extensible.js121436361000000000 0
+81C:\Users\samie\Desktop\code\recap-chrome\node_modules\kuende-livestamp\bower.json130928561230000000 0
 87C:\Users\samie\Desktop\code\recap-chrome\node_modules\parcel\node_modules\chalk\license121436361000000000 0
 95C:\Users\samie\Desktop\code\recap-chrome\node_modules\caniuse-lite\data\features\ol-reversed.js121436361000000000 0
 100C:\Users\samie\Desktop\code\recap-chrome\node_modules\css-declaration-sorter\orders\alphabetical.mjs121436361000000000 0
@@ -1985,6 +1979,8 @@
 86C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\modules\es.array.some.js121436361000000000 0
 79C:\Users\samie\Desktop\code\recap-chrome\node_modules\postcss-reduce-transforms132849563121108132 1
 71C:\Users\samie\Desktop\code\recap-chrome\node_modules\lodash\fp\wrap.js121436361000000000 0
+70C:\Users\samie\Desktop\code\recap-chrome\node_modules\kuende-livestamp132850341373890945 1
+85C:\Users\samie\Desktop\code\recap-chrome\node_modules\caniuse-lite\data\regions\TM.js121436361000000000 0
 61C:\Users\samie\Desktop\code\recap-chrome\node_modules\flatted132849443968025011 1
 104C:\Users\samie\Desktop\code\recap-chrome\node_modules\es-abstract\2015\IsCompatiblePropertyDescriptor.js121436361000000000 0
 61C:\Users\samie\Desktop\code\recap-chrome\node_modules\foreach132849563123778408 1
@@ -2469,7 +2465,7 @@
 79C:\Users\samie\Desktop\code\recap-chrome\node_modules\minimalistic-crypto-utils132849563122391954 1
 73C:\Users\samie\Desktop\code\recap-chrome\node_modules\cssnano\LICENSE-MIT121436361000000000 0
 81C:\Users\samie\Desktop\code\recap-chrome\node_modules\es-abstract\2020\ToIndex.js121436361000000000 0
-55C:\Users\samie\Desktop\code\recap-chrome\dist\assets\js132850169235581571 1
+55C:\Users\samie\Desktop\code\recap-chrome\dist\assets\js132850342985564490 1
 73C:\Users\samie\Desktop\code\recap-chrome\node_modules\yaml\browser\map.js121436361000000000 0
 78C:\Users\samie\Desktop\code\recap-chrome\node_modules\jake\lib\utils\logger.js132361568290000000 0
 62C:\Users\samie\Desktop\code\recap-chrome\node_modules\minimist132849443967562037 1
@@ -3362,6 +3358,7 @@
 105C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\modules\esnext.iterator.as-indexed-pairs.js121436361000000000 0
 83C:\Users\samie\Desktop\code\recap-chrome\node_modules\stealthy-require\lib\index.js131387746280000000 0
 79C:\Users\samie\Desktop\code\recap-chrome\node_modules\yaml\browser\parse-cst.js121436361000000000 0
+76C:\Users\samie\Desktop\code\recap-chrome\node_modules\yaml\browser\scalar.js121436361000000000 0
 79C:\Users\samie\Desktop\code\recap-chrome\node_modules\jquery\src\var\rcssNum.js121436361000000000 0
 74C:\Users\samie\Desktop\code\recap-chrome\node_modules\request\package.json132849563118955554 0
 92C:\Users\samie\Desktop\code\recap-chrome\node_modules\socket.io\client-dist\socket.io.js.map121436361000000000 0
@@ -4848,6 +4845,12 @@
 89C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\actual\error\constructor.js121436361000000000 0
 81C:\Users\samie\Desktop\code\recap-chrome\node_modules\moment\dist\locale\ug-cn.js121436361000000000 0
 82C:\Users\samie\Desktop\code\recap-chrome\node_modules\to-fast-properties\readme.md131414903720000000 0
+78C:\Users\samie\Desktop\code\recap-chrome\node_modules\dom-serialize\History.md130912202480000000 0
+61C:\Users\samie\Desktop\code\recap-chrome\node_modules\tmp\lib132849443946531935 1
+87C:\Users\samie\Desktop\code\recap-chrome\node_modules\highlight.js\lib\languages\cal.js121436361000000000 0
+62C:\Users\samie\Desktop\code\recap-chrome\node_modules\pn\fs.js131594838820000000 0
+90C:\Users\samie\Desktop\code\recap-chrome\node_modules\highlight.js\lib\languages\stylus.js121436361000000000 0
+122C:\Users\samie\Desktop\code\recap-chrome\node_modules\hash-base\node_modules\readable-stream\lib\internal\streams\state.js121436361000000000 0
 65C:\Users\samie\Desktop\code\recap-chrome\node_modules\tmp\LICENSE121436361000000000 0
 77C:\Users\samie\Desktop\code\recap-chrome\node_modules\eslint-visitor-keys\lib132849443954569026 1
 87C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\es\typed-array\reverse.js121436361000000000 0
@@ -5058,7 +5061,7 @@
 73C:\Users\samie\Desktop\code\recap-chrome\node_modules\terser\bin\uglifyjs121436361000000000 0
 74C:\Users\samie\Desktop\code\recap-chrome\node_modules\eslint-scope\LICENSE121436361000000000 0
 78C:\Users\samie\Desktop\code\recap-chrome\node_modules\es-abstract\2018\GetV.js121436361000000000 0
-58C:\Users\samie\Desktop\code\recap-chrome\dist\options.html132850169235631552 0
+58C:\Users\samie\Desktop\code\recap-chrome\dist\options.html132850342985452337 0
 71C:\Users\samie\Desktop\code\recap-chrome\node_modules\minimatch\LICENSE130764730660000000 0
 86C:\Users\samie\Desktop\code\recap-chrome\node_modules\public-encrypt\test\rsa.pass.pub121436361000000000 0
 74C:\Users\samie\Desktop\code\recap-chrome\node_modules\term-size\index.d.ts121436361000000000 0
@@ -5207,6 +5210,7 @@
 85C:\Users\samie\Desktop\code\recap-chrome\node_modules\postcss-modules-scope\README.md130898012800000000 0
 99C:\Users\samie\Desktop\code\recap-chrome\node_modules\eslint\node_modules\semver\functions\rsort.js121436361000000000 0
 76C:\Users\samie\Desktop\code\recap-chrome\node_modules\prelude-ls\lib\Func.js121436361000000000 0
+80C:\Users\samie\Desktop\code\recap-chrome\node_modules\kuende-livestamp\README.md130928561230000000 0
 82C:\Users\samie\Desktop\code\recap-chrome\node_modules\supports-hyperlinks\index.js121436361000000000 0
 74C:\Users\samie\Desktop\code\recap-chrome\node_modules\rfdc\index.test-d.ts121436361000000000 0
 81C:\Users\samie\Desktop\code\recap-chrome\node_modules\supports-hyperlinks\license121436361000000000 0
@@ -5249,6 +5253,7 @@
 72C:\Users\samie\Desktop\code\recap-chrome\node_modules\aws-sign2\index.js131364977210000000 0
 100C:\Users\samie\Desktop\code\recap-chrome\node_modules\caniuse-lite\data\features\addeventlistener.js121436361000000000 0
 81C:\Users\samie\Desktop\code\recap-chrome\node_modules\is-typed-array\CHANGELOG.md121436361000000000 0
+83C:\Users\samie\Desktop\code\recap-chrome\node_modules\kuende-livestamp\livestamp.js130928561230000000 0
 77C:\Users\samie\Desktop\code\recap-chrome\node_modules\stylehacks\CHANGELOG.md121436361000000000 0
 68C:\Users\samie\Desktop\code\recap-chrome\node_modules\socket.io\dist132849443951146442 1
 81C:\Users\samie\Desktop\code\recap-chrome\node_modules\is-typed-array\package.json132849563118945721 0
@@ -5843,8 +5848,8 @@
 98C:\Users\samie\Desktop\code\recap-chrome\node_modules\@parcel\transformer-html\node_modules\semver132849563117723889 1
 80C:\Users\samie\Desktop\code\recap-chrome\node_modules\socket.io-parser\Readme.md121436361000000000 0
 76C:\Users\samie\Desktop\code\recap-chrome\node_modules\html-escaper\README.md121436361000000000 0
-89C:\Users\samie\Desktop\code\recap-chrome\node_modules\socket.io-parser\node_modules\debug132849443967039922 1
 86C:\Users\samie\Desktop\code\recap-chrome\node_modules\http-proxy\lib\http-proxy\passes132849443952667050 1
+89C:\Users\samie\Desktop\code\recap-chrome\node_modules\socket.io-parser\node_modules\debug132849443967039922 1
 99C:\Users\samie\Desktop\code\recap-chrome\node_modules\socket.io-parser\node_modules\ms\package.json132849443966953922 0
 96C:\Users\samie\Desktop\code\recap-chrome\node_modules\socket.io-parser\node_modules\ms\readme.md121436361000000000 0
 102C:\Users\samie\Desktop\code\recap-chrome\node_modules\socket.io-parser\node_modules\debug\package.json132849443966953922 0
@@ -8976,9 +8981,9 @@
 85C:\Users\samie\Desktop\code\recap-chrome\node_modules\elliptic\lib\elliptic\ec\key.js121436361000000000 0
 84C:\Users\samie\Desktop\code\recap-chrome\node_modules\eslint\lib\shared\ast-utils.js121436361000000000 0
 73C:\Users\samie\Desktop\code\recap-chrome\node_modules\moment\locale\sv.js121436361000000000 0
+87C:\Users\samie\Desktop\code\recap-chrome\node_modules\bootstrap\scss\mixins\_alert.scss121436361000000000 0
 73C:\Users\samie\Desktop\code\recap-chrome\node_modules\moment\locale\sw.js121436361000000000 0
 85C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\stable\regexp\sticky.js121436361000000000 0
-87C:\Users\samie\Desktop\code\recap-chrome\node_modules\bootstrap\scss\mixins\_alert.scss121436361000000000 0
 101C:\Users\samie\Desktop\code\recap-chrome\node_modules\htmlparser2\node_modules\entities\lib\decode.js121436361000000000 0
 91C:\Users\samie\Desktop\code\recap-chrome\node_modules\@parcel\transformer-html\node_modules132849563125485819 1
 88C:\Users\samie\Desktop\code\recap-chrome\node_modules\iconv-lite\encodings\dbcs-codec.js131794416590000000 0
@@ -9368,7 +9373,7 @@
 88C:\Users\samie\Desktop\code\recap-chrome\node_modules\karma-chrome-launcher\gruntfile.js132074216080000000 0
 73C:\Users\samie\Desktop\code\recap-chrome\node_modules\lru-cache\README.md121436361000000000 0
 66C:\Users\samie\Desktop\code\recap-chrome\node_modules\lowlight\lib132849563074876342 1
-68C:\Users\samie\Desktop\code\recap-chrome\dist\assets\js\FileSaver.js132850169235561519 0
+68C:\Users\samie\Desktop\code\recap-chrome\dist\assets\js\FileSaver.js132850342985541120 0
 75C:\Users\samie\Desktop\code\recap-chrome\node_modules\ansi-regex\index.d.ts121436361000000000 0
 75C:\Users\samie\Desktop\code\recap-chrome\node_modules\lowlight\package.json132849563122411952 0
 90C:\Users\samie\Desktop\code\recap-chrome\node_modules\istanbul-lib-instrument\package.json132849443966443910 0
@@ -9432,9 +9437,6 @@
 84C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\stable\string\match.js121436361000000000 0
 92C:\Users\samie\Desktop\code\recap-chrome\node_modules\log-symbols\node_modules\color-convert132849563122549057 1
 93C:\Users\samie\Desktop\code\recap-chrome\node_modules\log-symbols\node_modules\supports-color132849563122549057 1
-102C:\Users\samie\Desktop\code\recap-chrome\node_modules\http-proxy\lib\http-proxy\passes\web-incoming.js121436361000000000 0
-86C:\Users\samie\Desktop\code\recap-chrome\node_modules\highlight.js\styles\sunburst.css121436361000000000 0
-78C:\Users\samie\Desktop\code\recap-chrome\node_modules\doctrine\lib\doctrine.js121436361000000000 0
 106C:\Users\samie\Desktop\code\recap-chrome\node_modules\@parcel\codeframe\node_modules\chalk\source\index.js121436361000000000 0
 106C:\Users\samie\Desktop\code\recap-chrome\node_modules\log-symbols\node_modules\supports-color\package.json132849563122439059 0
 78C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\es\math\hypot.js121436361000000000 0
@@ -9509,7 +9511,7 @@
 66C:\Users\samie\Desktop\code\recap-chrome\node_modules\lodash\at.js121436361000000000 0
 91C:\Users\samie\Desktop\code\recap-chrome\node_modules\es-abstract\2020\BigInt\bitwiseAND.js121436361000000000 0
 71C:\Users\samie\Desktop\code\recap-chrome\node_modules\lodash\attempt.js121436361000000000 0
-68C:\Users\samie\Desktop\code\recap-chrome\dist\autoreload.5214095b.js132850169234669130 0
+68C:\Users\samie\Desktop\code\recap-chrome\dist\autoreload.5214095b.js132850342985547327 0
 70C:\Users\samie\Desktop\code\recap-chrome\node_modules\lodash\before.js121436361000000000 0
 100C:\Users\samie\Desktop\code\recap-chrome\node_modules\@parcel\package-manager\src\JSONParseStream.js121436361000000000 0
 68C:\Users\samie\Desktop\code\recap-chrome\node_modules\lodash\bind.js121436361000000000 0
@@ -10866,6 +10868,16 @@
 95C:\Users\samie\Desktop\code\recap-chrome\node_modules\eslint\lib\rules\array-bracket-newline.js121436361000000000 0
 71C:\Users\samie\Desktop\code\recap-chrome\node_modules\levn\lib\index.js121436361000000000 0
 78C:\Users\samie\Desktop\code\recap-chrome\node_modules\levn\lib\parse-string.js121436361000000000 0
+94C:\Users\samie\Desktop\code\recap-chrome\node_modules\eslint\lib\rules\object-curly-spacing.js121436361000000000 0
+83C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\es\string\trim-end.js121436361000000000 0
+85C:\Users\samie\Desktop\code\recap-chrome\node_modules\kuende-livestamp\component.json130928561230000000 0
+91C:\Users\samie\Desktop\code\recap-chrome\node_modules\flat-cache\node_modules\flatted\es.js121436361000000000 0
+85C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\features\array\every.js121436361000000000 0
+59C:\Users\samie\Desktop\code\recap-chrome\dist\background.js132850342986676860 0
+78C:\Users\samie\Desktop\code\recap-chrome\node_modules\kuende-livestamp\LICENSE130928561230000000 0
+89C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\es\number\to-exponential.js121436361000000000 0
+83C:\Users\samie\Desktop\code\recap-chrome\node_modules\kuende-livestamp\package.json132850341373880880 0
+87C:\Users\samie\Desktop\code\recap-chrome\node_modules\highlight.js\lib\languages\dos.js121436361000000000 0
 94C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\internals\array-last-index-of.js121436361000000000 0
 90C:\Users\samie\Desktop\code\recap-chrome\node_modules\karma-jquery\jquery\jquery-1.10.2.js121436361000000000 0
 89C:\Users\samie\Desktop\code\recap-chrome\node_modules\karma-jquery\jquery\jquery-1.7.2.js121436361000000000 0
@@ -11247,7 +11259,6 @@
 106C:\Users\samie\Desktop\code\recap-chrome\node_modules\jsdom\lib\jsdom\living\nodes\HTMLDataElement-impl.js121436361000000000 0
 89C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\actual\instance\group-by.js121436361000000000 0
 104C:\Users\samie\Desktop\code\recap-chrome\node_modules\jsdom\lib\jsdom\living\domparsing\serialization.js121436361000000000 0
-100C:\Users\samie\Desktop\code\recap-chrome\node_modules\bootstrap\scss\mixins\_background-variant.scss121436361000000000 0
 111C:\Users\samie\Desktop\code\recap-chrome\node_modules\jsdom\lib\jsdom\living\nodes\HTMLDirectoryElement-impl.js121436361000000000 0
 96C:\Users\samie\Desktop\code\recap-chrome\node_modules\eslint\node_modules\color-convert\index.js121436361000000000 0
 105C:\Users\samie\Desktop\code\recap-chrome\node_modules\jsdom\lib\jsdom\living\nodes\HTMLDivElement-impl.js121436361000000000 0
@@ -11352,7 +11363,7 @@
 100C:\Users\samie\Desktop\code\recap-chrome\node_modules\jsdom\lib\jsdom\living\generated\CloseEvent.js121436361000000000 0
 107C:\Users\samie\Desktop\code\recap-chrome\node_modules\jsdom\lib\jsdom\living\generated\HTMLButtonElement.js121436361000000000 0
 106C:\Users\samie\Desktop\code\recap-chrome\node_modules\jsdom\lib\jsdom\living\generated\DocumentFragment.js121436361000000000 0
-66C:\Users\samie\Desktop\code\recap-chrome\dist\assets\css\style.css132850169235495478 0
+66C:\Users\samie\Desktop\code\recap-chrome\dist\assets\css\style.css132850342985312134 0
 105C:\Users\samie\Desktop\code\recap-chrome\node_modules\caniuse-lite\data\features\credential-management.js121436361000000000 0
 107C:\Users\samie\Desktop\code\recap-chrome\node_modules\jsdom\lib\jsdom\living\generated\DOMImplementation.js121436361000000000 0
 83C:\Users\samie\Desktop\code\recap-chrome\node_modules\@parcel\source-map\index.d.ts121436361000000000 0
@@ -12208,6 +12219,9 @@
 82C:\Users\samie\Desktop\code\recap-chrome\node_modules\http-proxy\lib\http-proxy.js121436361000000000 0
 106C:\Users\samie\Desktop\code\recap-chrome\node_modules\@parcel\transformer-posthtml\node_modules\semver\bin132849563061798940 1
 89C:\Users\samie\Desktop\code\recap-chrome\node_modules\http-proxy\lib\http-proxy\common.js121436361000000000 0
+102C:\Users\samie\Desktop\code\recap-chrome\node_modules\http-proxy\lib\http-proxy\passes\web-incoming.js121436361000000000 0
+86C:\Users\samie\Desktop\code\recap-chrome\node_modules\highlight.js\styles\sunburst.css121436361000000000 0
+78C:\Users\samie\Desktop\code\recap-chrome\node_modules\doctrine\lib\doctrine.js121436361000000000 0
 102C:\Users\samie\Desktop\code\recap-chrome\node_modules\http-proxy\lib\http-proxy\passes\web-outgoing.js121436361000000000 0
 80C:\Users\samie\Desktop\code\recap-chrome\node_modules\ajv\lib\dot\multipleOf.jst121436361000000000 0
 76C:\Users\samie\Desktop\code\recap-chrome\node_modules\http-errors\HISTORY.md121436361000000000 0
@@ -12399,7 +12413,7 @@
 99C:\Users\samie\Desktop\code\recap-chrome\node_modules\@babel\generator\lib\generators\statements.js121012626000000000 0
 88C:\Users\samie\Desktop\code\recap-chrome\node_modules\highlight.js\styles\foundation.css121436361000000000 0
 73C:\Users\samie\Desktop\code\recap-chrome\node_modules\fs-extra\lib\mkdirs132849443951468151 1
-65C:\Users\samie\Desktop\code\recap-chrome\dist\install_notifier.js132850169235434263 0
+65C:\Users\samie\Desktop\code\recap-chrome\dist\install_notifier.js132850342986108836 0
 89C:\Users\samie\Desktop\code\recap-chrome\node_modules\highlight.js\styles\github-gist.css121436361000000000 0
 84C:\Users\samie\Desktop\code\recap-chrome\node_modules\highlight.js\styles\github.css121436361000000000 0
 81C:\Users\samie\Desktop\code\recap-chrome\node_modules\highlight.js\styles\gml.css121436361000000000 0
@@ -12623,8 +12637,6 @@
 87C:\Users\samie\Desktop\code\recap-chrome\node_modules\highlight.js\lib\languages\dns.js121436361000000000 0
 93C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\internals\collection-add-all.js121436361000000000 0
 94C:\Users\samie\Desktop\code\recap-chrome\node_modules\highlight.js\lib\languages\dockerfile.js121436361000000000 0
-89C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\es\number\to-exponential.js121436361000000000 0
-87C:\Users\samie\Desktop\code\recap-chrome\node_modules\highlight.js\lib\languages\dos.js121436361000000000 0
 90C:\Users\samie\Desktop\code\recap-chrome\node_modules\highlight.js\lib\languages\elixir.js121436361000000000 0
 87C:\Users\samie\Desktop\code\recap-chrome\node_modules\highlight.js\lib\languages\elm.js121436361000000000 0
 78C:\Users\samie\Desktop\code\recap-chrome\node_modules\has-tostringtag\index.js121436361000000000 0
@@ -12647,7 +12659,7 @@
 85C:\Users\samie\Desktop\code\recap-chrome\node_modules\generic-names\generic-names.iml121436361000000000 0
 88C:\Users\samie\Desktop\code\recap-chrome\node_modules\highlight.js\lib\languages\http.js121436361000000000 0
 86C:\Users\samie\Desktop\code\recap-chrome\node_modules\highlight.js\lib\languages\hy.js121436361000000000 0
-65C:\Users\samie\Desktop\code\recap-chrome\dist\content_delegate.js132850169235561519 0
+65C:\Users\samie\Desktop\code\recap-chrome\dist\content_delegate.js132850342985604362 0
 69C:\Users\samie\Desktop\code\recap-chrome\node_modules\.bin\nanoid.cmd132849563126235317 0
 90C:\Users\samie\Desktop\code\recap-chrome\node_modules\highlight.js\lib\languages\irpf90.js121436361000000000 0
 88C:\Users\samie\Desktop\code\recap-chrome\node_modules\highlight.js\lib\languages\isbl.js121436361000000000 0
@@ -13189,8 +13201,6 @@
 85C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\stable\instance\keys.js121436361000000000 0
 85C:\Users\samie\Desktop\code\recap-chrome\node_modules\flat-cache\node_modules\flatted132849443968055424 1
 93C:\Users\samie\Desktop\code\recap-chrome\node_modules\flat-cache\node_modules\flatted\.github132849443954797499 1
-91C:\Users\samie\Desktop\code\recap-chrome\node_modules\flat-cache\node_modules\flatted\es.js121436361000000000 0
-85C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\features\array\every.js121436361000000000 0
 97C:\Users\samie\Desktop\code\recap-chrome\node_modules\flat-cache\node_modules\flatted\flatted.jpg121436361000000000 0
 94C:\Users\samie\Desktop\code\recap-chrome\node_modules\flat-cache\node_modules\flatted\index.js121436361000000000 0
 83C:\Users\samie\Desktop\code\recap-chrome\node_modules\eslint\lib\rules\sort-keys.js121436361000000000 0
@@ -13868,8 +13878,6 @@
 93C:\Users\samie\Desktop\code\recap-chrome\node_modules\eslint\lib\rules\no-warning-comments.js121436361000000000 0
 81C:\Users\samie\Desktop\code\recap-chrome\node_modules\eslint\lib\rules\no-with.js121436361000000000 0
 106C:\Users\samie\Desktop\code\recap-chrome\node_modules\eslint\lib\rules\nonblock-statement-body-position.js121436361000000000 0
-94C:\Users\samie\Desktop\code\recap-chrome\node_modules\eslint\lib\rules\object-curly-spacing.js121436361000000000 0
-83C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\es\string\trim-end.js121436361000000000 0
 97C:\Users\samie\Desktop\code\recap-chrome\node_modules\eslint\lib\rules\object-property-newline.js121436361000000000 0
 74C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\stage\pre.js121436361000000000 0
 90C:\Users\samie\Desktop\code\recap-chrome\node_modules\eslint\lib\rules\object-shorthand.js121436361000000000 0
@@ -14025,7 +14033,7 @@
 83C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\stable\is-iterable.js121436361000000000 0
 81C:\Users\samie\Desktop\code\recap-chrome\node_modules\es-to-primitive\test\es6.js121436361000000000 0
 93C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\features\async-iterator\take.js121436361000000000 0
-63C:\Users\samie\Desktop\code\recap-chrome\dist\toolbar_button.js132850169235434263 0
+63C:\Users\samie\Desktop\code\recap-chrome\dist\toolbar_button.js132850342986676860 0
 83C:\Users\samie\Desktop\code\recap-chrome\node_modules\es-to-primitive\test\index.js121436361000000000 0
 96C:\Users\samie\Desktop\code\recap-chrome\node_modules\es-abstract\2021\OrdinarySetPrototypeOf.js121436361000000000 0
 89C:\Users\samie\Desktop\code\recap-chrome\node_modules\es-to-primitive\.github\FUNDING.yml121436361000000000 0
@@ -15432,7 +15440,7 @@
 90C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\stable\instance\match-all.js121436361000000000 0
 94C:\Users\samie\Desktop\code\recap-chrome\node_modules\@nodelib\fs.walk\out\readers\reader.d.ts121436361000000000 0
 81C:\Users\samie\Desktop\code\recap-chrome\node_modules\css-what\lib\parse.d.ts.map121436361000000000 0
-71C:\Users\samie\Desktop\code\recap-chrome\dist\assets\images\grey-32.png132850169235515522 0
+71C:\Users\samie\Desktop\code\recap-chrome\dist\assets\images\grey-32.png132850342985485481 0
 75C:\Users\samie\Desktop\code\recap-chrome\node_modules\css-what\lib\parse.js121436361000000000 0
 81C:\Users\samie\Desktop\code\recap-chrome\node_modules\css-what\lib\stringify.d.ts121436361000000000 0
 75C:\Users\samie\Desktop\code\recap-chrome\node_modules\css-tree\CHANGELOG.md121436361000000000 0
@@ -16022,8 +16030,8 @@
 106C:\Users\samie\Desktop\code\recap-chrome\node_modules\@babel\helper-validator-identifier\lib\identifier.js121012626000000000 0
 93C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\proposals\regexp-dotall-flag.js121436361000000000 0
 94C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\proposals\regexp-named-groups.js121436361000000000 0
-99C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\proposals\relative-indexing-method.js121436361000000000 0
 99C:\Users\samie\Desktop\code\recap-chrome\node_modules\bootstrap\scss\utilities\_stretched-link.scss121436361000000000 0
+99C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\proposals\relative-indexing-method.js121436361000000000 0
 121C:\Users\samie\Desktop\code\recap-chrome\node_modules\browserify-sign\node_modules\readable-stream\experimentalWarning.js121436361000000000 0
 84C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\proposals\string-at.js121436361000000000 0
 87C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\features\instance\sort.js121436361000000000 0
@@ -16567,7 +16575,7 @@
 90C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\features\reflect\own-keys.js121436361000000000 0
 98C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\features\reflect\set-prototype-of.js121436361000000000 0
 95C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\features\reflect\to-string-tag.js121436361000000000 0
-56C:\Users\samie\Desktop\code\recap-chrome\dist\assets\css132850169235525484 1
+56C:\Users\samie\Desktop\code\recap-chrome\dist\assets\css132850342985707029 1
 85C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\features\promise\any.js121436361000000000 0
 87C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\features\promise\index.js121436361000000000 0
 90C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\features\observable\index.js121436361000000000 0
@@ -16638,7 +16646,7 @@
 96C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\features\instance\code-point-at.js121436361000000000 0
 94C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\features\instance\copy-within.js121436361000000000 0
 92C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\features\instance\ends-with.js121436361000000000 0
-78C:\Users\samie\Desktop\code\recap-chrome\dist\fontawesome-webfont.b0bee043.svg132850169235505477 0
+78C:\Users\samie\Desktop\code\recap-chrome\dist\fontawesome-webfont.b0bee043.svg132850342986746633 0
 87C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\features\instance\fill.js121436361000000000 0
 93C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\features\instance\filter-out.js121436361000000000 0
 150C:\Users\samie\Desktop\code\recap-chrome\node_modules\@parcel\node-resolver-core\test\fixture\node_modules\package-browser-alias\subfolder1\subfolder2132849563071879151 1
@@ -16836,7 +16844,6 @@
 81C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\es\reflect\apply.js121436361000000000 0
 85C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\es\reflect\construct.js121436361000000000 0
 91C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\es\reflect\delete-property.js121436361000000000 0
-89C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\es\reflect\is-extensible.js121436361000000000 0
 92C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\es\reflect\set-prototype-of.js121436361000000000 0
 82C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\es\object\entries.js121436361000000000 0
 79C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\es\reflect\set.js121436361000000000 0
@@ -17028,7 +17035,7 @@
 83C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\actual\regexp\test.js121436361000000000 0
 88C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\actual\regexp\to-string.js121436361000000000 0
 89C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\actual\reflect\construct.js121436361000000000 0
-74C:\Users\samie\Desktop\code\recap-chrome\dist\assets\images\warning-38.png132850169235161113 0
+74C:\Users\samie\Desktop\code\recap-chrome\dist\assets\images\warning-38.png132850342985676143 0
 95C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\actual\reflect\define-property.js121436361000000000 0
 95C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\actual\reflect\delete-property.js121436361000000000 0
 96C:\Users\samie\Desktop\code\recap-chrome\node_modules\core-js\actual\reflect\get-prototype-of.js121436361000000000 0
@@ -17390,7 +17397,6 @@
 85C:\Users\samie\Desktop\code\recap-chrome\node_modules\caniuse-lite\data\regions\TG.js121436361000000000 0
 85C:\Users\samie\Desktop\code\recap-chrome\node_modules\caniuse-lite\data\regions\TJ.js121436361000000000 0
 85C:\Users\samie\Desktop\code\recap-chrome\node_modules\caniuse-lite\data\regions\TK.js121436361000000000 0
-85C:\Users\samie\Desktop\code\recap-chrome\node_modules\caniuse-lite\data\regions\TM.js121436361000000000 0
 85C:\Users\samie\Desktop\code\recap-chrome\node_modules\caniuse-lite\data\regions\TN.js121436361000000000 0
 85C:\Users\samie\Desktop\code\recap-chrome\node_modules\caniuse-lite\data\regions\TT.js121436361000000000 0
 85C:\Users\samie\Desktop\code\recap-chrome\node_modules\caniuse-lite\data\regions\TW.js121436361000000000 0
@@ -17760,6 +17766,7 @@
 93C:\Users\samie\Desktop\code\recap-chrome\node_modules\bootstrap\scss\utilities\_overflow.scss121436361000000000 0
 89C:\Users\samie\Desktop\code\recap-chrome\node_modules\bootstrap\scss\utilities\_text.scss121436361000000000 0
 95C:\Users\samie\Desktop\code\recap-chrome\node_modules\bootstrap\scss\utilities\_visibility.scss121436361000000000 0
+100C:\Users\samie\Desktop\code\recap-chrome\node_modules\bootstrap\scss\mixins\_background-variant.scss121436361000000000 0
 87C:\Users\samie\Desktop\code\recap-chrome\node_modules\bootstrap\scss\mixins\_badge.scss121436361000000000 0
 95C:\Users\samie\Desktop\code\recap-chrome\node_modules\bootstrap\dist\js\bootstrap.bundle.min.js121436361000000000 0
 95C:\Users\samie\Desktop\code\recap-chrome\node_modules\bootstrap\scss\mixins\_border-radius.scss121436361000000000 0
@@ -17825,7 +17832,7 @@
 90C:\Users\samie\Desktop\code\recap-chrome\node_modules\bootstrap\dist\css\bootstrap.min.css121436361000000000 0
 71C:\Users\samie\Desktop\code\recap-chrome\node_modules\boolbase\index.js130313308750000000 0
 75C:\Users\samie\Desktop\code\recap-chrome\node_modules\boolbase\package.json132849563124417540 0
-78C:\Users\samie\Desktop\code\recap-chrome\dist\fontawesome-webfont.373e3eb0.eot132850169234588208 0
+78C:\Users\samie\Desktop\code\recap-chrome\dist\fontawesome-webfont.373e3eb0.eot132850342985421999 0
 72C:\Users\samie\Desktop\code\recap-chrome\node_modules\boolbase\README.md130369490040000000 0
 76C:\Users\samie\Desktop\code\recap-chrome\node_modules\body-parser\HISTORY.md121436361000000000 0
 69C:\Users\samie\Desktop\code\recap-chrome\node_modules\body-parser\lib132849443948196419 1
@@ -17993,7 +18000,7 @@
 89C:\Users\samie\Desktop\code\recap-chrome\node_modules\asn1.js\lib\asn1\constants\index.js121436361000000000 0
 85C:\Users\samie\Desktop\code\recap-chrome\node_modules\asn1.js\lib\asn1\base\buffer.js121436361000000000 0
 84C:\Users\samie\Desktop\code\recap-chrome\node_modules\asn1.js\lib\asn1\base\index.js121436361000000000 0
-71C:\Users\samie\Desktop\code\recap-chrome\dist\autoreload-bg.8102d44b.js132850169234669130 0
+71C:\Users\samie\Desktop\code\recap-chrome\dist\autoreload-bg.8102d44b.js132850342985547327 0
 83C:\Users\samie\Desktop\code\recap-chrome\node_modules\asn1.js\lib\asn1\base\node.js121436361000000000 0
 70C:\Users\samie\Desktop\code\recap-chrome\node_modules\asn1\Jenkinsfile121436361000000000 0
 62C:\Users\samie\Desktop\code\recap-chrome\node_modules\asn1\lib132849563081715611 1
@@ -18890,7 +18897,7 @@
 108C:\Users\samie\Desktop\code\recap-chrome\node_modules\@parcel\package-manager\node_modules\semver\bin\semver121436361000000000 0
 108C:\Users\samie\Desktop\code\recap-chrome\node_modules\@parcel\package-manager\node_modules\path-key\index.js131193607240000000 0
 107C:\Users\samie\Desktop\code\recap-chrome\node_modules\@parcel\package-manager\node_modules\path-key\license130412725910000000 0
-71C:\Users\samie\Desktop\code\recap-chrome\dist\assets\images\icon-19.png132850169235515522 0
+71C:\Users\samie\Desktop\code\recap-chrome\dist\assets\images\icon-19.png132850342985485481 0
 91C:\Users\samie\Desktop\code\recap-chrome\node_modules\@nodelib\fs.stat\out\types\index.d.ts121436361000000000 0
 77C:\Users\samie\Desktop\code\recap-chrome\node_modules\@parcel\diagnostic\test132849563073333674 1
 112C:\Users\samie\Desktop\code\recap-chrome\node_modules\@parcel\package-manager\node_modules\path-key\package.json132849563117543898 0
@@ -19319,7 +19326,7 @@
 106C:\Users\samie\Desktop\code\recap-chrome\node_modules\@babel\types\lib\retrievers\getBindingIdentifiers.js121012626000000000 0
 99C:\Users\samie\Desktop\code\recap-chrome\node_modules\@parcel\babel-ast-utils\test\fixtures\call.js121436361000000000 0
 102C:\Users\samie\Desktop\code\recap-chrome\node_modules\@parcel\babel-ast-utils\test\fixtures\control.js121436361000000000 0
-79C:\Users\samie\Desktop\code\recap-chrome\dist\fontawesome-webfont.c020c5c5.woff132850169234588208 0
+79C:\Users\samie\Desktop\code\recap-chrome\dist\fontawesome-webfont.c020c5c5.woff132850342985258091 0
 100C:\Users\samie\Desktop\code\recap-chrome\node_modules\@parcel\babel-ast-utils\test\fixtures\error.js121436361000000000 0
 107C:\Users\samie\Desktop\code\recap-chrome\node_modules\@parcel\babel-ast-utils\test\fixtures\export-class.js121436361000000000 0
 103C:\Users\samie\Desktop\code\recap-chrome\node_modules\@parcel\babel-ast-utils\test\fixtures\function.js121436361000000000 0
@@ -19491,7 +19498,7 @@
 104C:\Users\samie\Desktop\code\recap-chrome\node_modules\@babel\types\lib\modifications\removeProperties.js121012626000000000 0
 108C:\Users\samie\Desktop\code\recap-chrome\node_modules\@babel\types\lib\modifications\removePropertiesDeep.js121012626000000000 0
 95C:\Users\samie\Desktop\code\recap-chrome\node_modules\@babel\types\lib\modifications\typescript132849443955350220 1
-59C:\Users\samie\Desktop\code\recap-chrome\dist\manifest.json132850172332468335 0
+59C:\Users\samie\Desktop\code\recap-chrome\dist\manifest.json132850342985258091 0
 119C:\Users\samie\Desktop\code\recap-chrome\node_modules\@babel\types\lib\modifications\typescript\removeTypeDuplicates.js121012626000000000 0
 98C:\Users\samie\Desktop\code\recap-chrome\node_modules\@babel\types\lib\definitions\experimental.js121012626000000000 0
 89C:\Users\samie\Desktop\code\recap-chrome\node_modules\@babel\types\lib\definitions\jsx.js121012626000000000 0
@@ -19532,7 +19539,7 @@
 88C:\Users\samie\Desktop\code\recap-chrome\node_modules\@babel\traverse\scripts\generators132849443954579025 1
 90C:\Users\samie\Desktop\code\recap-chrome\node_modules\@babel\traverse\scripts\package.json121012626000000000 0
 105C:\Users\samie\Desktop\code\recap-chrome\node_modules\@babel\traverse\scripts\generators\virtual-types.js121012626000000000 0
-57C:\Users\samie\Desktop\code\recap-chrome\dist\notifier.js132850169235561519 0
+57C:\Users\samie\Desktop\code\recap-chrome\dist\notifier.js132850342985604362 0
 94C:\Users\samie\Desktop\code\recap-chrome\node_modules\@babel\traverse\node_modules\ms\index.js121436361000000000 0
 95C:\Users\samie\Desktop\code\recap-chrome\node_modules\@babel\traverse\node_modules\ms\readme.md121436361000000000 0
 101C:\Users\samie\Desktop\code\recap-chrome\node_modules\@babel\traverse\node_modules\debug\package.json132849443965293273 0
@@ -19810,29 +19817,28 @@
 74C:\Users\samie\Desktop\code\recap-chrome\node_modules\.bin\vendor-copy.cmd132849443968842618 0
 74C:\Users\samie\Desktop\code\recap-chrome\node_modules\.bin\vendor-copy.ps1132849443968842618 0
 68C:\Users\samie\Desktop\code\recap-chrome\node_modules\.bin\which.cmd132849443968732615 0
-59C:\Users\samie\Desktop\code\recap-chrome\dist\background.js132850169235434263 0
-56C:\Users\samie\Desktop\code\recap-chrome\dist\content.js132850169235434263 0
-78C:\Users\samie\Desktop\code\recap-chrome\dist\fontawesome-webfont.4796a7b0.eot132850169234588208 0
-80C:\Users\samie\Desktop\code\recap-chrome\dist\fontawesome-webfont.85437441.woff2132850169234588208 0
-78C:\Users\samie\Desktop\code\recap-chrome\dist\fontawesome-webfont.fa911775.ttf132850169234588208 0
-65C:\Users\samie\Desktop\code\recap-chrome\dist\options.4b736db6.js132850169235561519 0
-66C:\Users\samie\Desktop\code\recap-chrome\dist\options.f38cab3a.css132850169235243413 0
-54C:\Users\samie\Desktop\code\recap-chrome\dist\pacer.js132850169234669130 0
-54C:\Users\samie\Desktop\code\recap-chrome\dist\recap.js132850169235434263 0
-54C:\Users\samie\Desktop\code\recap-chrome\dist\utils.js132850339117450333 0
+56C:\Users\samie\Desktop\code\recap-chrome\dist\content.js132850342986676860 0
+78C:\Users\samie\Desktop\code\recap-chrome\dist\fontawesome-webfont.4796a7b0.eot132850342985258091 0
+80C:\Users\samie\Desktop\code\recap-chrome\dist\fontawesome-webfont.85437441.woff2132850342985258091 0
+78C:\Users\samie\Desktop\code\recap-chrome\dist\fontawesome-webfont.fa911775.ttf132850342985432337 0
+65C:\Users\samie\Desktop\code\recap-chrome\dist\options.4b736db6.js132850342985604362 0
+66C:\Users\samie\Desktop\code\recap-chrome\dist\options.f38cab3a.css132850342986656868 0
+54C:\Users\samie\Desktop\code\recap-chrome\dist\pacer.js132850342985547327 0
+54C:\Users\samie\Desktop\code\recap-chrome\dist\recap.js132850342986108836 0
+54C:\Users\samie\Desktop\code\recap-chrome\dist\utils.js132850342986108836 0
 68C:\Users\samie\Desktop\code\recap-chrome\dist\assets\js\livestamp.js132850169234669130 0
-75C:\Users\samie\Desktop\code\recap-chrome\dist\assets\images\disabled-19.png132850169235515522 0
-75C:\Users\samie\Desktop\code\recap-chrome\dist\assets\images\disabled-38.png132850169235212528 0
-71C:\Users\samie\Desktop\code\recap-chrome\dist\assets\images\grey-16.png132850169234659126 0
-71C:\Users\samie\Desktop\code\recap-chrome\dist\assets\images\grey-19.png132850169235156099 0
-71C:\Users\samie\Desktop\code\recap-chrome\dist\assets\images\grey-38.png132850169235212528 0
-72C:\Users\samie\Desktop\code\recap-chrome\dist\assets\images\icon-128.png132850169234669130 0
-71C:\Users\samie\Desktop\code\recap-chrome\dist\assets\images\icon-16.png132850169235161113 0
-71C:\Users\samie\Desktop\code\recap-chrome\dist\assets\images\icon-32.png132850169235212528 0
-71C:\Users\samie\Desktop\code\recap-chrome\dist\assets\images\icon-38.png132850169234669130 0
-71C:\Users\samie\Desktop\code\recap-chrome\dist\assets\images\icon-48.png132850169235161113 0
-74C:\Users\samie\Desktop\code\recap-chrome\dist\assets\images\warning-16.png132850169235515522 0
-74C:\Users\samie\Desktop\code\recap-chrome\dist\assets\images\warning-19.png132850169235212528 0
-74C:\Users\samie\Desktop\code\recap-chrome\dist\assets\images\warning-32.png132850169234669130 0
-73C:\Users\samie\Desktop\code\recap-chrome\dist\assets\css\font-awesome.css132850169235212528 0
+75C:\Users\samie\Desktop\code\recap-chrome\dist\assets\images\disabled-19.png132850342985485481 0
+75C:\Users\samie\Desktop\code\recap-chrome\dist\assets\images\disabled-38.png132850342986646860 0
+71C:\Users\samie\Desktop\code\recap-chrome\dist\assets\images\grey-16.png132850342985402004 0
+71C:\Users\samie\Desktop\code\recap-chrome\dist\assets\images\grey-19.png132850342985676143 0
+71C:\Users\samie\Desktop\code\recap-chrome\dist\assets\images\grey-38.png132850342986646860 0
+72C:\Users\samie\Desktop\code\recap-chrome\dist\assets\images\icon-128.png132850342985402004 0
+71C:\Users\samie\Desktop\code\recap-chrome\dist\assets\images\icon-16.png132850342985676143 0
+71C:\Users\samie\Desktop\code\recap-chrome\dist\assets\images\icon-32.png132850342986646860 0
+71C:\Users\samie\Desktop\code\recap-chrome\dist\assets\images\icon-38.png132850342985402004 0
+71C:\Users\samie\Desktop\code\recap-chrome\dist\assets\images\icon-48.png132850342985676143 0
+74C:\Users\samie\Desktop\code\recap-chrome\dist\assets\images\warning-16.png132850342985485481 0
+74C:\Users\samie\Desktop\code\recap-chrome\dist\assets\images\warning-19.png132850342986646860 0
+74C:\Users\samie\Desktop\code\recap-chrome\dist\assets\images\warning-32.png132850342985421999 0
+73C:\Users\samie\Desktop\code\recap-chrome\dist\assets\css\font-awesome.css132850342985676143 0
 66C:\Users\samie\Desktop\code\recap-chrome\.github\issue_template.md132837154544975573 0
