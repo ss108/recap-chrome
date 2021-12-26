@@ -29,7 +29,6 @@
   ],
   "background": {
     "scripts": [
-      "assets/js/jquery.js",
       "utils.js",
       "notifier.js",
       "toolbar_button.js",
@@ -46,7 +45,6 @@
       "assets/css/font-awesome.css"
     ],
     "js": [
-      "assets/js/jquery.js",
       "assets/js/FileSaver.js",
       "assets/js/moment.js",
       "assets/js/livestamp.js",
