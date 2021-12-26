@@ -54,7 +54,6 @@
       ],
       "js": [
         "/assets/js/FileSaver.js",
-        "/assets/js/moment.js",
         "/assets/js/livestamp.js",
         "/utils.js",
         "/notifier.js",
