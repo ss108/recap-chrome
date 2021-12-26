@@ -50,7 +50,6 @@
       "assets/js/FileSaver.js",
       "assets/js/moment.js",
       "assets/js/livestamp.js",
-      "assets/js/bootstrap.bundle.js",
       "utils.js",
       "notifier.js",
       "toolbar_button.js",
