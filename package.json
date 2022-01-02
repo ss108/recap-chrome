@@ -41,6 +41,8 @@
   },
   "devDependencies": {
     "@parcel/config-webextension": "^2.0.1",
+    "@parcel/transformer-typescript-tsc": "^2.0.1",
+    "@types/chrome": "0.0.174",
     "eslint": "^8.4.0",
     "jasmine": "^3.10.0",
     "karma": "^6.3.2",

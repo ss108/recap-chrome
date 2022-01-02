@@ -23,6 +23,10 @@ Joining as a Developer
 ======================
 If you wish to contribute to our efforts to drain PACER, please get in touch using the [contact form on Free Law Project's website][contact] or simply get to work on an issue that interests you. It's usually better to get in touch before you begin work though.
 
+Modernization notes [Remove prior to merger into main/master]: 
+
+1. Devs must have TypeScript installed globally. 
+
 
 Code Standards
 --------------

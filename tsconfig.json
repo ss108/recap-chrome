@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+        "isolatedModules": true,
+        "experimentalDecorators": true,
+        "types": [
+            "chrome"
+        ]
+    }
+}

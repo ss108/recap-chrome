@@ -34,7 +34,7 @@
       "toolbarButton.js",
       "pacer.js",
       "recap.js",
-      "background.js"
+      "background.ts"
     ]
   },
   "content_scripts": [{
