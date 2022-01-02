@@ -31,7 +31,7 @@
     "scripts": [
       "utils.js",
       "notifier.js",
-      "toolbar_button.js",
+      "toolbarButton.js",
       "pacer.js",
       "recap.js",
       "background.js"
@@ -48,17 +48,17 @@
       "assets/js/FileSaver.js",
       "utils.js",
       "notifier.js",
-      "toolbar_button.js",
+      "toolbarButton.js",
       "pacer.js",
       "recap.js",
-      "content_delegate.js",
+      "contentDelegate.js",
       "content.js"
     ],
     "run_at": "document_end"
   }, {
     "matches": ["https://www.courtlistener.com/*"],
     "js": [
-      "install_notifier.js"
+      "installNotifier.js"
     ],
     "run_at": "document_idle"
   }],

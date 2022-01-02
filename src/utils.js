@@ -45,7 +45,7 @@ import $ from "jquery";
 
 // Makes a singleton instance in a background page callable from a content
 // script, using Chrome's message system.  See above for details.
-function exportInstance(constructor) {
+export function exportInstance(constructor) {
   let name = constructor.name;  // function name identifies the service
   let instance = new constructor();
   chrome.runtime.onMessage.addListener(function (request, sender, cb) {
@@ -60,7 +60,7 @@ function exportInstance(constructor) {
 
 // Gets an object that can be used in a content script to invoke methods on an
 // instance exported from the background page.  See above for details.
-function importInstance(constructor) {
+export function importInstance(constructor) {
   var name = constructor.name;
   var sender = {};
   for (var verb in new constructor()) {
@@ -80,7 +80,7 @@ function importInstance(constructor) {
   return sender;
 }
 
-function getHostname(url) {
+export function getHostname(url) {
   // Extract the hostname from a URL.
   return $('<a>').prop('href', url).prop('hostname');
 }
@@ -89,7 +89,7 @@ function getHostname(url) {
 // type and response (interpreted according to responseType).  See XHR2 spec
 // for details on responseType and response.  Uses GET if postData is null or
 // POST otherwise.  postData can be any type accepted by XMLHttpRequest.send().
-function httpRequest(url, postData, callback) {
+export function httpRequest(url, postData, callback) {
   let type = null,
     result = null,
     xhr;
@@ -158,21 +158,29 @@ const destroyTabStorage = key => {
   })
 }
 // initialize the store with an empty object
-const getTabIdForContentScript = () => new Promise(resolve => {
-  chrome.runtime.sendMessage(
-    { message: 'requestTabId' },
-    (msg) => resolve(msg)
-  );
-});
+// const getTabIdForContentScript = () => new Promise(resolve => {
+//   chrome.runtime.sendMessage(
+//     { message: 'requestTabId' },
+//     (msg) => resolve(msg)
+//   );
+// });
+
+export function getTabIdForContentScript() {
+  let content = { message: 'requestTabId' };
+
+  return new Promise(resolve => {
+    chrome.runtime.sendMessage(content, (msg) => { resolve(msg) });
+  });
+}
 
 // object takes shape of { [tabId]: { ...data } }
-const updateTabStorage = async object => {
+export async function updateTabStorage(object) {
   const tabId = Object.keys(object)[0];
   const updatedVars = object[tabId];
   const store = await getItemsFromStorage(tabId);
   // keep store immutable
   saveItemToStorage({ [tabId]: { ...store, ...updatedVars } });
-};
+}
 
 // Default settings for any jquery $.ajax call.
 $.ajaxSetup({
@@ -194,14 +202,14 @@ $.ajaxSetup({
   }
 });
 
-const blobToDataURL = (blob) => {
-  return new Promise((resolve, reject) => {
+export function blobToDataURL(blob) {
+    return new Promise((resolve, reject) => {
     let reader = new FileReader();
     reader.onerror = reject;
     reader.onload = (e) => resolve(reader.result);
     reader.readAsDataURL(blob);
   });
-};
+}
 
 // Debug logging function. First argument is a debug level, remainder are variable args
 // for console.log(). If the global debug level matches the first arg, calls console.log().

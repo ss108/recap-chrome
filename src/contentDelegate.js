@@ -14,6 +14,8 @@
 //  onDownloadAllSubmit
 //  handleZipFilePageView
 
+import { importInstance } from "./utils";
+
 let ContentDelegate = function (tabId, url, path, court, pacer_case_id, pacer_doc_id,
   links) {
   this.tabId = tabId;
@@ -864,3 +866,5 @@ ContentDelegate.prototype.handleClaimsPageView = function () {
     }
   );
 };
+
+export default ContentDelegate;

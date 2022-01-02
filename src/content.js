@@ -1,4 +1,7 @@
 // Content script to run when DOM finishes loading (run_at: "document_end").
+import PACER from "./pacer";
+import { getTabIdForContentScript } from "./utils";
+import ContentDelegate from "./contentDelegate";
 
 let url = window.location.href;
 let court = PACER.getCourtFromUrl(url);
@@ -18,7 +21,7 @@ let links = document.body.getElementsByTagName('a');
 getTabIdForContentScript().then(msg => {
 
   // destructure the msg object to get the tabId
-  const { tabId } = msg;
+  const { tabId } = msg || {};
 
   let content_delegate = new ContentDelegate(tabId,
     url, path, court, pacer_case_id, pacer_doc_id, links);
