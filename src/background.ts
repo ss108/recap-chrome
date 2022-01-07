@@ -1,4 +1,8 @@
-import { exportInstance } from "./utils";
+import $ from "jquery";
+
+import { exportInstance, getTabById } from "./utils";
+import Notifier from "./notifier"
+import Recap from "./recap";
 
 // Make services callable from content scripts.
 exportInstance(Notifier);

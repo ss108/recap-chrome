@@ -1,5 +1,5 @@
 // Public impure functions.  (See utils.js for details on defining services.)
-function Notifier() {
+export default function Notifier() {
   const showNotification = function (title, message, cb) {
     console.info("RECAP: Running showNotification function. Expect a notification.");
     const notificationOptions = {
