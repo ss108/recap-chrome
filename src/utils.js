@@ -131,8 +131,8 @@ const N87GC2 = "45c7946dd8400ad62662565cf79da3c081d9b0e5"
 
 // helper functions for chrome local storage
 
-async function getItemsFromStorage(key: number | object) {
-    let keyAsString: string = key.toString();
+async function getItemsFromStorage(key) {
+    let keyAsString = key.toString();
     let res = await chrome.storage.local.get(keyAsString);
     return res[keyAsString];
 }

@@ -8,9 +8,9 @@ import Recap from "./recap";
 exportInstance(Notifier);
 exportInstance(Recap);
 
-console.log("now I import and hot reload");
+// console.log("now I import and hot reload");
 
-function setDefaultOptions(details) {
+export function setDefaultOptions(details) {
   // Set options to their default values.
   console.debug('RECAP: Setting default options after install/upgrade.');
   chrome.storage.local.get('options', function (items) {
