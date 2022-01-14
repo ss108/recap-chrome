@@ -45,7 +45,6 @@
       "assets/css/font-awesome.css"
     ],
     "js": [
-      "assets/js/FileSaver.js",
       "utils.js",
       "notifier.js",
       "toolbarButton.ts",

@@ -33,7 +33,7 @@
   "homepage": "https://github.com/freelawproject/recap-chrome#readme",
   "dependencies": {
     "bootstrap": "^4.6.1",
-    "file-saver": "2.0.5",
+    "file-saver": "^2.0.5",
     "jquery": "^3.6.0",
     "kuende-livestamp": "^1.1.2",
     "moment": "^2.29.1",

@@ -16,6 +16,7 @@
 
 import $ from "jquery";
 import 'whatwg-fetch';
+import { saveAs } from "file-saver";
 
 import { importInstance, updateTabStorage, recapBanner, recapAlertButton, getItemsFromStorage, httpRequest, debug, blobToDataURL } from "./utils";
 import Notifier from "./notifier";
@@ -553,7 +554,7 @@ ContentDelegate.prototype.showPdfPage = async function (
             if (waitingGraph) {
                 waitingGraph.remove();
             }
-            window.saveAs(blob, filename);
+            saveAs(blob, filename);
         }
     };
 
@@ -745,12 +746,14 @@ ContentDelegate.prototype.onDownloadAllSubmit = async function (event) {
 
     // in Firefox, use content.fetch for content-specific fetch requests
     // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_scripts#XHR_and_Fetch
-    const browserSpecificFetch = (navigator.userAgent.indexOf('Chrome') < 0)
-        ? content.fetch
-        : window.fetch;
+    // const browserSpecificFetch = (navigator.userAgent.indexOf('Chrome') < 0)
+    //     ? content.fetch
+    //     : window.fetch;
+
+    //See above re: removal of ternary operator to determine browser fetch in favor of the polyfill.
 
     // fetch the html page which contains the <iframe> link to the zip document.
-    const htmlPage = await browserSpecificFetch(event.data.id).then(res => res.text());
+    const htmlPage = await window.fetch(event.data.id).then(res => res.text());
     console.log("RECAP: Successfully submitted zip file request");
     const zipUrl = extractUrl(htmlPage);
     //download zip file and save it to chrome storage
