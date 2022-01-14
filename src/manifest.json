@@ -31,7 +31,7 @@
     "scripts": [
       "utils.js",
       "notifier.js",
-      "toolbarButton.js",
+      "toolbarButton.ts",
       "pacer.js",
       "recap.js",
       "background.ts"
@@ -48,7 +48,7 @@
       "assets/js/FileSaver.js",
       "utils.js",
       "notifier.js",
-      "toolbarButton.js",
+      "toolbarButton.ts",
       "pacer.js",
       "recap.js",
       "contentDelegate.js",

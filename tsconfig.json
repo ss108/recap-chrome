@@ -8,6 +8,7 @@
           "lib": [
             "es6",
             "dom",
+            "DOM.Iterable",
             "ES2020"
           ],
         "types": [
