@@ -126,9 +126,6 @@ export function httpRequest(url, postData, callback) {
     }
 }
 
-// make token available to helper functions
-const N87GC2 = "45c7946dd8400ad62662565cf79da3c081d9b0e5"
-
 // helper functions for chrome local storage
 
 export async function getItemsFromStorage(key) {
