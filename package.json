@@ -54,6 +54,7 @@
     "karma-jasmine": "^4.0.1",
     "karma-jasmine-ajax": "^0.1.13",
     "karma-jquery": "^0.2.4",
+    "karma-parcel": "^0.5.2",
     "vendor-copy": "^3.0.1",
     "whatwg-fetch": "^3.6.2"
   },

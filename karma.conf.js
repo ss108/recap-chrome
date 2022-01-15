@@ -72,7 +72,7 @@ module.exports = function(config) {
     browsers: ['Chrome'],
 
     // set these options to view logs in development
-    // see https://github.com/karma-runner/karma/issues/2582#issuecomment-413660796 
+    // see https://github.com/karma-runner/karma/issues/2582#issuecomment-413660796
     // browserConsoleLogOptions: {
     //   level: 'log',
     //   format: '%b %T: %m',
@@ -84,7 +84,7 @@ module.exports = function(config) {
     client: {
       captureConsole: true,
     },
-    
+
     customLaunchers: {
       Chrome_CI: {
         base: 'Chrome',
