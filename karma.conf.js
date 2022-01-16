@@ -1,7 +1,7 @@
 // Karma configuration
 // Generated on Wed Jan 03 2018 21:51:16 GMT-0800 (PST)
 
-module.exports = function(config) {
+module.exports = function (config) {
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
@@ -23,14 +23,14 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       { pattern: 'node_modules/whatwg-fetch/fetch.js', type: 'module' },
-      'src/assets/js/FileSaver.js',
-      'src/notifier.js',
-      'src/pacer.js',
-      'src/recap.js',
-      'src/toolbar_button.js',
-      'src/utils.js',
+      'dist/assets/js/FileSaver.js',
+      'dist/notifier.js',
+      'dist/pacer.js',
+      'dist/recap.js',
+      'dist/toolbar_button.js',
+      'dist/utils.js',
       'test/mock-utils.js',
-      'src/content_delegate.js',
+      'dist/content_delegate.js',
       'spec/*Spec.js',
     ],
 
