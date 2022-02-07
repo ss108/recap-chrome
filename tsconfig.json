@@ -12,7 +12,8 @@
             "ES2020"
           ],
         "types": [
-            "chrome"
+            "chrome",
+            "jest"
         ]
     }
 }
