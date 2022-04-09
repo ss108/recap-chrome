@@ -32,35 +32,48 @@
       "utils.js",
       "notifier.js",
       "toolbarButton.ts",
-      "pacer.js",
-      "recap.js",
+      "pacer.ts",
+      "recap.ts",
       "background.ts"
     ]
   },
-  "content_scripts": [{
-    "matches": ["*://*.uscourts.gov/*"],
-    "include_globs": ["*://ecf.*", "*://ecf-train.*", "*://pacer.*"],
-    "css": [
-      "assets/css/style.css",
-      "assets/css/font-awesome.css"
-    ],
-    "js": [
-      "utils.js",
-      "notifier.js",
-      "toolbarButton.ts",
-      "pacer.js",
-      "recap.js",
-      "contentDelegate.js",
-      "content.js"
-    ],
-    "run_at": "document_end"
-  }, {
-    "matches": ["https://www.courtlistener.com/*"],
-    "js": [
-      "installNotifier.js"
-    ],
-    "run_at": "document_idle"
-  }],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.uscourts.gov/*"
+      ],
+      "include_globs": [
+        "*://ecf.*",
+        "*://ecf-train.*",
+        "*://pacer.*"
+      ],
+      "css": [
+        "assets/css/style.css",
+        "assets/css/font-awesome.css"
+      ],
+      "js": [
+        "assets/js/jquery.js",
+        "assets/js/FileSaver.js",
+        "assets/js/moment.js",
+        "utils.js",
+        "notifier.js",
+        "toolbarButton.ts",
+        "recap.ts",
+        "contentDelegate.ts",
+        "content.ts"
+      ],
+      "run_at": "document_end"
+    },
+    {
+      "matches": [
+        "https://www.courtlistener.com/*"
+      ],
+      "js": [
+        "installNotifier.ts"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
   "browser_action": {
     "default_icon": {
       "19": "assets/images/grey-19.png",

@@ -5,7 +5,6 @@
   "directories": {
     "test": "test"
   },
-  "source": "src/index.html",
   "scripts": {
     "test": "jest",
     "postinstall": "vendor-copy",
@@ -39,7 +38,7 @@
     "kuende-livestamp": "^1.1.2",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
-    "parcel": "^2.0.1"
+    "parcel": "^2.4.1"
   },
   "devDependencies": {
     "@parcel/config-webextension": "^2.0.1",

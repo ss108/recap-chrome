@@ -21,9 +21,9 @@ module.exports = {
     "^.+\\.tsx?$": "ts-jest",
     "^.+\\.ts?$": "ts-jest"
   },
-  testMatch: ['**/__tests__/**/*.test.ts', '**/__tests__/**/*.test.js',
+  testMatch: ['**/tests/**/*.test.ts', '**/tests/**/*.test.js',
     // '<rootDir>/__tests__/RecapSpec.js',
-    '<rootDir>/__tests__/pacer.spec.ts',],
+    '<rootDir>/tests/pacer.spec.ts',],
   testPathIgnorePatterns: ['node_modules', '.cache', 'dist'],
   transformIgnorePatterns: ['node_modules/'],
   globals: {
