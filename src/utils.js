@@ -156,7 +156,7 @@ export async function saveItemToStorage(dataObj) {
     await chrome.storage.local.set(dataObj);
 }
 
-const destroyTabStorage = key => {
+export const destroyTabStorage = key => {
     chrome.storage.local.get(null, store => {
         if (store[key]) {
             chrome.storage.local.remove(
