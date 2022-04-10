@@ -46,7 +46,7 @@ export function updateToolbarButton(tab) {
             // Firefox 56 bug. The default settings didn't get created properly when
             // upgrading from the legacy extension. This can be removed when everybody
             // is safely beyond 56 (and the ESR)
-            setDefaultOptions({});
+            // setDefaultOptions({});
         }
 
         if (items && items['options'] && !items['options']['recap_enabled']) {

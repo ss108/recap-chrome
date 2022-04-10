@@ -8,7 +8,7 @@
   "scripts": {
     "test": "jest",
     "postinstall": "vendor-copy",
-    "start": "parcel src/manifest.json --host localhost --target webext-dev --config @parcel/config-webextension",
+    "start": "parcel src/manifest.json --host localhost --port 1234 --target webext-dev --config @parcel/config-webextension",
     "build": "parcel build src/manifest.json --target webext-prod --config @parcel/config-webextension"
   },
   "targets": {

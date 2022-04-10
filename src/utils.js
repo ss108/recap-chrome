@@ -130,18 +130,31 @@ export function httpRequest(url, postData, callback) {
 
 export async function getItemsFromStorage(key) {
     let keyAsString = key.toString();
-    let res = await chrome.storage.local.get(keyAsString);
+    let res;
+
+    res = await chrome.storage.local.get(keyAsString, () => { });
+    if (res === undefined) {
+        return null;
+    }
     return res[keyAsString];
 }
 
-const saveItemToStorage = (dataObj) => new Promise((resolve, reject) =>
-    chrome.storage.local.set(
-        dataObj,
-        () => resolve(
-            console.log(`RECAP: Item saved in storage at tabId: ${Object.keys(dataObj)[0]}`)
-        )
-    )
-);
+
+
+// const saveItemToStorage = (dataObj) => new Promise((resolve, reject) =>
+//     chrome.storage.local.set(
+//         dataObj,
+//         () => resolve(
+//             console.log(`RECAP: Item saved in storage at tabId: ${Object.keys(dataObj)[0]}`)
+//         )
+//     )
+// );
+
+
+export async function saveItemToStorage(dataObj) {
+    console.log(dataObj);
+    await chrome.storage.local.set(dataObj);
+}
 
 const destroyTabStorage = key => {
     chrome.storage.local.get(null, store => {
@@ -175,7 +188,7 @@ export async function updateTabStorage(object) {
     const updatedVars = object[tabId];
     const store = await getItemsFromStorage(tabId);
     // keep store immutable
-    saveItemToStorage({ [tabId]: { ...store, ...updatedVars } });
+    await saveItemToStorage({ [tabId]: { ...store, ...updatedVars } });
 }
 
 // Default settings for any jquery $.ajax call.
@@ -215,7 +228,7 @@ export function blobToDataURL(blob) {
 //   1   General informational
 //   3   Developer debugging
 var DEBUGLEVEL = 1;
-function debug(level, varargs) {
+export function debug(level, varargs) {
     if (DEBUGLEVEL >= level) {
         var args = Array.prototype.slice.call(arguments, 1);
         args[0] = `RECAP debug [${level}]: ` + args[0];
