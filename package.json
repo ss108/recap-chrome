@@ -6,6 +6,7 @@
     "test": "test"
   },
   "scripts": {
+    "build:test": "parcel build tests/pacer.spec.ts tests/RecapSpec.js tests/mock-utils.js tests/mock-ajax.js tests/Blob.js --dist-dir build/tests",
     "test": "jest",
     "postinstall": "vendor-copy",
     "start": "parcel src/manifest.json --host localhost --port 1234 --target webext-dev --config @parcel/config-webextension",

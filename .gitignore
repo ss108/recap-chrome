@@ -8,4 +8,5 @@ coverage
 .vscode/
 .notes
 dist
+build/*
 .parcel-cache
