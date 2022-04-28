@@ -52,7 +52,7 @@ let PACER = {
     // Returns the court identifier for a given URL, or null if not a PACER site.
     getCourtFromUrl: function (url) {
         let match = (url || '').toLowerCase().match(
-            /^\w+:\/\/(ecf|pacer)\.(\w+)\.uscourts\.gov\//);
+            /^\w+:\/\/(ecf|pacer|pcl)\.(\w+)\.uscourts\.gov\//); //this regex does not match pacer.uscourts.gov
         return match ? match[2] : null;
     },
 
@@ -606,4 +606,5 @@ let PACER = {
     APPELLATE_COURTS: ['ca1', 'ca2', 'ca3', 'ca4', 'ca5', 'ca6', 'ca7', 'ca8', 'ca9', 'ca10', 'ca11', 'cadc', 'cafc']
 };
 
+Object.freeze(PACER);
 export default PACER;

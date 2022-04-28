@@ -96,7 +96,6 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     }
 });
 
-console.log(setDefaultOptions)
 chrome.runtime.onInstalled.addListener(setDefaultOptions);
 chrome.runtime.onInstalled.addListener(showNotificationTab);
 

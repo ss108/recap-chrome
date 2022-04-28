@@ -3,6 +3,8 @@
 
 import $ from "jquery";
 
+import { N87GC2 } from "./config";
+
 // In Chrome, content scripts can only communicate with background pages using
 // message passing (see http://developer.chrome.com/extensions/messaging.html).
 // Sometimes the content script needs to call into a background page in order
